@@ -6,7 +6,12 @@ services:
   spanner:
     image: gcr.io/cloud-spanner-pg-adapter/pgadapter
     restart: unless-stopped
-  # db:
+  
+  # spanner-emulator:
+  #   image: gcr.io/cloud-spanner-emulator/emulator
+  #   restart: unless-stopped
+ 
+  # postgres:
   #   image: postgres:latest
   #   restart: unless-stopped
   #   volumes:
