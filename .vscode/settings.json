@@ -32,7 +32,7 @@
 			"port": 5432,
 			"driver": "PostgreSQL",
 			"name": "Spangres",
-			"database": "projects/google.com:cloud-spanner-demo/instances/jmakeig-test/database/pipeline",
+			"database": "projects/google.com:cloud-spanner-demo/instances/jmakeig-test/databases/pipeline",
 			"username": "postgresql"
 		}
 	]
