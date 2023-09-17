@@ -1,6 +1,7 @@
 DELETE FROM events WHERE true;
 DELETE FROM workloads WHERE true;
 DELETE FROM customers WHERE true;
+
 INSERT INTO customers (label, name_canonical) VALUES ('Acme', 'Acme Corp.');
 INSERT INTO workloads (customer_id, title) 
 	VALUES (
@@ -13,4 +14,4 @@ INSERT INTO events (customer_id, workload_id)
       (SELECT workload_id FROM workloads WHERE title = 'Big MySQL migration')
     );
 
---SELECT * FROM events;
+SELECT * FROM events;

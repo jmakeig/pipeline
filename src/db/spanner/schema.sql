@@ -1,4 +1,8 @@
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS workloads;
+DROP INDEX IF EXISTS customer_label;
 DROP TABLE IF EXISTS customers;
+
 CREATE TABLE IF NOT EXISTS customers (
 	--customer_id 		varchar(36) UNIQUE NOT NULL DEFAULT gen_random_uuid()::varchar(36),
 		customer_id 		varchar(36) NOT NULL DEFAULT spanner.generate_uuid()::varchar(36),
@@ -10,10 +14,10 @@ CREATE TABLE IF NOT EXISTS customers (
 	PRIMARY KEY (customer_id)
 );
 -- UNIQUE constraint
-DROP INDEX IF EXISTS customer_label;
+
 CREATE UNIQUE INDEX customer_label ON customers (label);
 
-DROP TABLE IF EXISTS workloads;
+
 CREATE TABLE IF NOT EXISTS workloads (
 	--workload_id 		varchar(36) UNIQUE NOT NULL DEFAULT gen_random_uuid()::varchar(36),
 	workload_id 		varchar(36) NOT NULL DEFAULT spanner.generate_uuid()::varchar(36),
@@ -28,7 +32,7 @@ CREATE TABLE IF NOT EXISTS workloads (
 	PRIMARY KEY (workload_id)
 );
 
-DROP TABLE IF EXISTS events;
+
 CREATE TABLE IF NOT EXISTS events (
 	--event_id			varchar(36) UNIQUE NOT NULL DEFAULT gen_random_uuid()::varchar(36),
 	event_id				varchar(36) NOT NULL DEFAULT spanner.generate_uuid()::varchar(36),
