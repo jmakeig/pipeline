@@ -1,5 +1,4 @@
 ## gcloud
 
-* `curl https://sdk.cloud.google.com | bash`
-* `exec -l $SHELL`
-* `gcloud init`
+* `gcloud config set project google.com:cloud-spanner-demo`
+* `gcloud auth application-default login`

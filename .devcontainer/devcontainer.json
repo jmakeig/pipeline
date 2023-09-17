@@ -4,7 +4,8 @@
 		"node": {
 			"version": "lts",
 			"nodeGypDependencies": true
-		}
+		},
+		"ghcr.io/dhoeric/features/google-cloud-cli:1": {}
 	},
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "spanner",
