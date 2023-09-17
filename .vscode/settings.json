@@ -1,0 +1,39 @@
+{
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "34.70.255.91",
+			"port": 5432,
+			"askForPassword": true,
+			"driver": "PostgreSQL",
+			"name": "Cloud SQL",
+			"database": "pipeline",
+			"username": "postgresql"
+		},
+		{
+			"previewLimit": 50,
+			"driver": "Google Cloud Spanner Driver",
+			"name": "Spanner",
+			"project": "google.com:cloud-spanner-demo",
+			"instance": "jmakeig-test",
+			"database": "pipeline"
+		},
+		{
+			"previewLimit": 50,
+			"driver": "Google Cloud Spanner Driver",
+			"name": "DUMMY",
+			"project": "google.com:cloud-spanner-demo",
+			"instance": "jmakeig-test",
+			"database": "dummy"
+		},
+		{
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "Spangres",
+			"database": "projects/google.com:cloud-spanner-demo/instances/jmakeig-test/database/pipeline",
+			"username": "postgresql"
+		}
+	]
+}

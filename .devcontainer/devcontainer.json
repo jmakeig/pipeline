@@ -6,6 +6,9 @@
 			"nodeGypDependencies": true
 		}
 	},
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "spanner",
+	"forwardPorts": [5432],
 	"customizations": {
 		"vscode": {
 			"settings": {
