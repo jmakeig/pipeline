@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 
-import { Client } from 'pg';
+import { get_customers } from '$lib/api';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -12,15 +12,7 @@ export async function load({ params }) {
 }
 
 async function get_customers_from_database() {
-	const client = new Client({
-		host: 'localhost',
-		port: 5432,
-		database: 'projects/google.com:cloud-spanner-demo/instances/jmakeig-test/databases/pipeline'
-	});
-	console.log('about to connect')
-	await client.connect();
-	console.log('connected')
-	const res = await client.query("select 'Hello world!' as hello");
-	console.log(res.rows[0].hello);
-	await client.end();
+	return {
+		customers: await get_customers()
+	};
 }
