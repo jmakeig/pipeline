@@ -14,3 +14,15 @@ export interface Customer {
 }
 
 export interface Customer_Stub extends Omit<Customer, 'customer_id'> {}
+
+/** */
+export interface Event {
+	/** */
+	event_id: string;
+	/** */
+	customer_id: string;
+	/** */
+	workload_id: string;
+	/** */
+	timestamp: Date;
+}

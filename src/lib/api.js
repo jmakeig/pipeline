@@ -15,6 +15,11 @@ export const api = {
 		const sql = `SELECT customer_id, label, name_canonical, vector_id, segment, industry FROM customers`;
 		const results = await pool.query(sql);
 		return results.rows;
+	},
+	async list_events() {
+		const sql = `SELECT event_id, customer_id, workload_id, timestamp FROM events`;
+		const results = await pool.query(sql);
+		return results.rows;
 	}
 };
 // async function set_customer(partial_customer) {}

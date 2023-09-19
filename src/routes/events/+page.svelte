@@ -3,12 +3,12 @@
 	export let data;
 </script>
 
-<h2>Customers</h2>
+<h2>Events</h2>
 <table>
 	<tbody>
-		{#each data.customers as customer (customer.customer_id)}
-			<tr id={`customer_` + customer.customer_id}>
-				<td>{customer.label}</td>
+		{#each data.events as event (event.event_id)}
+			<tr id={`event_` + event.event_id}>
+				<td>{event.event_id}</td>
 			</tr>
 		{:else}
 			Nope

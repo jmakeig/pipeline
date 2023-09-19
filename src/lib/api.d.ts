@@ -1,7 +1,8 @@
-import { Customer, Customer_Stub } from '$lib/entities';
+import { Customer, Event } from '$lib/entities';
 
 export interface API {
 	list_customers: () => Promise<Customer[]>;
+	list_events: () => Promise<Event[]>;
 	/*
 	find_workout: (name: string) => Promise<Workout>;
 	update_workout: (workout: Workout) => Promise<Workout>;
