@@ -1,5 +1,7 @@
 import { Pool } from 'pg';
 
+/** @typedef {import('$lib/entities').Customer} Customer */
+
 // TODO: Externalize this
 const pool = new Pool({
 	host: 'localhost',
@@ -7,10 +9,13 @@ const pool = new Pool({
 	database: 'projects/google.com:cloud-spanner-demo/instances/jmakeig-test/databases/pipeline'
 });
 
-export async function get_customers() {
-	const results = await pool.query(`SELECT * FROM customers`);
-	return results.rows;
-}
-
+/** @type {import('./api').API} */
+export const api = {
+	async list_customers() {
+		const sql = `SELECT customer_id, label, name_canonical, vector_id, segment, industry FROM customers`;
+		const results = await pool.query(sql);
+		return results.rows;
+	}
+};
 // async function set_customer(partial_customer) {}
 // async function remove_customer(...ids) {}

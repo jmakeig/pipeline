@@ -3,7 +3,7 @@
 	export let data;
 </script>
 
-<h1>Customers</h1>
+<h2>Customers</h2>
 <table>
 	<tbody>
 		{#each data.customers as customer (customer.customer_id)}

@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 
-import { get_customers } from '$lib/api';
+import { api } from '$lib/api';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -11,8 +11,13 @@ export async function load({ params }) {
 	}
 }
 
+/** @typedef {import('$lib/entities').Customer} Customer */
+/**
+ *
+ * @returns {Promise<{customers: Customer[]}>}
+ */
 async function get_customers_from_database() {
 	return {
-		customers: await get_customers()
+		customers: await api.list_customers()
 	};
 }
