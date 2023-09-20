@@ -1,9 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width" />
+		<style>
+			html {
+				padding: 1em;
+			}
+			div, form, table {
+				margin: 1em 0;
+			}
+			table {
+				table-layout: fixed;
+				border-spacing: 0;
+				border-collapse: collapse;
+			}
+			td, th {
+				border-style: solid;
+				border-width: 0.5px;
+				padding: 1em;
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

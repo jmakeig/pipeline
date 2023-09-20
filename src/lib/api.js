@@ -16,6 +16,24 @@ export const api = {
 		const results = await pool.query(sql);
 		return results.rows;
 	},
+	async find_customers(by) {
+		console.log(by);
+		const sql = `
+		SELECT customer_id AS id, label AS match, 2 AS score
+		FROM customers 
+		WHERE 
+			starts_with(lower(label), lower($1))
+			AND length($1) > 0 --all strings start with the empty string
+		UNION ALL
+		SELECT customer_id AS id, name_canonical AS match, 1 AS score 
+		FROM customers 
+		WHERE 
+			starts_with(lower(name_canonical), lower($1))
+			AND length($1) > 0
+		ORDER BY score DESC`;
+		const results = await pool.query(sql, [by]);
+		return results.rows;
+	},
 	async list_events() {
 		const sql = `SELECT event_id, customer_id, workload_id, timestamp FROM events`;
 		const results = await pool.query(sql);

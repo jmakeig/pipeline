@@ -21,3 +21,5 @@ async function get_customers_from_database() {
 		customers: await api.list_customers()
 	};
 }
+
+
