@@ -17,7 +17,7 @@ export const api = {
 		return results.rows;
 	},
 	async lookup_customers(by) {
-		console.log(by);
+		console.log('lookup_customers', by);
 		const sql = `
 		SELECT customer_id AS value, label AS label, 2 AS score
 		FROM customers 
@@ -33,6 +33,17 @@ export const api = {
 		ORDER BY 
 			label ASC, 
 			score DESC`;
+		const results = await pool.query(sql, [by]);
+		return results.rows;
+	},
+	async lookup_workloads(by) {
+		console.log('lookup_workloads', by);
+		const sql = `
+		SELECT workload_id AS value, title AS label
+			FROM workloads
+			WHERE 
+				starts_with(lower(title), lower($1))
+		`;
 		const results = await pool.query(sql, [by]);
 		return results.rows;
 	},

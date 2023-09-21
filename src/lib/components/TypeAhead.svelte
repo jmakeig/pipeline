@@ -1,4 +1,6 @@
 <script>
+	/** @typedef {{value: string, label: string}[]} LookupList */
+
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
@@ -9,9 +11,9 @@
 	export let value;
 	/** @type { string | undefined } */
 	export let label;
-	/** @type { Array<{value: string, label: string}> } */
+	/** @type { LookupList } */
 	export let defaults = [];
-	/** @type { (by?: string) => Promise<Array<{value: string, label: string}>>  } */
+	/** @type { (by?: string) => Promise<LookupList>  } */
 	export let lookup = async function () {
 		return defaults;
 	};
@@ -24,7 +26,7 @@
 		//console.log('state', state, new Date);
 	}
 
-	/** @type { (by?: string) => Promise<Array<{value: string, label: string}>>  } */
+	/** @type { (by?: string) => Promise<LookupList>  } */
 	async function _lookup(by) {
 		if ('' === by) {
 			return defaults;
@@ -38,7 +40,7 @@
 	let state = 'idle'; // Poor man’s state machine
 
 	/**
-	 * 
+	 *
 	 * @param {Event} event
 	 */
 	async function handle_input(event) {
@@ -105,7 +107,7 @@
 		<option data-value={item.value}>{item.label}</option>
 	{/each}
 </datalist>
-<input type="text" {name} value={value || ''} style="opacity: 0.15;" />
+<input type="hidden" {name} value={value || ''} style="opacity: 0.15;" />
 
 <!--
 <h2>Values</h2>
