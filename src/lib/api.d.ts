@@ -3,7 +3,7 @@ import { Customer, Event } from '$lib/entities';
 export interface API {
 	list_customers: () => Promise<Customer[]>;
 	list_events: () => Promise<Event[]>;
-	find_customers: (by?: string) => Promise<Customer[]>;
+	lookup_customers: (by?: string) => Promise<Array<{ value: string; label: string }>>;
 	/*
 	find_workout: (name: string) => Promise<Workout>;
 	update_workout: (workout: Workout) => Promise<Workout>;

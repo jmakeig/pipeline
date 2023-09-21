@@ -3,5 +3,5 @@ import { api } from '$lib/api';
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ url }) {
-	return json(await api.find_customers(url.searchParams.get('by') || ''));
+	return json(await api.lookup_customers(url.searchParams.get('by') || ''));
 }

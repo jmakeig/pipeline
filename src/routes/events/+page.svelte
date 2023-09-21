@@ -1,16 +1,16 @@
 <script>
-	import Type_Ahead from '$lib/components/Type_Ahead.svelte';
+	import TypeAhead from '$lib/components/TypeAhead.svelte';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
 
 	/**
 	 *
-	 * @param match {string}
-	 * @returns {Promise<string | undefined>}
+	 * @param {string} [by] 
+	 * @returns {Promise<Array<{value: string, label: string}>>}
 	 */
-	async function find_customer_id(match) {
-		const response = await fetch(`/customers?by=${match}`);
+	async function find_customer_id(by) {
+		const response = await fetch(`/customers?by=${by}`);
 		const result = await response.json();
 		return result;
 	}
@@ -19,9 +19,9 @@
 <h2>Events</h2>
 
 <form>
-	Customer <Type_Ahead
+	Customer <TypeAhead
 		name="customer_id"
-		value=""
+		value="" label=""
 		lookup={find_customer_id}
 		on:selected={(event) => {
 			console.log(event.detail);
