@@ -1,4 +1,5 @@
-import { Pool } from 'pg';
+import pg from 'pg';
+const { Pool } = pg;
 
 /** @typedef {import('$lib/entities').Customer} Customer */
 
