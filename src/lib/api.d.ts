@@ -2,6 +2,8 @@ import { Customer, Event } from '$lib/entities';
 
 export type LookupList = { value: string; label: string }[];
 
+export const api: API;
+
 export interface API {
 	list_customers: () => Promise<Customer[]>;
 	list_events: () => Promise<Event[]>;
