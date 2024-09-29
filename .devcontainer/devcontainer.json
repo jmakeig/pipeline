@@ -13,7 +13,7 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"workbench.colorTheme": "Dracula",
+				"workbench.colorTheme": "Dracula Theme",
 				"editor.tabSize": 2,
 				"editor.insertSpaces": false,
 				"editor.minimap.enabled": false,
