@@ -1,0 +1,42 @@
+{
+	"name": "pipeline",
+	"features": {
+		"node": {
+			"version": "lts",
+			"nodeGypDependencies": true
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"workbench.colorTheme": "Dracula Theme",
+				"editor.tabSize": 2,
+				"editor.insertSpaces": false,
+				"editor.minimap.enabled": false,
+				"terminal.integrated.cursorStyle": "line",
+				"svelte.enable-ts-plugin": true,
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"[svelte]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[javascript]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				},
+				"[jsonc]": {
+					"editor.defaultFormatter": "esbenp.prettier-vscode"
+				}
+			},
+			"extensions": [
+				"dracula-theme.theme-dracula",
+				"esbenp.prettier-vscode",
+				"svelte.svelte-vscode",
+				"statelyai.stately-vscode",
+				"mtxr.sqltools",
+				"mtxr.sqltools-driver-pg",
+				"google-cloud-spanner-ecosystem.google-cloud-spanner-driver",
+				"IronGeek.vscode-env"
+			]
+		}
+	}
+	
+}
