@@ -6,6 +6,10 @@
 			"nodeGypDependencies": true
 		}
 	},
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "postgres",
+	"forwardPorts": [5432],
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -38,5 +42,4 @@
 			]
 		}
 	}
-	
 }
