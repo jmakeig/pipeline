@@ -22,10 +22,11 @@ export async function get_customers(customer) {
 }
 
 /**
- * 
+ * @param {string} [customer] 
+ * @param {string} [workload] 
  * @returns 
  */
-export async function get_workloads() {
+export async function get_workloads(customer, workload) {
 	const sql = `SELECT
 			w.workload, 
 			w.label, 
