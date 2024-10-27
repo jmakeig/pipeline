@@ -12,6 +12,17 @@ const pool = new Pool({
 
 /**
  * 
+ * @param {string} [customer]
+ * @returns 
+ */
+export async function get_customers(customer) {
+	const sql = `SELECT c.customer, c.label, c.name FROM customers AS c LIMIT 100`;
+	const results = await pool.query(sql);
+	return results.rows;
+}
+
+/**
+ * 
  * @returns 
  */
 export async function get_workloads() {
