@@ -1,14 +1,6 @@
-import pg from 'pg';
-const { Pool } = pg;
+import { create_connection } from './db';
 
-const pool = new Pool({
-	host: 'localhost',
-	port: 5432,
-	database: 'pipeline',
-
-	user: 'pipelineadmin',
-	password: '********'
-});
+const db = create_connection();
 
 /**
  *
@@ -21,7 +13,7 @@ export async function get_customers(customer) {
 		FROM customers AS c 
 		WHERE $1::text IS NULL OR c.label = $1
 		LIMIT 100`;
-	const results = await pool.query(sql, [customer]);
+	const results = await db.query(sql, [customer]);
 	return results.rows;
 }
 
@@ -46,7 +38,7 @@ export async function get_workloads(customer, workload) {
 		LIMIT 100 /* TODO: Need pagination */
 		`;
 	console.log('get_workloads', sql, [...arguments]);
-	const results = await pool.query(sql, [customer, workload]);
+	const results = await db.query(sql, [customer, workload]);
 	// console.dir(results.rows);
 	return results.rows;
 }
@@ -72,20 +64,6 @@ export async function get_events(customer, workload) {
 			AND ($2::text IS NULL OR w.label = $2)
 		ORDER BY e.happened_at DESC
 		LIMIT 100 /* TODO: Need pagination */`;
-	const results = await pool.query(sql, [customer, workload]);
+	const results = await db.query(sql, [customer, workload]);
 	return results.rows;
 }
-/*
-[
-	'stack',         'message',
-	'length',        'name',
-	'severity',      'code',
-	'detail',        'hint',
-	'position',      'internalPosition',
-	'internalQuery', 'where',
-	'schema',        'table',
-	'column',        'dataType',
-	'constraint',    'file',
-	'line',          'routine'
-]
-*/
