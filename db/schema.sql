@@ -1,21 +1,24 @@
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS workloads;
 DROP TABLE IF EXISTS customers;
+
+
 CREATE TABLE IF NOT EXISTS customers (
   customer uuid DEFAULT gen_random_uuid(),
   label text UNIQUE,
-  name text,
+  name text NOT NULL,
   PRIMARY KEY(customer)
 );
 
-
-DROP TABLE IF EXISTS workloads;
 CREATE TABLE IF NOT EXISTS workloads (
   workload uuid DEFAULT gen_random_uuid(),
-  label text UNIQUE,
+  label text NOT NULL,
+  name text NOT NULL,
   customer uuid REFERENCES customers(customer),
-  PRIMARY KEY(workload)
+  PRIMARY KEY(workload),
+  UNIQUE(customer, label)
 );
 
-DROP TABLE IF EXISTS events;
 CREATE TABLE IF NOT EXISTS events (
   event uuid DEFAULT gen_random_uuid(),
   workload uuid REFERENCES workloads(workload),

@@ -11,10 +11,32 @@ const pool = new Pool({
 });
 
 export async function get_workloads() {
-	const sql = `SELECT label FROM workloads`;
+	const sql = `SELECT
+			w.workload, 
+			w.label, 
+			w.name, 
+			w.customer,  
+			c.label AS customer_label,
+			c.name AS customer_name
+		FROM workloads AS w
+		INNER JOIN customers AS c USING(customer)
+		LIMIT 100 /* TODO: Need pagination */
+		`;
 	const results = await pool.query(sql);
 	// console.dir(results.rows);
 	return results.rows;
+}
+
+export async function get_events() {
+	const sql = `SELECT 
+		customers.label, workloads.label, events.* 
+		FROM events
+		INNER JOIN workloads USING(workload)
+		INNER JOIN customers USING(customer)
+		ORDER BY events.happened_at DESC
+		LIMIT100`;
+		const results = await pool.query(sql);
+		return results.rows;
 }
 /*
 [

@@ -13,9 +13,10 @@ npm run dev
 * customers
 	* customer 🔑
 	* label 
-	* segment
-	* industry
-	* region
+	* name
+	* *segment*
+	* *industry*
+	* *region*
 * workloads
 	* workload 🔑
 	* label
@@ -23,5 +24,5 @@ npm run dev
 * events
 	* event 🔑
 	* workload 🔗
-	* date
+	* happened_at
 	* outcome
