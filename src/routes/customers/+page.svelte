@@ -4,10 +4,10 @@
 </script>
 
 <h1>Customers</h1>
-{#await data.customers then customers}
+{#await data.workloads then workloads}
 	<ol>
-		{#each customers as customer, index}
-			<li>{customer.name}</li>
+		{#each workloads as workload}
+			<li>{workload.label}</li>
 		{/each}
 	</ol>
 {/await}
