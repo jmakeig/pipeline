@@ -4,10 +4,10 @@
 </script>
 
 <h1>Customers</h1>
-{#await data.workloads then workloads}
-	<ol>
-		{#each workloads as workload}
-			<li>{workload.label}</li>
-		{/each}
-	</ol>
-{/await}
+<p>asdf</p>
+<!-- <pre>{JSON.stringify(data.workloads)}</pre> -->
+<ol>
+	{#each data.workloads as workload}
+		<li>{workload.label}</li>
+	{/each}
+</ol>
