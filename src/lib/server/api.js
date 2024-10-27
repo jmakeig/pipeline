@@ -11,8 +11,9 @@ export async function get_customers(customer) {
 	const sql = `SELECT 
 			c.customer, c.label, c.name 
 		FROM customers AS c 
-		WHERE $1::text IS NULL OR c.label = $1
-		LIMIT 100`;
+		WHERE TRUE
+			AND ($1::text IS NULL OR c.label = $1)
+		LIMIT 100 /* TODO: Need pagination */`;
 	const results = await db.query(sql, [customer]);
 	return results.rows;
 }
