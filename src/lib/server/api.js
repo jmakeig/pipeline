@@ -11,20 +11,24 @@ const pool = new Pool({
 });
 
 /**
- * 
- * @param {string} [customer]
- * @returns 
+ *
+ * @param {string} [customer] Customer label
+ * @returns
  */
 export async function get_customers(customer) {
-	const sql = `SELECT c.customer, c.label, c.name FROM customers AS c LIMIT 100`;
-	const results = await pool.query(sql);
+	const sql = `SELECT 
+			c.customer, c.label, c.name 
+		FROM customers AS c 
+		WHERE $1::text IS NULL OR c.label = $1
+		LIMIT 100`;
+	const results = await pool.query(sql, [customer]);
 	return results.rows;
 }
 
 /**
- * @param {string} [customer] 
- * @param {string} [workload] 
- * @returns 
+ * @param {string} [customer] Customer label
+ * @param {string} [workload] Workload label
+ * @returns
  */
 export async function get_workloads(customer, workload) {
 	const sql = `SELECT
@@ -36,17 +40,21 @@ export async function get_workloads(customer, workload) {
 			c.name AS customer_name
 		FROM workloads AS w
 		INNER JOIN customers AS c USING(customer)
+		WHERE TRUE
+			AND ($1::text IS NULL OR c.label = $1)
+			AND ($2::text IS NULL OR w.label = $2)
 		LIMIT 100 /* TODO: Need pagination */
 		`;
-	const results = await pool.query(sql);
+	console.log('get_workloads', sql, [...arguments]);
+	const results = await pool.query(sql, [customer, workload]);
 	// console.dir(results.rows);
 	return results.rows;
 }
 
 /**
  *
- * @param {string} [customer]
- * @param {string} [workload]
+ * @param {string} [customer] Customer label
+ * @param {string} [workload] Workload label
  * @returns
  */
 export async function get_events(customer, workload) {
