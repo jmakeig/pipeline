@@ -37,9 +37,8 @@ export async function get_workloads(customer, workload) {
 			AND ($2::text IS NULL OR w.label = $2)
 		LIMIT 100 /* TODO: Need pagination */
 		`;
-	console.log('get_workloads', sql, [...arguments]);
+	// console.log('get_workloads', sql, [...arguments]);
 	const results = await db.query(sql, [customer, workload]);
-	// console.dir(results.rows);
 	return results.rows;
 }
 
