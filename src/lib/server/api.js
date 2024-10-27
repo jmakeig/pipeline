@@ -67,9 +67,12 @@ export async function get_events(customer, workload) {
 		FROM events AS e
 		INNER JOIN workloads AS w USING(workload)
 		INNER JOIN customers AS c USING(customer)
+		WHERE TRUE
+			AND ($1::text IS NULL OR c.label = $1)
+			AND ($2::text IS NULL OR w.label = $2)
 		ORDER BY e.happened_at DESC
-		LIMIT 100`;
-	const results = await pool.query(sql);
+		LIMIT 100 /* TODO: Need pagination */`;
+	const results = await pool.query(sql, [customer, workload]);
 	return results.rows;
 }
 /*
