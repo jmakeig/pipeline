@@ -10,6 +10,10 @@ const pool = new Pool({
 	password: '********'
 });
 
+/**
+ * 
+ * @returns 
+ */
 export async function get_workloads() {
 	const sql = `SELECT
 			w.workload, 
@@ -27,16 +31,26 @@ export async function get_workloads() {
 	return results.rows;
 }
 
-export async function get_events() {
+/**
+ *
+ * @param {string} [customer]
+ * @param {string} [workload]
+ * @returns
+ */
+export async function get_events(customer, workload) {
 	const sql = `SELECT 
-		customers.label, workloads.label, events.* 
-		FROM events
-		INNER JOIN workloads USING(workload)
-		INNER JOIN customers USING(customer)
-		ORDER BY events.happened_at DESC
-		LIMIT100`;
-		const results = await pool.query(sql);
-		return results.rows;
+		c.label AS customer_label, 
+		c.name AS customer_name,
+		w.label AS workload_label,
+		w.name AS workload_name,
+		e.happened_at
+		FROM events AS e
+		INNER JOIN workloads AS w USING(workload)
+		INNER JOIN customers AS c USING(customer)
+		ORDER BY e.happened_at DESC
+		LIMIT 100`;
+	const results = await pool.query(sql);
+	return results.rows;
 }
 /*
 [

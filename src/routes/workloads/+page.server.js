@@ -1,4 +1,3 @@
-import { error } from '@sveltejs/kit';
 import * as api from '$lib/server/api';
 
 /** @type {import('./$types').PageServerLoad} */
