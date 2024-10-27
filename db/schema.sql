@@ -14,15 +14,20 @@ CREATE TABLE IF NOT EXISTS workloads (
   workload uuid DEFAULT gen_random_uuid(),
   label text NOT NULL,
   name text NOT NULL,
-  customer uuid REFERENCES customers(customer),
+  customer uuid REFERENCES customers(customer) ON DELETE RESTRICT,
   PRIMARY KEY(workload),
   UNIQUE(customer, label)
 );
 
 CREATE TABLE IF NOT EXISTS events (
   event uuid DEFAULT gen_random_uuid(),
-  workload uuid REFERENCES workloads(workload),
+  customer uuid REFERENCES customers(customer) ON DELETE RESTRICT,
+  workload uuid REFERENCES workloads(workload) ON DELETE RESTRICT,
   happened_at timestamptz DEFAULT now(),
   outcome text,
-  PRIMARY KEY(event)
+  PRIMARY KEY(event),
+  CHECK (
+    (customer IS NULL AND workload IS NOT NULL) 
+    OR (customer IS NOT NULL AND workload IS NULL)
+  )
 );

@@ -2,15 +2,25 @@ DELETE FROM events WHERE true;
 DELETE FROM workloads WHERE true;
 DELETE FROM customers WHERE true;
 
+-- Customers
 INSERT INTO customers(label, name) VALUES
 	('acme', 'Acme Corp.'),
-	('beta', 'Beta LLC');
+	('beta', 'Beta LLC')
+;
+
+-- Workloads
 INSERT INTO workloads(label, name, customer) VALUES
 	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme')),
-	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta'));
-INSERT INTO events(workload) VALUES
-	((SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'acme' ORDER BY random() LIMIT 1)),
-	((SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'beta' ORDER BY random() LIMIT 1));
+	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta')),
+	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'))
+;
+
+-- Events
+INSERT INTO events(customer, workload, outcome) VALUES
+	(NULL, (SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'acme' ORDER BY random() LIMIT 1), 'Some stuff'),
+	(NULL, (SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'beta' ORDER BY random() LIMIT 1), 'And things'),
+	((SELECT customer FROM customers WHERE label = 'beta'), NULL, 'And things')
+;
 
 /*
 SELECT 
