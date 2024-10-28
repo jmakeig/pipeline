@@ -38,7 +38,8 @@
 				"mtxr.sqltools",
 				"mtxr.sqltools-driver-pg",
 				"google-cloud-spanner-ecosystem.google-cloud-spanner-driver",
-				"IronGeek.vscode-env"
+				"IronGeek.vscode-env",
+				"EditorConfig.EditorConfig"
 			]
 		}
 	}
