@@ -30,9 +30,20 @@ export async function get_workloads(customer, workload) {
 			w.name, 
 			w.customer,  
 			c.label AS customer_label,
-			c.name AS customer_name
+			c.name AS customer_name,
+			c2.last_happened_at, 
+			c2.events_count
 		FROM workloads AS w
 		INNER JOIN customers AS c USING(customer)
+		LEFT JOIN (
+			SELECT 
+				e.workload, 
+				MAX(e.happened_at) AS last_happened_at,
+				COUNT(e.happened_at) AS events_count
+			FROM events AS e  
+			WHERE e.workload IS NOT NULL 
+			GROUP BY e.workload
+		) AS c2 USING(workload)
 		WHERE TRUE
 			AND ($1::text IS NULL OR c.label = $1)
 			AND ($2::text IS NULL OR w.label = $2)

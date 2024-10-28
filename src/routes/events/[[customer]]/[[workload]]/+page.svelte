@@ -1,16 +1,8 @@
 <script>
+	import { format_date } from '$lib/format';
+
 	/** @type {import('./$types').PageData} */
 	export let data;
-
-	/**
-	 * @param {Date} date 
-	 * @returns {string}
-	 */
-	function format_date(date) {
-		// TODO: i18n
-		// https://stackoverflow.com/questions/25050034/get-iso-8601-using-intl-datetimeformat
-		return new Intl.DateTimeFormat('en-US').format(date);
-	}
 </script>
 
 <h1>Events</h1>
