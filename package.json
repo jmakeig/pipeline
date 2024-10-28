@@ -9,7 +9,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"lint": "prettier --check .",
+		"db": "psql -d pipeline -U pipelineadmin -f db/schema.sql -f db/load.sql"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",

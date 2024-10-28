@@ -5,6 +5,7 @@ psql -d pipeline -U pipelineadmin
 ```
 
 ```shell
+npm run db
 npm run dev
 ```
 
