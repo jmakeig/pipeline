@@ -1,15 +1,14 @@
 # pipeline
 
-```shell
-psql -d pipeline -U pipelineadmin
-```
+## Getting Started 
 
 ```shell
+npm install
 npm run db
 npm run dev
 ```
 
-# Model
+## Model
 
 * customers
 	* customer 🔑
@@ -27,3 +26,9 @@ npm run dev
 	* workload 🔗
 	* happened_at
 	* outcome
+
+## Rebuild Container
+
+```shell
+cp .devcontainer/.env.example .devcontainer/.env
+```
