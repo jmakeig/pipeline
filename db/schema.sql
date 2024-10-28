@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS workloads (
   workload uuid DEFAULT gen_random_uuid(),
   label text NOT NULL,
   name text NOT NULL,
-  customer uuid REFERENCES customers(customer) ON DELETE RESTRICT,
+  customer uuid NOT NULL REFERENCES customers(customer) ON DELETE RESTRICT,
   PRIMARY KEY(workload),
   UNIQUE(customer, label)
 );
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS events (
   outcome text,
   PRIMARY KEY(event),
   CHECK (
-    (customer IS NULL AND workload IS NOT NULL) 
+       (customer IS NULL AND workload IS NOT NULL) 
     OR (customer IS NOT NULL AND workload IS NULL)
   )
 );
