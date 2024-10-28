@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores';
 	import { format_date } from '$lib/format';
 
 	/** @type {import('./$types').PageData} */
@@ -6,6 +7,7 @@
 </script>
 
 <h1>Events</h1>
+<p><a href="{$page.url.pathname}/new">New</a></p>
 <table>
 	<thead>
 		<tr>
