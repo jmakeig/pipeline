@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores';
 	/* @type {import('./$types').LayoutData} */
 	//export let data;
 </script>
@@ -11,3 +12,4 @@
 	</ul>
 </nav>
 <slot></slot>
+<pre>{$page.url.pathname}</pre>
