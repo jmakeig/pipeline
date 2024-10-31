@@ -39,3 +39,13 @@ export function pluralize(count, singular, plural) {
 			throw new Error('Unknown: ' + grammatical_number);
 	}
 }
+
+export function ago(date) {
+	const diff = Math.round((date - Date.now()) / 1000);
+	const bounds = [60, 3600, 86400, 86400 * 7, 86400 * 30, 86400 * 365, Infinity];
+	const units = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
+	const unitIndex = bounds.findIndex((cutoff) => cutoff > Math.abs(diff));
+	const divisor = unitIndex ? bounds[unitIndex - 1] : 1;
+	const format = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+	return format.format(Math.floor(diff / divisor), units[unitIndex]);
+}

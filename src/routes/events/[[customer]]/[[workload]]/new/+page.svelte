@@ -13,14 +13,14 @@
 		<select id="customer_workload" name="customer_workload">
 			<optgroup label="Workloads">
 				{#each data.customer_workloads.filter((/** @type {any} */ cw) => cw.workload) as customer_workload}
-					<option value="workload={customer_workload.workload_label}"
+					<option value="workload={customer_workload.workload}"
 						>{customer_workload.workload_name} ({customer_workload.customer_name})</option
 					>
 				{/each}
 			</optgroup>
 			<optgroup label="Customers">
 				{#each data.customer_workloads.filter((/** @type {any} */ cw) => !cw.workload) as customer_workload}
-					<option value="customer={customer_workload.customer_label}"
+					<option value="customer={customer_workload.customer}"
 						>{customer_workload.workload_name} {customer_workload.customer_name}</option
 					>
 				{/each}

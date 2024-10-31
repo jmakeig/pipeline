@@ -1,6 +1,6 @@
 <script>
 	import { page } from '$app/stores';
-	import { format_date } from '$lib/format';
+	import { ago } from '$lib/format';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -27,7 +27,7 @@
 					>
 				</td>
 				<td>{event.outcome || ''}</td>
-				<td>{format_date(event.happened_at)}</td>
+				<td>{ago(event.happened_at)}</td>
 			</tr>
 		{/each}
 	</tbody>

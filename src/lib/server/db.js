@@ -103,3 +103,23 @@ export function create_connection() {
 		}
 	};
 }
+
+/**
+ *
+ * @param {any | undefined} value
+ * @param {number} [param=1]
+ * @returns {string}
+ */
+export function optional_default(value, param = 1) {
+	if (undefined === value) return 'DEFAULT';
+	return `$${param}`;
+}
+
+/**
+ *
+ * @param {Array<any>} params
+ * @returns {Array<any>}
+ */
+export function prune_optional(params) {
+	return params.filter(v => undefined !== v);
+}

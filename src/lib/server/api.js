@@ -1,4 +1,4 @@
-import { create_connection } from './db';
+import { create_connection, optional_default, prune_optional } from './db';
 
 const db = create_connection();
 
@@ -68,6 +68,7 @@ export async function get_events(customer, workload) {
 				c.name AS customer_name,
 				w.label AS workload_label,
 				w.name AS workload_name,
+				e.outcome,
 				e.happened_at
 			FROM events AS e
 			INNER JOIN workloads AS w ON e.workload = w.workload
@@ -82,7 +83,8 @@ export async function get_events(customer, workload) {
 				c.name AS customer_name,
 				NULL AS workload_label,
 				NULL AS workload_name,
-			e.happened_at
+				e.outcome,
+				e.happened_at
 			FROM events AS e
 			INNER JOIN customers AS c ON e.customer = c.customer
 			WHERE TRUE
@@ -93,6 +95,26 @@ export async function get_events(customer, workload) {
 		`;
 	const results = await db.query(sql, [customer, workload]);
 	return results.rows;
+}
+
+/**
+ *
+ * @param {string | null} workload
+ * @param {string | null} customer
+ * @param {string} outcome
+ * @param {Date} [happened_at]
+ * @returns {Promise<any>}
+ */
+export async function add_event(workload, customer, outcome, happened_at) {
+	const sql = `
+		INSERT INTO events(workload, customer, outcome, happened_at)
+		VALUES ($1, $2, $3, ${optional_default(happened_at, 4)})
+		RETURNING (event, workload, customer, outcome, happened_at)
+	`;
+	console.log(sql, [workload, customer, outcome, happened_at]);
+	const results = await db.query(sql, prune_optional([workload, customer, outcome, happened_at]));
+	// return results.fields.reduce((out, field, i) => out[field.name] = results.rows[i], {});
+	return results.rows[0];
 }
 
 /**
