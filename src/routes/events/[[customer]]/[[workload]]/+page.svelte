@@ -4,6 +4,8 @@
 
 	/** @type {import('./$types').PageData} */
 	export let data;
+
+	const which = $page.url.searchParams.get('which');
 </script>
 
 <h1>Events</h1>
@@ -19,7 +21,7 @@
 	</thead>
 	<tbody>
 		{#each data.events as event}
-			<tr>
+			<tr data-event={event.event} class:selected={which === event.event}>
 				<td><a href="/customers/{event.customer_label}">{event.customer_name}</a></td>
 				<td>
 					<a href="/workloads/{event.customer_label}/{event.workload_label}"
@@ -33,3 +35,9 @@
 	</tbody>
 </table>
 <pre>{JSON.stringify(data.events, null, 2)}</pre>
+
+<style>
+	tr.selected td {
+		background: yellow;
+	}
+</style>

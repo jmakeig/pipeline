@@ -64,6 +64,7 @@ export async function get_events(customer, workload) {
 	const sql = `(
 			-- Join on workload, ignore NULL customer
 			SELECT
+				e.event,
 				c.label AS customer_label,
 				c.name AS customer_name,
 				w.label AS workload_label,
@@ -79,6 +80,7 @@ export async function get_events(customer, workload) {
 		) UNION ALL (
 			-- Join on customer, given NULL workload
 			SELECT
+				e.event,
 				c.label AS customer_label,
 				c.name AS customer_name,
 				NULL AS workload_label,
@@ -109,11 +111,10 @@ export async function add_event(workload, customer, outcome, happened_at) {
 	const sql = `
 		INSERT INTO events(workload, customer, outcome, happened_at)
 		VALUES ($1, $2, $3, ${optional_default(happened_at, 4)})
-		RETURNING (event, workload, customer, outcome, happened_at)
+		RETURNING event, workload, customer, outcome, happened_at --NO PARENS!
 	`;
-	console.log(sql, [workload, customer, outcome, happened_at]);
+	// console.log(sql, [workload, customer, outcome, happened_at]);
 	const results = await db.query(sql, prune_optional([workload, customer, outcome, happened_at]));
-	// return results.fields.reduce((out, field, i) => out[field.name] = results.rows[i], {});
 	return results.rows[0];
 }
 

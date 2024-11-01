@@ -9,15 +9,16 @@ CREATE TABLE IF NOT EXISTS customers (
   name text NOT NULL,
   PRIMARY KEY(customer)
 );
+CREATE UNIQUE INDEX customers_label ON customers(LOWER(label));
 
 CREATE TABLE IF NOT EXISTS workloads (
   workload uuid DEFAULT gen_random_uuid(),
   label text NOT NULL,
   name text NOT NULL,
   customer uuid NOT NULL REFERENCES customers(customer) ON DELETE RESTRICT,
-  PRIMARY KEY(workload),
-  UNIQUE(customer, label)
+  PRIMARY KEY(workload)
 );
+CREATE UNIQUE INDEX workloads_label ON workloads(customer, LOWER(label));
 
 CREATE TABLE IF NOT EXISTS events (
   event uuid DEFAULT gen_random_uuid(),
