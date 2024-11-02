@@ -8,11 +8,25 @@ INSERT INTO customers(label, name) VALUES
 	('beta', 'Beta LLC')
 ;
 
+-- Sales Stages
+INSERT INTO sales_stages(stage, label) VALUES
+	(0, 'Qualify'),
+	(1, 'Refine'),
+	(2, 'Tech Eval/Solution Dev'),
+	(3, 'Proposal Negotiation'),
+	(4, 'Migration/Implementation'),
+	(5, 'Live/Production'),
+	(97, 'Qualified Out'),
+	(98, 'Stalled'),
+	(99, 'Lost'),
+	(100, 'Closed')
+;
+
 -- Workloads
-INSERT INTO workloads(label, name, customer) VALUES
-	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme')),
-	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta')),
-	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'))
+INSERT INTO workloads(label, name, customer, stage) VALUES
+	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme'), 1),
+	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta'), 0),
+	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'), 3)
 ;
 
 -- Events
@@ -23,8 +37,8 @@ INSERT INTO events(customer, workload, outcome) VALUES
 ;
 
 /*
-SELECT 
-	customers.label, workloads.label, events.* 
+SELECT
+	customers.label, workloads.label, events.*
 FROM events
 INNER JOIN workloads USING(workload)
 INNER JOIN customers USING(customer)

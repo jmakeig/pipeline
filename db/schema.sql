@@ -1,21 +1,31 @@
 DROP TABLE IF EXISTS events;
+DROP INDEX IF EXISTS workloads_label;
 DROP TABLE IF EXISTS workloads;
+DROP TABLE IF EXISTS sales_stages;
+DROP INDEX IF EXISTS customers_label;
 DROP TABLE IF EXISTS customers;
 
 
 CREATE TABLE IF NOT EXISTS customers (
   customer uuid DEFAULT gen_random_uuid(),
-  label text UNIQUE,
+  label text NOT NULL UNIQUE,
   name text NOT NULL,
   PRIMARY KEY(customer)
 );
 CREATE UNIQUE INDEX customers_label ON customers(LOWER(label));
+
+CREATE TABLE IF NOT EXISTS sales_stages (
+	stage smallint NOT NULL,
+	label text NOT NULL UNIQUE,
+	PRIMARY KEY(stage)
+);
 
 CREATE TABLE IF NOT EXISTS workloads (
   workload uuid DEFAULT gen_random_uuid(),
   label text NOT NULL,
   name text NOT NULL,
   customer uuid NOT NULL REFERENCES customers(customer) ON DELETE RESTRICT,
+	stage smallint REFERENCES sales_stages(stage),
   PRIMARY KEY(workload)
 );
 CREATE UNIQUE INDEX workloads_label ON workloads(customer, LOWER(label));
