@@ -10,17 +10,18 @@ npm run dev
 ## Routes
 
 * `/customers`
+	* `./[customer]`: Single customer details, including workloads. Link to `GET` `/events/new?customer=[customer]&workload=[workload]` to create a new event
 	* `./new`
 		* `GET`: Input form
 		* `POST`: Create, redirect to `/customers`
-	* `./[customer]`: Single customer details, including workloads. Link to `GET` `/events/new?customer=[customer]&workload=[workload]` to create a new event
 		* `./workloads/new`
 			* `GET`: Input form
 			* `POST`: Create, redirect to `/customers/[customer]`
 			* ~`./[workload]`: Workload details~ *Is this necssary?*
 * `/workloads`
-	* `./bystage`: Report grouped by stage
-	* `./needslove`: Aging report
+	* `./reports`
+		* `./bystage`: Report grouped by stage
+		* `./needslove`: Aging report
 	* `?customer`: Filter by multiple customers (OR)
 	* `?stage`: Filter by multiple stages (OR)
 	* `?size`
