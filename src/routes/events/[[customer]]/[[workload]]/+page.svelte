@@ -5,7 +5,8 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-	const which = $page.url.searchParams.get('which');
+	let which;
+	$: which = $page.url.searchParams.get('which');
 </script>
 
 <h1>Events</h1>
