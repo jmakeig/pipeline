@@ -33,7 +33,7 @@ INSERT INTO workloads(label, name, customer, stage) VALUES
 INSERT INTO events(customer, workload, outcome) VALUES
 	(NULL, (SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'acme' ORDER BY random() LIMIT 1), 'Some stuff'),
 	(NULL, (SELECT workloads.workload FROM workloads INNER JOIN customers USING(customer) WHERE customers.label = 'beta' ORDER BY random() LIMIT 1), 'And things'),
-	((SELECT customer FROM customers WHERE label = 'beta'), NULL, 'And things')
+	((SELECT customer FROM customers WHERE label = 'beta'), NULL, 'This is an event with a customer, but not a workload')
 ;
 
 /*

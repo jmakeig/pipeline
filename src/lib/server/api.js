@@ -24,23 +24,19 @@ export async function get_customers(customer) {
  * @returns {Promise<any>}
  */
 export async function get_customer(label) {
+	// Assumes w alias for workloads and s alias for sales_stages
 	const workload_obj = `
 		JSON_BUILD_OBJECT(
-			'workload', workload,
-			'name', name,
-			'stage', stage
+			'workload', w.workload,
+			'label', w.label,
+			'name', w.name,
+			'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name)
 		)`;
 	const sql = `
 		WITH _workloads AS (
 			SELECT
 				w.customer,
-				JSON_AGG(
-					JSON_BUILD_OBJECT(
-						'workload', w.workload,
-						'name', w.name,
-						'stage', JSON_BUILD_OBJECT('stage', stage, 'name', s.name)
-					)
-				) AS workloads
+				JSON_AGG(${workload_obj}) AS workloads
 			FROM workloads AS w
 			INNER JOIN sales_stages AS s USING(stage)
 			GROUP BY w.customer
@@ -61,12 +57,7 @@ export async function get_customer(label) {
 					-- Joins on workload
 					SELECT
 						c.customer,
-						JSON_BUILD_OBJECT(
-							'workload', w.workload,
-							'label', w.label,
-							'name', w.name,
-							'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name)
-						) AS workload,
+						${workload_obj} AS workload,
 						e.event,
 						e.outcome,
 						e.happened_at
@@ -85,6 +76,8 @@ export async function get_customer(label) {
 					FROM events AS e
 					INNER JOIN customers AS c USING(customer)
 				)
+				ORDER BY
+					happened_at DESC
 			)
 			GROUP BY
 				customer
