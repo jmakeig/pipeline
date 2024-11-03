@@ -9,7 +9,7 @@ INSERT INTO customers(label, name) VALUES
 ;
 
 -- Sales Stages
-INSERT INTO sales_stages(stage, label) VALUES
+INSERT INTO sales_stages(stage, name) VALUES
 	(0, 'Qualify'),
 	(1, 'Refine'),
 	(2, 'Tech Eval/Solution Dev'),

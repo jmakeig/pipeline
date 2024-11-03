@@ -7,3 +7,5 @@
 <ul>
 	<li><a href="/customers/{data.customer.label}/workloads/new">Add workload</a></li>
 </ul>
+
+<pre>{JSON.stringify(data.customer, null, 2)}</pre>

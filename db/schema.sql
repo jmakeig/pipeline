@@ -16,7 +16,7 @@ CREATE UNIQUE INDEX customers_label ON customers(LOWER(label));
 
 CREATE TABLE IF NOT EXISTS sales_stages (
 	stage smallint NOT NULL,
-	label text NOT NULL UNIQUE,
+	name text NOT NULL UNIQUE,
 	PRIMARY KEY(stage)
 );
 

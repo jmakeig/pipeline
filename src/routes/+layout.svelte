@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	/* @type {import('./$types').LayoutData} */
-	//export let data;
+	// export let data;
 </script>
 
 <nav>

@@ -24,14 +24,80 @@ export async function get_customers(customer) {
  * @returns {Promise<any>}
  */
 export async function get_customer(label) {
+	const workload_obj = `
+		JSON_BUILD_OBJECT(
+			'workload', workload,
+			'name', name,
+			'stage', stage
+		)`;
 	const sql = `
+		WITH _workloads AS (
+			SELECT
+				w.customer,
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'workload', w.workload,
+						'name', w.name,
+						'stage', JSON_BUILD_OBJECT('stage', stage, 'name', s.name)
+					)
+				) AS workloads
+			FROM workloads AS w
+			INNER JOIN sales_stages AS s USING(stage)
+			GROUP BY w.customer
+		),
+		_events AS (
+			SELECT
+				customer,
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'event', event,
+						'workload', workload,
+						'outcome', outcome,
+						'happened_at', happened_at
+					)
+				) AS events
+			FROM (
+				(
+					-- Joins on workload
+					SELECT
+						c.customer,
+						JSON_BUILD_OBJECT(
+							'workload', w.workload,
+							'label', w.label,
+							'name', w.name,
+							'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name)
+						) AS workload,
+						e.event,
+						e.outcome,
+						e.happened_at
+					FROM events AS e
+					INNER JOIN workloads AS w ON e.workload = w.workload
+					INNER JOIN customers AS c ON w.customer = c.customer
+					INNER JOIN sales_stages AS s ON w.stage = s.stage
+				) UNION ALL (
+					-- Joins on customer
+					SELECT
+						c.customer,
+						NULL AS workload,
+						e.event,
+						e.outcome,
+						e.happened_at
+					FROM events AS e
+					INNER JOIN customers AS c USING(customer)
+				)
+			)
+			GROUP BY
+				customer
+		)
 		SELECT
-			c.customer,
-			c.label,
-			c.name
+			c.name,
+			w.workloads,
+			e.events
 		FROM customers AS c
-		WHERE c.label = $1
-	`;
+		INNER JOIN _workloads AS w USING(customer)
+		INNER JOIN _events AS e USING(customer)
+		WHERE TRUE
+			AND c.label = $1`;
 	// TODO: Count workloads and events, last touch
 	const result = await db.query(sql, [label]);
 	return result.rows[0];
@@ -156,13 +222,13 @@ export async function get_customer_workloads(customer) {
 		INNER JOIN customers AS c USING(customer)
 	) UNION ALL (
 		SELECT
-		NULL AS workload,
-		NULL AS workload_label,
-		NULL AS workload_name,
-		c.customer,
-		c.label AS customer_label,
-		c.name AS customer_name
-	FROM customers AS c
+			NULL AS workload,
+			NULL AS workload_label,
+			NULL AS workload_name,
+			c.customer,
+			c.label AS customer_label,
+			c.name AS customer_name
+		FROM customers AS c
 	)
 	ORDER BY
 		workload_name ASC,
