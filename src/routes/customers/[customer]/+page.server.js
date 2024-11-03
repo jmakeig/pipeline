@@ -1,7 +1,9 @@
 import * as api from '$lib/server/api';
+import { error } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
-	const customers = await api.get_customers();
-	return { customers };
+	const customer = await api.get_customer(params.customer);
+	if(!customer) error(404, `Customer '${params.customer}' does not exist`);
+	return { customer };
 }

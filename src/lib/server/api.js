@@ -19,6 +19,25 @@ export async function get_customers(customer) {
 }
 
 /**
+ *
+ * @param {string} label
+ * @returns {Promise<any>}
+ */
+export async function get_customer(label) {
+	const sql = `
+		SELECT
+			c.customer,
+			c.label,
+			c.name
+		FROM customers AS c
+		WHERE c.label = $1
+	`;
+	// TODO: Count workloads and events, last touch
+	const result = await db.query(sql, [label]);
+	return result.rows[0];
+}
+
+/**
  * @param {string} [customer] Customer label
  * @param {string} [workload] Workload label
  * @returns

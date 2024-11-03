@@ -9,6 +9,5 @@
 		}
 	</style>
 </svelte:head>
-<h1>Error</h1>
+<h1>{$page.status} Error</h1>
 <p>{$page.error?.message}</p>
-<p>{$page.error?.code}</p>
