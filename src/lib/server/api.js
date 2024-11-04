@@ -156,6 +156,20 @@ export async function get_workloads(customer, workload) {
 
 /**
  *
+ * @param {{customer: string, name: string, label: string, stage: number?}} workload
+ * @returns {Promise<{workload:string, customer: string, name: string, label: string, stage: number | null}>}
+ */
+export async function add_workload({ customer, name, label, stage = null }) {
+	const sql = `
+		INSERT INTO workloads(customer, name, label, stage)
+		VALUES ($1, $2, $3, $4)
+		RETURNING workload, customer, name, label, stage`;
+	const results = await db.query(sql, [customer, name, label, stage]);
+	return results.rows[0];
+}
+
+/**
+ *
  * @param {string} [customer] Customer label
  * @param {string} [workload] Workload label
  * @returns
