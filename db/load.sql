@@ -3,9 +3,9 @@ DELETE FROM workloads WHERE true;
 DELETE FROM customers WHERE true;
 
 -- Customers
-INSERT INTO customers(label, name) VALUES
-	('acme', 'Acme Corp.'),
-	('beta', 'Beta LLC')
+INSERT INTO customers(label, name, region, segment) VALUES
+	('acme', 'Acme Corp.', 'NORTHAM', 'Enterprise'),
+	('beta', 'Beta LLC', 'EMEA', 'Select')
 ;
 
 -- Sales Stages

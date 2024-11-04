@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS customers (
   customer uuid DEFAULT gen_random_uuid(),
   label text NOT NULL UNIQUE,
   name text NOT NULL,
+	region text, 		-- TODO: Lookup
+	segment text, 	-- TODO: Lookup
   PRIMARY KEY(customer)
 );
 CREATE UNIQUE INDEX customers_label ON customers(LOWER(label));

@@ -30,18 +30,37 @@ export async function get_customer(label) {
 			'workload', w.workload,
 			'label', w.label,
 			'name', w.name,
-			'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name)
+			'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name),
+			'last_touched', last_touched
 		)`;
 	const sql = `
-		WITH _workloads AS (
+	WITH
+		-- TODO: This should be a view
+		-- workloads plus the most recent related event date
+		_workloads_ext AS (
+			SELECT
+				_w.*,
+				_e.last_touched
+			FROM workloads AS _w
+			LEFT JOIN (
+				SELECT
+					workload,
+					MAX(happened_at) AS last_touched
+				FROM events
+				GROUP BY workload
+			) AS _e USING(workload)
+		),
+		-- workloads keyed by customer, aggregated into a JSON array of JSON objects
+		_workloads_obj AS (
 			SELECT
 				w.customer,
 				JSON_AGG(${workload_obj}) AS workloads
-			FROM workloads AS w
+			FROM _workloads_ext AS w
 			INNER JOIN sales_stages AS s USING(stage)
 			GROUP BY w.customer
 		),
-		_events AS (
+		-- events keyed by customer aggregated as a JSON array of JSON objects
+		_events_obj AS (
 			SELECT
 				customer,
 				JSON_AGG(
@@ -62,7 +81,7 @@ export async function get_customer(label) {
 						e.outcome,
 						e.happened_at
 					FROM events AS e
-					INNER JOIN workloads AS w ON e.workload = w.workload
+					INNER JOIN _workloads_ext AS w ON e.workload = w.workload
 					INNER JOIN customers AS c ON w.customer = c.customer
 					INNER JOIN sales_stages AS s ON w.stage = s.stage
 				) UNION ALL (
@@ -84,13 +103,14 @@ export async function get_customer(label) {
 		)
 		SELECT
 			c.name,
+			c.region,
+			c.segment,
 			w.workloads,
 			e.events
 		FROM customers AS c
-		INNER JOIN _workloads AS w USING(customer)
-		INNER JOIN _events AS e USING(customer)
-		WHERE TRUE
-			AND c.label = $1`;
+		INNER JOIN _workloads_obj AS w USING(customer)
+		INNER JOIN _events_obj AS e USING(customer)
+		WHERE c.label = $1`;
 	// TODO: Count workloads and events, last touch
 	const result = await db.query(sql, [label]);
 	return result.rows[0];

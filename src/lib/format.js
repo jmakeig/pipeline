@@ -40,12 +40,44 @@ export function pluralize(count, singular, plural) {
 	}
 }
 
+/**
+ * A localized human-friendly description of relative time, e.g. “10 minutes ago”. Supports ranges of seconds through years.
+ *
+ * @param {Date | string | null} date A proper `Date` object or an ISO string, such as serialzed from the data layer, which also might be `null`
+ * @returns {string | null} The localized text or `null` if `null` was passed in
+ */
 export function ago(date) {
-	const diff = Math.round((date - Date.now()) / 1000);
+	if(!date) return null;
+	if('string' === typeof date) date = new Date(date)
+	const diff = Math.round((date.valueOf() - Date.now()) / 1000);
 	const bounds = [60, 3600, 86400, 86400 * 7, 86400 * 30, 86400 * 365, Infinity];
 	const units = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
-	const unitIndex = bounds.findIndex((cutoff) => cutoff > Math.abs(diff));
-	const divisor = unitIndex ? bounds[unitIndex - 1] : 1;
+	const index = bounds.findIndex((cutoff) => cutoff > Math.abs(diff));
+	const divisor = index ? bounds[index - 1] : 1;
 	const format = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-	return format.format(Math.floor(diff / divisor), units[unitIndex]);
+	return format.format(Math.floor(diff / divisor), units[index]);
+}
+
+/**
+ * Turns a string into a URL-ready slug
+ *
+ * @param {string} name
+ * @returns {string}
+ */
+export function slug(name) {
+	const maxLength = 80;
+	let len = 0,
+		index = 0,
+		slug = '';
+	// https://stackoverflow.com/a/66721429
+	const tokens = name.split(/[^\p{L}\p{N}]+/gu);
+	while (len < maxLength && index < tokens.length) {
+		len += tokens[index].length;
+		if (tokens[index].length > 0) {
+			slug += (index > 0 ? '-' : '') + tokens[index++].toLowerCase();
+		} else {
+			index++;
+		}
+	}
+	return slug;
 }

@@ -12,4 +12,8 @@
 	</ul>
 </nav>
 <slot></slot>
-<pre>{$page.url.pathname}</pre>
+
+<details>
+	<summary>Page Metadata</summary>
+	<pre>{$page.url.pathname}</pre>
+</details>
