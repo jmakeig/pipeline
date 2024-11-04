@@ -23,13 +23,13 @@ export const actions = {
 			workload = await add_workload(values);
 		} catch (err) {
 			if (err instanceof ValidationError) {
-				return fail(409, {
+				return fail(err.code || 400, {
 					validations: err.validations,
 					data: { workload: values }
 				});
 			}
+			throw err;
 		}
-
 		redirect(303, `/workloads`); // Go back to /customers/[customer]
 	}
 };

@@ -3,15 +3,16 @@ import { ConstraintViolation, create_connection, optional_default, prune_optiona
 export class ValidationError extends Error {
 	/**
 	 *
-	 * @param {any[]} [validations]
+	 * @param {Array<{for:string?, message:string}>} [validations=[]]
 	 * @param {Error} [original]
+	 * @param {number} [code=400]
 	 */
-	constructor(validations, original) {
+	constructor(validations = [], code = 400, original) {
 		super();
-		this.name = 'TryAgain';
+		this.code = code;
+		this.name = 'ValidationError';
 		this.original = original;
-
-		this.validations = validations || [];
+		this.validations = validations;
 	}
 }
 
@@ -184,7 +185,11 @@ export async function add_workload({ customer, name, label, stage = null }) {
 		results = await db.query(sql, [customer, name, label, stage]);
 	} catch (err) {
 		if (err instanceof ConstraintViolation) {
-			throw new ValidationError([{ for: 'name', message: `${name} (${label}) already exists` }]);
+			throw new ValidationError(
+				[{ for: 'name', message: `Workload “${name}” (${label}) already exists.` }],
+				409,
+				err
+			);
 		}
 	}
 	return results.rows[0];
