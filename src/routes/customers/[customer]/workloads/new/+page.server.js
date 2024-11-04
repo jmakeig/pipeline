@@ -1,5 +1,5 @@
-import { add_workload, get_customer } from '$lib/server/api';
-import { error, redirect } from '@sveltejs/kit';
+import { add_workload, get_customer, ValidationError } from '$lib/server/api';
+import { error, fail, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -12,13 +12,24 @@ export async function load({ params }) {
 export const actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
-		const new_workload = {
+		const values = {
 			customer: form.get('customer'),
 			name: form.get('name'),
 			label: form.get('label'),
 			stage: form.get('stage')
 		};
-		const workload = await add_workload(new_workload);
-		redirect(303, `/workloads`);
+		let workload;
+		try {
+			workload = await add_workload(values);
+		} catch (err) {
+			if (err instanceof ValidationError) {
+				return fail(409, {
+					validations: err.validations,
+					data: { workload: values }
+				});
+			}
+		}
+
+		redirect(303, `/workloads`); // Go back to /customers/[customer]
 	}
 };

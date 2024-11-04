@@ -121,5 +121,5 @@ export function optional_default(value, param = 1) {
  * @returns {Array<any>}
  */
 export function prune_optional(params) {
-	return params.filter(v => undefined !== v);
+	return params.filter((v) => undefined !== v);
 }

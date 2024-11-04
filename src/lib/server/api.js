@@ -1,4 +1,19 @@
-import { create_connection, optional_default, prune_optional } from './db';
+import { ConstraintViolation, create_connection, optional_default, prune_optional } from './db';
+
+export class ValidationError extends Error {
+	/**
+	 *
+	 * @param {any[]} [validations]
+	 * @param {Error} [original]
+	 */
+	constructor(validations, original) {
+		super();
+		this.name = 'TryAgain';
+		this.original = original;
+
+		this.validations = validations || [];
+	}
+}
 
 const db = create_connection();
 
@@ -164,7 +179,14 @@ export async function add_workload({ customer, name, label, stage = null }) {
 		INSERT INTO workloads(customer, name, label, stage)
 		VALUES ($1, $2, $3, $4)
 		RETURNING workload, customer, name, label, stage`;
-	const results = await db.query(sql, [customer, name, label, stage]);
+	let results;
+	try {
+		results = await db.query(sql, [customer, name, label, stage]);
+	} catch (err) {
+		if (err instanceof ConstraintViolation) {
+			throw new ValidationError([{ for: 'name', message: `${name} (${label}) already exists` }]);
+		}
+	}
 	return results.rows[0];
 }
 
