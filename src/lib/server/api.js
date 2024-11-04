@@ -102,6 +102,8 @@ export async function get_customer(label) {
 				customer
 		)
 		SELECT
+			c.customer,
+			c.label,
 			c.name,
 			c.region,
 			c.segment,

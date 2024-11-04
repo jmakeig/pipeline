@@ -7,7 +7,7 @@
 
 <h1>Customer: {data.customer.name}</h1>
 <ul>
-	<li><a href="/customers/{data.customer.label}/workloads/new">Add workload</a></li>
+	<li><a href="/customers/{data.customer.label}/workloads/new" title="/customers/{data.customer.label}/workloads/new">Add workload</a></li>
 </ul>
 <div>
 	Region: {data.customer.region}
