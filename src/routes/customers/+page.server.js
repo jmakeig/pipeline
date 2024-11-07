@@ -1,7 +1,7 @@
-import * as api from '$lib/server/api';
+import { get_customers } from '$lib/server/api';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
-	const customers = await api.get_customers();
+	const customers = await get_customers();
 	return { customers };
 }

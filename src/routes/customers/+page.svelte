@@ -4,6 +4,7 @@
 </script>
 
 <h1>Customers</h1>
+<p><a href="/customers/new">New</a></p>
 <table>
 	<thead>
 		<tr>

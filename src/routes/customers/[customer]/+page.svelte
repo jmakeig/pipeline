@@ -16,39 +16,51 @@
 
 <h2>Workloads</h2>
 <ul>
-	<li><a href="/customers/{data.customer.label}/workloads/new" title="/customers/{data.customer.label}/workloads/new">Add workload</a></li>
+	<li>
+		<a
+			href="/customers/{data.customer.label}/workloads/new"
+			title="/customers/{data.customer.label}/workloads/new">Add workload</a
+		>
+	</li>
 </ul>
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Stage</th>
-			<th>Last Touched</th>
-		</tr>
-	</thead>
-	<tbody>
-		{#each data.customer.workloads as workload}
+{#if data.customer.workloads}
+	<table>
+		<thead>
 			<tr>
-				<td>{workload.name}</td>
-				<td>{workload.stage?.stage}</td>
-				<td>{ago(workload.last_touched)}</td>
+				<th>Name</th>
+				<th>Stage</th>
+				<th>Last Touched</th>
 			</tr>
-		{/each}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{#each data.customer.workloads as workload}
+				<tr>
+					<td>{workload.name}</td>
+					<td>{workload.stage?.stage}</td>
+					<td>{ago(workload.last_touched)}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{:else}
+	<p>No workloads</p>
+{/if}
 
 <h2>Events</h2>
-<table>
-	<tbody>
-		{#each data.customer.events as event}
-			<tr>
-				<td>{event.outcome}</td>
-				<td>{ago(event.happened_at)}</td>
-			</tr>
-		{/each}
-	</tbody>
-</table>
-
+{#if data.customer.events}
+	<table>
+		<tbody>
+			{#each data.customer.events as event}
+				<tr>
+					<td>{event.outcome}</td>
+					<td>{ago(event.happened_at)}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{:else}
+	<p>No events</p>
+{/if}
 <details style="margin-top: 10em;">
 	<summary><code>data.customer</code></summary>
 	<pre>{JSON.stringify(data.customer, null, 2)}</pre>

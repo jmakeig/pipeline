@@ -19,9 +19,9 @@ export class ValidationError extends Error {
 const db = create_connection();
 
 /**
- *
- * @param {string} [customer] Customer label
- * @returns
+ * @typedef {import('$lib/types').Customer} Customer
+ * @param {Customer['label']} [customer] Customer label
+ * @returns {Promise<Array<Customer>>}
  */
 export async function get_customers(customer) {
 	const sql = `SELECT
@@ -35,9 +35,9 @@ export async function get_customers(customer) {
 }
 
 /**
- *
- * @param {string} label
- * @returns {Promise<any>}
+ * @typedef {import('$lib/types').CustomerDeep} CustomerExt
+ * @param {CustomerExt['label']} label
+ * @returns {Promise<CustomerExt>}
  */
 export async function get_customer(label) {
 	// Assumes w alias for workloads and s alias for sales_stages
@@ -126,10 +126,11 @@ export async function get_customer(label) {
 			w.workloads,
 			e.events
 		FROM customers AS c
-		INNER JOIN _workloads_obj AS w USING(customer)
-		INNER JOIN _events_obj AS e USING(customer)
+		LEFT JOIN _workloads_obj AS w USING(customer)
+		LEFT JOIN _events_obj AS e USING(customer)
 		WHERE c.label = $1`;
 	// TODO: Count workloads and events, last touch
+	console.log(sql);
 	const result = await db.query(sql, [label]);
 	return result.rows[0];
 }
@@ -169,6 +170,32 @@ export async function get_workloads(customer, workload) {
 	const results = await db.query(sql, [customer, workload]);
 	return results.rows;
 }
+//import('$lib/types').Customer
+/**
+ *
+ * @param {import('$lib/types').CustomerNew} customer
+ * @returns {Promise<import('$lib/types').Customer>}
+ */
+export async function add_customer({ name, label, region, segment }) {
+	const sql = `
+		INSERT INTO customers(name, label, region, segment)
+		VALUES ($1, $2, $3, $4)
+		RETURNING customer, name, label, region, segment`;
+	let results;
+	try {
+		results = await db.query(sql, [name, label, region || null, segment || null]);
+	} catch (err) {
+		if (err instanceof ConstraintViolation) {
+			throw new ValidationError(
+				[{ for: 'name', message: `Customer “${name}” (${label}) already exists.` }],
+				409,
+				err
+			);
+		}
+		throw err;
+	}
+	return results.rows[0];
+}
 
 /**
  *
@@ -191,6 +218,7 @@ export async function add_workload({ customer, name, label, stage = null }) {
 				err
 			);
 		}
+		throw err;
 	}
 	return results.rows[0];
 }
