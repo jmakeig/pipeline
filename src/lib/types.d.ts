@@ -20,6 +20,7 @@ export type Workload = {
 	customer: Customer | Customer['customer'];
 	stage: number?;
 };
+export type WorkloadNew = Omit<Workload, 'workload'>;
 export type WorkloadDeep = Workload & {
 	stage: {
 		stage: number;

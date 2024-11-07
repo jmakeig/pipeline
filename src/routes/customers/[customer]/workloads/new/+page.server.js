@@ -8,19 +8,21 @@ export async function load({ params }) {
 	return { customer };
 }
 
+/** @typedef {import('$lib/types').WorkloadNew} WorkloadNew */
+
 /** @satisfies {import('./$types').Actions} */
 export const actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
+		/** @type {WorkloadNew} */
 		const values = {
-			customer: form.get('customer'),
-			name: form.get('name'),
-			label: form.get('label'),
-			stage: form.get('stage')
+			customer: /** @type {WorkloadNew['customer']}*/ (form.get('customer')),
+			name: /** @type {WorkloadNew['name']}*/ (form.get('name')),
+			label: /** @type {WorkloadNew['label']}*/ (form.get('label')),
+			stage: /** @type {WorkloadNew['stage']}*/ (form.get('stage'))
 		};
-		let workload;
 		try {
-			workload = await add_workload(values);
+			await add_workload(values);
 		} catch (err) {
 			if (err instanceof ValidationError) {
 				return fail(err.code || 400, {

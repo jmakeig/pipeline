@@ -198,18 +198,19 @@ export async function add_customer({ name, label, region, segment }) {
 }
 
 /**
- *
- * @param {{customer: string, name: string, label: string, stage: number?}} workload
- * @returns {Promise<{workload:string, customer: string, name: string, label: string, stage: number | null}>}
+ * @typedef {import('$lib/types').Workload} Workload
+ * @typedef {import('$lib/types').WorkloadNew} WorkloadNew
+ * @param {WorkloadNew} workload
+ * @returns {Promise<Workload>}
  */
-export async function add_workload({ customer, name, label, stage = null }) {
+export async function add_workload({ customer, name, label, stage }) {
 	const sql = `
 		INSERT INTO workloads(customer, name, label, stage)
 		VALUES ($1, $2, $3, $4)
 		RETURNING workload, customer, name, label, stage`;
 	let results;
 	try {
-		results = await db.query(sql, [customer, name, label, stage]);
+		results = await db.query(sql, [customer, name, label, stage || null]);
 	} catch (err) {
 		if (err instanceof ConstraintViolation) {
 			throw new ValidationError(
