@@ -22,7 +22,7 @@
 			<tr>
 				<td><a href="/customers/{workload.customer_label}">{workload.customer_name}</a></td>
 				<td><a href="/workloads/{workload.customer_label}/{workload.label}">{workload.name}</a></td>
-				<td>{ago(workload.last_happened_at)}</td>
+				<td>{ago(workload.last_happened_at, '-')}</td>
 				<td
 					><a href="/events/{workload.customer_label}/{workload.label}">
 						{pluralize(workload.events_count || 0, 'event', 'events')}</a

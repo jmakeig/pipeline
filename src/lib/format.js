@@ -1,3 +1,16 @@
+
+/**
+ *
+ * @param  {...any} values
+ * @returns {unknown | undefined}
+ */
+export function coalesce(...values) {
+	for(const v of values) {
+		if(v) return v;
+	}
+	return undefined;
+}
+
 /**
  * @param {Date | undefined} value
  * @returns {string}
@@ -44,17 +57,19 @@ export function pluralize(count, singular, plural) {
  * A localized human-friendly description of relative time, e.g. “10 minutes ago”. Supports ranges of seconds through years.
  *
  * @param {Date | string | null} date A proper `Date` object or an ISO string, such as serialzed from the data layer, which also might be `null`
- * @returns {string | null} The localized text or `null` if `null` was passed in
+ * @param {string} [fallback] What to return if `date` is false-y
+ * @returns {string | undefined} The localized text or `null` if `null` was passed in
  */
-export function ago(date) {
-	if(!date) return null;
-	if('string' === typeof date) date = new Date(date)
+export function ago(date, fallback) {
+	if (!date) return fallback;
+	if ('string' === typeof date) date = new Date(date);
 	const diff = Math.round((date.valueOf() - Date.now()) / 1000);
 	const bounds = [60, 3600, 86400, 86400 * 7, 86400 * 30, 86400 * 365, Infinity];
 	const units = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
 	const index = bounds.findIndex((cutoff) => cutoff > Math.abs(diff));
 	const divisor = index ? bounds[index - 1] : 1;
 	const format = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+	// @ts-ignore
 	return format.format(Math.floor(diff / divisor), units[index]);
 }
 

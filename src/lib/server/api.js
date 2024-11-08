@@ -46,7 +46,7 @@ export async function get_customer(label) {
 			'workload', w.workload,
 			'label', w.label,
 			'name', w.name,
-			'stage', JSON_BUILD_OBJECT('stage', w.stage, 'name', s.name),
+			'stage', CASE WHEN w.stage IS NULL THEN NULL ELSE JSON_BUILD_OBJECT('stage', s.stage, 'name', s.name) END,
 			'last_touched', last_touched
 		)`;
 	const sql = `
@@ -72,7 +72,7 @@ export async function get_customer(label) {
 				w.customer,
 				JSON_AGG(${workload_obj}) AS workloads
 			FROM _workloads_ext AS w
-			INNER JOIN sales_stages AS s USING(stage)
+			LEFT JOIN sales_stages AS s USING(stage)
 			GROUP BY w.customer
 		),
 		-- events keyed by customer aggregated as a JSON array of JSON objects
@@ -130,7 +130,6 @@ export async function get_customer(label) {
 		LEFT JOIN _events_obj AS e USING(customer)
 		WHERE c.label = $1`;
 	// TODO: Count workloads and events, last touch
-	console.log(sql);
 	const result = await db.query(sql, [label]);
 	return result.rows[0];
 }
