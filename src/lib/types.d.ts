@@ -41,3 +41,8 @@ export type EventDeep = Event & {
 	customer: Customer;
 	workload: Workload;
 };
+
+export type Validation = {
+	for: string?;
+	message: string;
+};

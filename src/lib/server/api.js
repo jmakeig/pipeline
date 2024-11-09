@@ -3,7 +3,7 @@ import { ConstraintViolation, create_connection, optional_default, prune_optiona
 export class ValidationError extends Error {
 	/**
 	 *
-	 * @param {Array<{for:string?, message:string}>} [validations=[]]
+	 * @param {import('$lib/types').Validation[]} [validations=[]]
 	 * @param {Error} [original]
 	 * @param {number} [code=400]
 	 */
