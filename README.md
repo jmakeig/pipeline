@@ -1,5 +1,9 @@
 # pipeline
 
+![Pipeline wireframe](pipeline.png)
+
+[Source](https://excalidraw.com/#json=ylHeRU4bYLW_nO8O0B3Uh,qEWI7XJz7s3c_x8wJpDIKw)
+
 ## Getting Started
 
 ```shell
