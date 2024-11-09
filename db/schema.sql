@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS customers (
   label text NOT NULL UNIQUE,
   name text NOT NULL,
 	region text, 		-- TODO: Lookup
-	segment text, 	-- TODO: Lookup
+	segment text, 	-- TODO: Lookup,
+	lead text,
   PRIMARY KEY(customer)
 );
 CREATE UNIQUE INDEX customers_label ON customers(LOWER(label));
@@ -28,6 +29,7 @@ CREATE TABLE IF NOT EXISTS workloads (
   name text NOT NULL,
   customer uuid NOT NULL REFERENCES customers(customer) ON DELETE RESTRICT,
 	stage smallint REFERENCES sales_stages(stage),
+	lead text,
   PRIMARY KEY(workload)
 );
 CREATE UNIQUE INDEX workloads_label ON workloads(customer, LOWER(label));
@@ -38,6 +40,10 @@ CREATE TABLE IF NOT EXISTS events (
   workload uuid REFERENCES workloads(workload) ON DELETE RESTRICT,
   happened_at timestamptz NOT NULL DEFAULT now(),
   outcome text,
+	-- Array of email addresses
+	product_participants text[],
+	field_participants text[],
+	customer_participants text[],
   PRIMARY KEY(event),
   CHECK (
        (customer IS NULL AND workload IS NOT NULL)
