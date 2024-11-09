@@ -1,12 +1,11 @@
-
 /**
  *
  * @param  {...any} values
  * @returns {unknown | undefined}
  */
 export function coalesce(...values) {
-	for(const v of values) {
-		if(v) return v;
+	for (const v of values) {
+		if (v) return v;
 	}
 	return undefined;
 }
@@ -95,4 +94,38 @@ export function slug(name) {
 		}
 	}
 	return slug;
+}
+
+/**
+ *
+ * @param {number} [value]
+ * @param {any} [options={}]
+ * @returns {string | undefined}
+ */
+export function currency(value, { round = 2 } = {}) {
+	if (undefined === value) return value;
+	const style = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		currencyDisplay: 'narrowSymbol',
+		minimumFractionDigits: round,
+		maximumFractionDigits: round
+	});
+	return style.format(value);
+}
+
+/**
+ *
+ * @param {number} [value]
+ * @param {any} [options={}]
+ * @returns {string | undefined}
+ */
+export function num(value, { round = 0 } = {}) {
+	if (undefined === value) return value;
+	const style = new Intl.NumberFormat('en-US', {
+		style: 'decimal',
+		minimumFractionDigits: round,
+		maximumFractionDigits: round
+	});
+	return style.format(value);
 }
