@@ -1,5 +1,6 @@
 <script>
 	import { currency, num } from '$lib/format';
+	import Bar from '$lib/components/Bar.svelte';
 
 	/** @type {import('./$types').PageData} */
 	export let data;
@@ -40,7 +41,14 @@
 				<td>{follow_up.workload.customer.name}</td>
 				<td>{follow_up.workload.name}</td>
 				<td>{follow_up.workload.stage.name}</td>
-				<td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td>
+				<td style="text-align: right;">
+					<Bar
+						value={follow_up.workload.size}
+						max={data.follow_ups.reduce((p, c) => Math.max(p, c.workload.size), 0)}
+						>{currency(follow_up.workload.size, { round: 0 })}</Bar
+					>
+				</td>
+				<!-- <td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td> -->
 				<td>{follow_up.urgency}</td>
 				<td>{follow_up.workload.lead}</td>
 			</tr>
