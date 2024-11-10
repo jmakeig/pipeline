@@ -39,7 +39,7 @@
 			<tr>
 				<td>{follow_up.workload.customer.name}</td>
 				<td>{follow_up.workload.name}</td>
-				<td>TODO</td>
+				<td>{follow_up.workload.stage.name}</td>
 				<td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td>
 				<td>{follow_up.urgency}</td>
 				<td>{follow_up.workload.lead}</td>

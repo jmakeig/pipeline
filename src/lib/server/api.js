@@ -336,7 +336,8 @@ export async function get_workload_urgency() {
 						'workload', w.workload,
 						'label', w.label,
 						'name', w.name,
-						'customer', ROW_TO_JSON(c), -- TODO: Make this explicit
+						'customer', ROW_TO_JSON(c),         -- TODO: Make this explicit
+						'stage', ROW_TO_JSON(ANY_VALUE(s)), -- TODO: Make this explicit
 						'size', w.size,
 						'lead', w.lead,
 						'last_touched', MAX(e.happened_at),
@@ -365,6 +366,7 @@ export async function get_workload_urgency() {
 			FROM workloads AS w
 			INNER JOIN customers AS c ON w.customer = c.customer
 			LEFT JOIN events AS e ON w.workload = e.workload
+			LEFT JOIN sales_stages AS s ON w.stage = s.stage
 			WHERE TRUE
 				AND (w.stage <= 5 OR w.stage = 98 OR w.stage IS NULL)
 			GROUP BY
