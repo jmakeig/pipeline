@@ -41,11 +41,11 @@
 				<td>{follow_up.workload.customer.name}</td>
 				<td>{follow_up.workload.name}</td>
 				<td>{follow_up.workload.stage.name}</td>
-				<td style="text-align: right;">
+				<td style="text-align: right;" title={currency(follow_up.workload.size, { round: 0 })}>
 					<Bar
 						value={follow_up.workload.size}
 						max={data.follow_ups.reduce((p, c) => Math.max(p, c.workload.size), 0)}
-						>{currency(follow_up.workload.size, { round: 0 })}</Bar
+						>{currency(follow_up.workload.size, { round: 0, notation: 'compact', min: 1000 })}</Bar
 					>
 				</td>
 				<!-- <td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td> -->

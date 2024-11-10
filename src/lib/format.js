@@ -102,12 +102,20 @@ export function slug(name) {
  * @param {any} [options={}]
  * @returns {string | undefined}
  */
-export function currency(value, { round = 2 } = {}) {
+export function currency(
+	value,
+	{ round = 2, min = -Infinity, max = Infinity, notation = 'standard' } = {}
+) {
 	if (undefined === value) return value;
+	console.log(value, min);
+	if (value < min) return `< ${currency(min)}`;
+	if (value > max) return `> ${currency(max)}`;
 	const style = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'USD',
 		currencyDisplay: 'narrowSymbol',
+		notation: notation,
+		compactDisplay: 'short',
 		minimumFractionDigits: round,
 		maximumFractionDigits: round
 	});

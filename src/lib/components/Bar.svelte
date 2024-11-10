@@ -3,16 +3,16 @@
 	let { children, value, max = value } = $props();
 </script>
 
-<span style="width: calc({Math.min(value / max, 1) * 100}% - 1.5em)">{@render children?.()}</span>
+<span style="width: calc({Math.min(value / max, 1) * 100}% - 0.5em)">{@render children?.()}</span>
 
 <style>
 	span {
 		display: inline-block;
-		margin: 0 0.5em;
-		padding: 0.25em;
+		margin: 0;
+		padding: 0.25em 0.25em;
 		background: #eee;
 		text-align: right;
-		overflow: clip;
-		/* outline: solid 0.5px red; */
+		overflow: visibe;
+		white-space: nowrap;
 	}
 </style>
