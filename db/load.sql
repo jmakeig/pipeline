@@ -23,10 +23,10 @@ INSERT INTO sales_stages(stage, name) VALUES
 ;
 
 -- Workloads
-INSERT INTO workloads(label, name, customer, stage) VALUES
-	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme'), 1),
-	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta'), 0),
-	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'), 3)
+INSERT INTO workloads(label, name, customer, stage, size) VALUES
+	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme'), 1, trunc(random()*2.5*10^6)),
+	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta'), 0, trunc(random()*2.5*10^6)),
+	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'), 3, trunc(random()*2.5*10^6))
 ;
 
 -- Events

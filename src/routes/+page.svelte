@@ -1,6 +1,9 @@
 <script>
 	import { currency, num } from '$lib/format';
 
+	/** @type {import('./$types').PageData} */
+	export let data;
+
 	const stages = [
 		{ stage: 0, name: 'Qualify', arr: 987000, count: 9 },
 		{ stage: 1, name: 'Refine', arr: 44321, count: 3 },
@@ -31,5 +34,16 @@
 			<th class="sortable">Lead</th>
 		</tr>
 	</thead>
-	<tbody></tbody>
+	<tbody>
+		{#each data.follow_ups as follow_up}
+			<tr>
+				<td>{follow_up.workload.customer.name}</td>
+				<td>{follow_up.workload.name}</td>
+				<td>TODO</td>
+				<td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td>
+				<td>{follow_up.urgency}</td>
+				<td>{follow_up.workload.lead}</td>
+			</tr>
+		{/each}
+	</tbody>
 </table>

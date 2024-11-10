@@ -20,10 +20,21 @@
 				width: 100%;
 				border-collapse: collapse;
 			}
-			th, td {
+			th,
+			td {
 				padding: 0.5em;
 				border: solid 0.5px #ddd;
 				text-align: left;
+			}
+			thead th {
+				border: none;
+			}
+			thead tr:last-child th {
+				border-bottom: solid 1px #666;
+			}
+			td.numeric {
+				text-align: right;
+				font-variant-numeric: tabular-nums;
 			}
 			form {
 				padding: 1em;
@@ -38,7 +49,6 @@
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
-
 
 <!-- <style>
 	table {

@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS workloads (
   name text NOT NULL,
   customer uuid NOT NULL REFERENCES customers(customer) ON DELETE RESTRICT,
 	stage smallint REFERENCES sales_stages(stage),
+	size int,
 	lead text,
   PRIMARY KEY(workload)
 );
