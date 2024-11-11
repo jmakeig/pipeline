@@ -381,5 +381,27 @@ export async function get_workload_urgency() {
 			(follow_up ->> 'urgency')::int DESC`;
 	const results = await db.query(sql);
 	// TODO: This is weird. Why does it add an extra layer?
-	return results.rows.map(r => r.follow_up);
+	return results.rows.map((r) => r.follow_up);
+}
+
+/**
+ *
+ * @returns {Promise<any>}
+ */
+export async function get_stages_summary() {
+	const sql = `
+		SELECT
+			s.stage,
+			s.name,
+			JSON_BUILD_OBJECT(
+				'count', COUNT(w),
+				'size', SUM(w.size)
+			) AS workloads
+		FROM sales_stages AS s
+		LEFT JOIN workloads AS w ON s.stage = w.stage
+		WHERE s.stage < 5
+		GROUP BY s.stage
+		ORDER BY s.stage ASC`;
+	const results = await db.query(sql);
+	return results.rows;
 }

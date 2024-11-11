@@ -11,11 +11,12 @@ export function coalesce(...values) {
 }
 
 /**
- * @param {Date | undefined} value
+ * @param {Date} [value]
+ * @param {string} [fallback]
  * @returns {string}
  */
-export function format_date(value) {
-	if (!value) return '';
+export function date(value, fallback='') {
+	if (!value) return fallback;
 	// TODO: i18n
 	// https://stackoverflow.com/questions/25050034/get-iso-8601-using-intl-datetimeformat
 	return new Intl.DateTimeFormat('en-US').format(value);
@@ -98,7 +99,7 @@ export function slug(name) {
 
 /**
  *
- * @param {number} [value]
+ * @param {number?} [value]
  * @param {any} [options={}]
  * @returns {string | undefined}
  */
@@ -106,8 +107,7 @@ export function currency(
 	value,
 	{ round = 2, min = -Infinity, max = Infinity, notation = 'standard' } = {}
 ) {
-	if (undefined === value) return value;
-	console.log(value, min);
+	if (undefined === value || null === value) return undefined;
 	if (value < min) return `< ${currency(min)}`;
 	if (value > max) return `> ${currency(max)}`;
 	const style = new Intl.NumberFormat('en-US', {
