@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS customers;
 
 CREATE TABLE IF NOT EXISTS customers (
   customer uuid DEFAULT gen_random_uuid(),
-  label text NOT NULL UNIQUE,
+  label text NOT NULL,
   name text NOT NULL,
 	region text, 		-- TODO: Lookup
 	segment text, 	-- TODO: Lookup,
