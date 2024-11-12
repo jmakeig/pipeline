@@ -32,7 +32,11 @@
 	<tbody>
 		{#each data.follow_ups as follow_up}
 			<tr>
-				<td><a href="/customers/{follow_up.workload.customer.label}">{follow_up.workload.customer.name}</a></td>
+				<td
+					><a href="/customers/{follow_up.workload.customer.label}"
+						>{follow_up.workload.customer.name}</a
+					></td
+				>
 				<td><a href="/workloads/{follow_up.workload.label}">{follow_up.workload.name}</a></td>
 				<td>{follow_up.workload.stage?.stage} - {follow_up.workload.stage?.name}</td>
 				<td style="text-align: right;" title={currency(follow_up.workload.size, { round: 0 })}>
@@ -45,8 +49,14 @@
 							) => Math.max(max, w.workload.size || -Infinity),
 							0
 						)}
-						>{currency(follow_up.workload.size, { round: 0, notation: 'compact', min: 1000 })}</Bar
 					>
+						{currency(follow_up.workload.size, {
+							style: 'thousands',
+							minimumFractionDigits: 0,
+							maximumFractionDigits: 2
+						})}
+					</Bar>
+					<!--{currency(follow_up.workload.size, { round: 0, notation: 'compact', min: 1000 })}-->
 				</td>
 				<!-- <td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td> -->
 				<td class="numeric">{ago(new Date(follow_up.workload.last_touched))}</td>

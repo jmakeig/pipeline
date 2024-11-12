@@ -1,11 +1,11 @@
 /**
- *
+ * First value that is not `undefined` and not `null`. Zero is _not_ falsey.
  * @param  {...any} values
  * @returns {unknown | undefined}
  */
 export function coalesce(...values) {
 	for (const v of values) {
-		if (v) return v;
+		if (undefined !== v && null !== v) return v;
 	}
 	return undefined;
 }
@@ -15,7 +15,7 @@ export function coalesce(...values) {
  * @param {string} [fallback]
  * @returns {string}
  */
-export function date(value, fallback='') {
+export function date(value, fallback = '') {
 	if (!value) return fallback;
 	// TODO: i18n
 	// https://stackoverflow.com/questions/25050034/get-iso-8601-using-intl-datetimeformat
@@ -105,21 +105,33 @@ export function slug(name) {
  */
 export function currency(
 	value,
-	{ round = 2, min = -Infinity, max = Infinity, notation = 'standard' } = {}
+	{
+		round,
+		min = -Infinity,
+		max = Infinity,
+		notation = 'standard',
+		style,
+		minimumFractionDigits,
+		maximumFractionDigits
+	} = {}
 ) {
 	if (undefined === value || null === value) return undefined;
 	if (value < min) return `< ${currency(min)}`;
 	if (value > max) return `> ${currency(max)}`;
-	const style = new Intl.NumberFormat('en-US', {
+	// @ts-ignore
+	const format = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: 'USD',
 		currencyDisplay: 'narrowSymbol',
 		notation: notation,
 		compactDisplay: 'short',
-		minimumFractionDigits: round,
-		maximumFractionDigits: round
-	});
-	return style.format(value);
+		minimumFractionDigits: coalesce(minimumFractionDigits, round),
+		maximumFractionDigits: coalesce(maximumFractionDigits, round)
+	}).format;
+	if ('thousands' === style) {
+		return thousands(value, format);
+	}
+	return format(value);
 }
 
 /**
@@ -128,12 +140,46 @@ export function currency(
  * @param {any} [options={}]
  * @returns {string | undefined}
  */
-export function num(value, { round = 0 } = {}) {
+export function num(
+	value,
+	{ round, style = 'decimal', minimumFractionDigits, maximumFractionDigits } = {}
+) {
 	if (undefined === value) return value;
-	const style = new Intl.NumberFormat('en-US', {
-		style: 'decimal',
-		minimumFractionDigits: round,
-		maximumFractionDigits: round
-	});
-	return style.format(value);
+	const format = new Intl.NumberFormat('en-US', {
+		style: style,
+		minimumFractionDigits: minimumFractionDigits || round,
+		maximumFractionDigits: maximumFractionDigits || round
+	}).format;
+	return format(value);
+}
+
+/**
+ * Formats into groups of thousands with a maxium of three digits,
+ * plus a decimal and a sign, depending on the value.
+ *
+ * @param { number } [value]
+ * @param {(v: number) => string} [format=(v) => String(v)]
+ * @returns {string | undefined}
+ */
+function thousands(value, format = (v) => String(v)) {
+	if (undefined === value) return undefined;
+
+	const sign = value < 0 ? -1 : 1;
+	const groups = ['', 'K', 'M', 'B', 'T'];
+	const abs = Math.abs(value);
+	let g = Math.trunc(Math.log10(abs) / 3);
+	const left = abs * Math.pow(10, -Math.min(4, g) * 3);
+	const pow = Math.trunc(Math.log10(left)) - 2;
+	let round = Math.round(left * Math.pow(10, -pow)) * Math.pow(10, pow);
+
+	// Ugly, but effective
+	if (round === 1000) {
+		round = 1;
+		g++;
+	}
+
+	// const format = new Intl.NumberFormat('en-US').format;
+
+	// return round + " " + String(left) + groups[g];
+	return format(round * sign) + groups[g];
 }
