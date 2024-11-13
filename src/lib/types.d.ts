@@ -13,15 +13,17 @@ export type CustomerDeep = Customer & {
 	events: Array<Event>;
 };
 
+export type SalesStage = {
+	stage: number;
+	name: string;
+};
+
 export type Workload = {
 	workload: ID;
 	name: string;
 	label: string;
 	customer: Customer; // | Customer['customer'];
-	stage?: {
-		stage: number;
-		name: string;
-	};
+	stage?: SalesStage;
 	size?: number;
 	lead?: Participant;
 };
