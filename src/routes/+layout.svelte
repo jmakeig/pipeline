@@ -4,6 +4,7 @@
 	// export let data;
 </script>
 
+<!-- TODO: https://charlesfreeborn.medium.com/how-to-build-a-responsive-nav-using-css-flexbox-3511cd936af9 -->
 <nav>
 	<ul>
 		<li><a href="/">Home</a></li>
