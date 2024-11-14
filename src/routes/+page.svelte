@@ -30,32 +30,38 @@
 <table>
 	<thead>
 		<tr>
-			<th class="sortable">Customer</th>
-			<th class="sortable">Workload</th>
-			<th class="sortable">Stage</th>
-			<th class="sortable" title="Annualized Recurring Revenue">ARR</th>
-			<th>Age</th>
-			<th class="sortable">Urgency</th>
-			<th class="sortable">Lead</th>
+			<th class="sortable" role="columnheader">Customer</th>
+			<th class="sortable" role="columnheader">Workload</th>
+			<th class="sortable" role="columnheader">Stage</th>
+			<th class="sortable" title="Annualized Recurring Revenue" role="columnheader">ARR</th>
+			<th role="columnheader">Age</th>
+			<th class="sortable" role="columnheader">Urgency</th>
+			<th class="sortable" role="columnheader">Lead</th>
 		</tr>
 	</thead>
 	<tbody>
 		{#each data.follow_ups as follow_up}
 			<tr>
-				<td
-					><a href="/customers/{follow_up.workload.customer.label}"
-						>{follow_up.workload.customer.name}</a
-					></td
+				<td role="cell">
+					<a href="/customers/{follow_up.workload.customer.label}">
+						{follow_up.workload.customer.name}
+					</a>
+				</td>
+				<td role="cell"
+					><a href="/workloads/{follow_up.workload.label}">{follow_up.workload.name}</a></td
 				>
-				<td><a href="/workloads/{follow_up.workload.label}">{follow_up.workload.name}</a></td>
-				<td>
+				<td role="cell">
 					{#if follow_up.workload.stage}
 						<Stage stage={follow_up.workload.stage}>
 							{follow_up.workload.stage?.name}
 						</Stage>
 					{/if}
 				</td>
-				<td style="text-align: right;" title={currency(follow_up.workload.size, { round: 0 })}>
+				<td
+					role="cell"
+					style="text-align: right;"
+					title={currency(follow_up.workload.size, { round: 0 })}
+				>
 					<Bar
 						value={follow_up.workload.size}
 						max={data.follow_ups.reduce(
@@ -75,9 +81,9 @@
 					<!--{currency(follow_up.workload.size, { round: 0, notation: 'compact', min: 1000 })}-->
 				</td>
 				<!-- <td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td> -->
-				<td class="numeric">{ago(new Date(follow_up.workload.last_touched))}</td>
-				<td>{follow_up.urgency}</td>
-				<td>{follow_up.workload.lead}</td>
+				<td role="cell" class="numeric">{ago(new Date(follow_up.workload.last_touched))}</td>
+				<td role="cell">{follow_up.urgency}</td>
+				<td role="cell">{follow_up.workload.lead}</td>
 			</tr>
 		{/each}
 	</tbody>
@@ -93,12 +99,12 @@
 	ol.stages {
 		list-style: none;
 		padding: 0;
+
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		gap: 1em;
 	}
-	ol.stages > li {
-		display: inline-block;
-		margin: 0 1em;
-	}
-	ol.stages > li:first-child {
-		margin-left: 0;
-	}
+	/* ol.stages > li {} */
 </style>
