@@ -405,3 +405,18 @@ export async function get_stages_summary() {
 	const results = await db.query(sql);
 	return results.rows;
 }
+
+/**
+ *
+ * @returns {Promise<number?>}
+ */
+export async function get_pipeline_size() {
+	const sql = `
+		SELECT
+			SUM(w.size) AS size
+		FROM workloads AS w
+		WHERE w.stage < 5`;
+	const results = await db.query(sql);
+	if (results.rowCount) return results.rows[0].size;
+	return null;
+}
