@@ -30,7 +30,7 @@ export async function get_customers(customer) {
 		WHERE TRUE
 			AND ($1::text IS NULL OR c.label = $1)
 		LIMIT 100 /* TODO: Need pagination */`;
-	const results = await db.query(sql, [customer]);
+	const results = await db.readonly(sql, [customer]);
 	return results.rows;
 }
 
@@ -130,7 +130,7 @@ export async function get_customer(label) {
 		LEFT JOIN _events_obj AS e USING(customer)
 		WHERE c.label = $1`;
 	// TODO: Count workloads and events, last touch
-	const result = await db.query(sql, [label]);
+	const result = await db.readonly(sql, [label]);
 	return result.rows[0];
 }
 
@@ -166,7 +166,7 @@ export async function get_workloads(customer, workload) {
 		LIMIT 100 /* TODO: Need pagination */
 		`;
 	// console.log('get_workloads', sql, [...arguments]);
-	const results = await db.query(sql, [customer, workload]);
+	const results = await db.readonly(sql, [customer, workload]);
 	return results.rows;
 }
 //import('$lib/types').Customer
@@ -264,7 +264,7 @@ export async function get_events(customer, workload) {
 		ORDER BY happened_at DESC
 		LIMIT 100 /* TODO: Need pagination */
 		`;
-	const results = await db.query(sql, [customer, workload]);
+	const results = await db.readonly(sql, [customer, workload]);
 	return results.rows;
 }
 
@@ -317,7 +317,7 @@ export async function get_customer_workloads(customer) {
 	ORDER BY
 		workload_name ASC,
 		customer_name ASC`;
-	const results = await db.query(sql);
+	const results = await db.readonly(sql);
 	return results.rows;
 }
 
@@ -379,7 +379,7 @@ export async function get_workload_urgency() {
 		FROM _report
 		ORDER BY
 			(follow_up ->> 'urgency')::int DESC`;
-	const results = await db.query(sql);
+	const results = await db.readonly(sql);
 	// TODO: This is weird. Why does it add an extra layer?
 	return results.rows.map((r) => r.follow_up);
 }
@@ -402,7 +402,7 @@ export async function get_stages_summary() {
 		WHERE s.stage < 5
 		GROUP BY s.stage
 		ORDER BY s.stage ASC`;
-	const results = await db.query(sql);
+	const results = await db.readonly(sql);
 	return results.rows;
 }
 
@@ -416,7 +416,7 @@ export async function get_pipeline_size() {
 			SUM(w.size) AS size
 		FROM workloads AS w
 		WHERE w.stage < 5`;
-	const results = await db.query(sql);
+	const results = await db.readonly(sql);
 	if (results.rowCount) return results.rows[0].size;
 	return null;
 }

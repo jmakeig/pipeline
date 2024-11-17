@@ -64,19 +64,33 @@ export function create_connection() {
 		async close() {
 			return await connection.end();
 		},
+
+		/**
+		 *
+		 * @param {string} sql
+		 * @param {any[]} params
+		 * @returns {Promise<pg.QueryResult<any>>}
+		 */
+		async readonly(sql, params = []) {
+			return this.transaction((client) => client.query(sql, params), true);
+		},
+
 		/**
 		 * Wraps a callback in a database transaction. Thrown errors will rollaback.
 		 *
 		 * @param {function(pg.PoolClient): Promise<pg.QueryResult<any>>} runner
+		 * @param {boolean} [readonly=false]
 		 * @returns {Promise<pg.QueryResult<any>>}
 		 */
-		async transaction(runner) {
+		async transaction(runner, readonly = false) {
 			const client = await connection.connect();
-			let res;
 			try {
 				await client.query('BEGIN');
+				if (readonly) {
+					await client.query('SET TRANSACTION READ ONLY');
+				}
 				try {
-					res = await runner(client);
+					const res = await runner(client);
 					await client.query('COMMIT');
 					return res;
 				} catch (/** @type {any} */ err) {
