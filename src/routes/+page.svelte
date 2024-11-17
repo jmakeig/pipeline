@@ -88,9 +88,11 @@
 						<!--{currency(follow_up.workload.size, { round: 0, notation: 'compact', min: 1000 })}-->
 					</td>
 					<!-- <td class="numeric">{currency(follow_up.workload.size, { round: 0 })}</td> -->
-					<td role="cell" class="numeric">{ago(new Date(follow_up.workload.last_touched))}</td>
+					<td role="cell" class="numeric">
+						{ago(follow_up.workload.last_touched, 'None')}
+					</td>
 					<td role="cell">{follow_up.urgency}</td>
-					<td role="cell">{follow_up.workload.lead}</td>
+					<td role="cell">{follow_up.workload.engagement_lead}</td>
 				</tr>
 			{/each}
 		</tbody>

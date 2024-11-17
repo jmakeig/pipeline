@@ -25,7 +25,7 @@ export type Workload = {
 	customer: Customer; // | Customer['customer'];
 	stage?: SalesStage;
 	size?: number;
-	lead?: Participant;
+	engagement_lead?: Participant;
 };
 export type WorkloadNew = Omit<Workload, 'workload'>;
 export type WorkloadDeep = Workload & {

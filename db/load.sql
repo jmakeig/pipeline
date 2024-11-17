@@ -1,6 +1,9 @@
 DELETE FROM events WHERE true;
-DELETE FROM workloads WHERE true;
+DELETE FROM workload_attributes WHERE true;
+DELETE FROM _workloads WHERE true;
+DELETE FROM sales_stages WHERE true;
 DELETE FROM customers WHERE true;
+
 
 -- Customers
 INSERT INTO customers(label, name, region, segment) VALUES
@@ -23,10 +26,20 @@ INSERT INTO sales_stages(stage, name) VALUES
 ;
 
 -- Workloads
-INSERT INTO workloads(label, name, customer, stage, size) VALUES
-	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme'), 1, trunc(random()*2.5*10^6)),
-	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta'), 0, trunc(random()*2.5*10^6)),
-	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'), 3, trunc(random()*2.5*10^6))
+INSERT INTO _workloads(label, name, customer) VALUES
+	('customer360', 'Customer 360º', (SELECT customer FROM customers WHERE label = 'acme')),
+	('ledger', 'Global Ledger', (SELECT customer FROM customers WHERE label = 'beta')),
+	('workflow', 'Workflow metadata', (SELECT customer FROM customers WHERE label = 'acme'))
+;
+
+INSERT INTO workload_attributes(workload, stage, size, engagement_lead, updated_at)
+VALUES
+	((SELECT workload FROM _workloads WHERE label = 'customer360'), 1, trunc(random()*2.5*10^6), 'jmakeig', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day')),
+	((SELECT workload FROM _workloads WHERE label = 'customer360'), 1, trunc(random()*2.5*10^6), 'jmakeig', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day')),
+	((SELECT workload FROM _workloads WHERE label = 'customer360'), 2, trunc(random()*2.5*10^6), 'jmakeig', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day')),
+	((SELECT workload FROM _workloads WHERE label = 'customer360'), 1, trunc(random()*2.5*10^6), 'another', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day')),
+	((SELECT workload FROM _workloads WHERE label = 'ledger'), 1, trunc(random()*2.5*10^6), 'jmakeig', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day')),
+	((SELECT workload FROM _workloads WHERE label = 'workflow'), 3, trunc(random()*2.5*10^6), 'jmakeig', now() - (INTERVAL '1 day' + random() * 30 * INTERVAL '1 day'))
 ;
 
 -- Events

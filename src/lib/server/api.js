@@ -329,19 +329,18 @@ export async function get_customer_workloads(customer) {
  */
 export async function get_workload_urgency() {
 	const sql = `
-		WITH _report AS (
+		WITH follow_ups AS (
 			SELECT
 				JSON_BUILD_OBJECT(
 					'workload', JSON_BUILD_OBJECT(
-						'workload', w.workload,
-						'label', w.label,
-						'name', w.name,
-						'customer', ROW_TO_JSON(c),         -- TODO: Make this explicit
-						'stage', ROW_TO_JSON(ANY_VALUE(s)), -- TODO: Make this explicit
-						'size', w.size,
-						'lead', w.lead,
-						'last_touched', MAX(e.happened_at),
-						'event_count', COUNT(e)
+							'workload', w.workload,
+							'name', w.name,
+							'label', w.label,
+							'customer', ROW_TO_JSON(c),
+							'stage', ROW_TO_JSON(s),
+							'size', w.size,
+							'last_touched', e.last_touched,
+							'event_count', e.event_count
 					),
 					'urgency', 0
 						-- Stage
@@ -361,22 +360,23 @@ export async function get_workload_urgency() {
 						-- Opportunity size
 						+ (COALESCE(w.size, 0.0) / 10^5)::int
 						-- Age
-						+ (COALESCE(DATE_PART('days', now() - MAX(e.happened_at)), 0) * 1.2)::int
+						+ (COALESCE(DATE_PART('days', now() - e.last_touched), 0) * 1.2)::int
 				) AS follow_up
 			FROM workloads AS w
 			INNER JOIN customers AS c ON w.customer = c.customer
-			LEFT JOIN events AS e ON w.workload = e.workload
+			LEFT JOIN (
+				SELECT
+					workload,
+					COUNT(event) AS event_count,
+					MAX(happened_at) AS last_touched
+				FROM events GROUP BY workload
+			) AS e ON w.workload = e.workload
 			LEFT JOIN sales_stages AS s ON w.stage = s.stage
-			WHERE TRUE
-				AND (w.stage <= 5 OR w.stage = 98 OR w.stage IS NULL)
-			GROUP BY
-				c.customer,
-				w.workload
 		)
 		-- Using a CTE so I don’t have to repeat the urgency
 		-- logic in the sort expression
 		SELECT follow_up
-		FROM _report
+		FROM follow_ups
 		ORDER BY
 			(follow_up ->> 'urgency')::int DESC`;
 	const results = await db.readonly(sql);
