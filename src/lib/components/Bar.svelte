@@ -26,7 +26,7 @@
 <style>
 	.wrapper {
 		position: relative;
-		height: 2em;
+		height: 1.5em;
 		overflow: clip;
 	}
 	.bar, .value {
@@ -39,8 +39,9 @@
 		background: #eee;
 	}
 	.value {
-		top: 0.5em;
+		top: 0.25em;
 		right: 0.25em;
 		text-align: right;
+		vertical-align: baseline;
 	}
 </style>
