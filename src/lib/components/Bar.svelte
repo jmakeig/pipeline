@@ -17,17 +17,30 @@
 <!-- Dumb -->
 <!-- {#if undefined !== value && undefined !== max && null !== value && null !== max} -->
 {#if exists(value, max)}
-	<span style="width: calc({Math.min(value / max, 1) * 100}% - 0.5em)">{@render children?.()}</span>
+	<div class="wrapper">
+		<span class="bar" style="width: {Math.min(value / max, 1) * 100}%"></span>
+		<span class="value">{@render children?.()}</span>
+	</div>
 {/if}
 
 <style>
-	span {
-		display: inline-block;
-		margin: 0;
-		padding: 0.25em 0.25em;
+	.wrapper {
+		position: relative;
+		height: 2em;
+		overflow: clip;
+	}
+	.bar, .value {
+		position: absolute;
+		right: 0;
+		top: 0;
+		height: 100%;
+	}
+	.bar {
 		background: #eee;
+	}
+	.value {
+		top: 0.5em;
+		right: 0.25em;
 		text-align: right;
-		overflow: visibe;
-		white-space: nowrap;
 	}
 </style>
