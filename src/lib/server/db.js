@@ -1,4 +1,4 @@
-import { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD } from '$env/static/private';
+import { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD, DB_SSL } from '$env/static/private';
 import pg from 'pg';
 
 export class ConstraintViolation extends Error {
@@ -43,7 +43,9 @@ export function create_connection() {
 			database: DB_DATABASE,
 
 			user: DB_USER,
-			password: DB_PASSWORD
+			password: DB_PASSWORD,
+
+			ssl: 'true' === DB_SSL
 		};
 		return new pg.Pool(config);
 	}
