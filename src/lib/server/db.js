@@ -1,4 +1,4 @@
-// import 'dotenv/config';
+import { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD } from '$env/static/private';
 import pg from 'pg';
 
 export class ConstraintViolation extends Error {
@@ -38,12 +38,12 @@ export function create_connection() {
 	function connect() {
 		/** @type {pg.PoolConfig} */
 		const config = {
-			host: 'localhost',
-			port: 5432,
-			database: 'pipeline',
+			host: DB_HOST,
+			port: parseInt(DB_PORT, 10),
+			database: DB_DATABASE,
 
-			user: 'pipelineadmin',
-			password: '********'
+			user: DB_USER,
+			password: DB_PASSWORD
 		};
 		return new pg.Pool(config);
 	}
