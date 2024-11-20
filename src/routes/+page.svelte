@@ -99,12 +99,6 @@
 	</table>
 </section>
 
-<details>
-	<summary><code>data</code></summary>
-	<pre>{JSON.stringify(data.follow_ups, null, 2)}</pre>
-	<pre>{JSON.stringify(data.stages, null, 2)}</pre>
-</details>
-
 <style>
 	header {
 		display: flex;

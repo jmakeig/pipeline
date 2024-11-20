@@ -17,9 +17,28 @@
 <slot></slot>
 
 <footer>
-	<details>
+	<details class="meta">
 		<summary>Page Metadata</summary>
-		<pre>{$page.url.pathname}</pre>
+		<table>
+			<tbody>
+				<tr>
+					<th role="rowheader"><code>$page.url.pathname</code></th>
+					<td><code>{$page.url.pathname}</code></td>
+				</tr>
+				<tr>
+					<th role="rowheader"><code>$page.status</code></th>
+					<td><code>{$page.status}</code></td>
+				</tr>
+				<tr>
+					<th role="rowheader"><code>$page.data</code></th>
+					<td><pre>{JSON.stringify($page.data, null, 2)}</pre></td>
+				</tr>
+				<tr>
+					<th role="rowheader"><code>$page.form?.validations</code></th>
+					<td><pre>{JSON.stringify($page.form?.validations, null, 2)}</pre></td>
+				</tr>
+			</tbody>
+		</table>
 	</details>
 </footer>
 
@@ -38,5 +57,21 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+
+	.meta {
+		margin: 1em 0;
+		padding: 1em;
+
+		font-size: 0.9em;
+		color: #666;
+		background: #eee;
+	}
+	.meta table {
+		width: auto;
+		margin: 1em 0;
+	}
+	.meta table th[role='rowheader'] {
+		vertical-align: top;
 	}
 </style>
