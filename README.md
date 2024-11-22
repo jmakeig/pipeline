@@ -1,6 +1,6 @@
 ![Pipeline wireframe](pipeline.png)
 
-[Source](https://excalidraw.com/#json=IIpQlu_SnAqNtEVpG4spC,R6yDsPlLYDyO7cVy-A132w)
+[Source](https://excalidraw.com/#json=3AEjtpXrUFz5t_D3Sm89C,ZN3-MFPiTu5D0sCDCqB9fg)
 
 ## Getting Started
 
