@@ -1,22 +1,13 @@
 <script>
+	import { exists } from '$lib/util';
+
 	/** @type {{children: any, value?: number?, max?:number?}} */
 	let { children, value, max = value } = $props();
-
-	/**
-	 * @param {...any} values
-	 * @returns {boolean}
-	 */
-	function exists(...values) {
-		for (const value of values) {
-			if (value === null || value === undefined) return false;
-		}
-		return true;
-	}
 </script>
 
 <!-- Dumb -->
 <!-- {#if undefined !== value && undefined !== max && null !== value && null !== max} -->
-{#if exists(value, max)}
+{#if exists(value) && exists(max)}
 	<div class="wrapper">
 		<span class="bar" style="width: {Math.min(value / max, 1) * 100}%"></span>
 		<span class="value">{@render children?.()}</span>
@@ -29,7 +20,8 @@
 		height: 1.5em;
 		overflow: clip;
 	}
-	.bar, .value {
+	.bar,
+	.value {
 		position: absolute;
 		right: 0;
 		top: 0;
