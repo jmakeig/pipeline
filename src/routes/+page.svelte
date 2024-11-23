@@ -18,9 +18,11 @@
 						{#if stage.workloads.count > 0}
 							{' - '}
 							<small
-								>{currency(stage.workloads.size, { style: 'thousands' })} ({num(
-									stage.workloads.count
-								)})</small
+								>{currency(stage.workloads.size, {
+									style: 'thousands',
+									minimumFractionDigits: 0,
+									maximumFractionDigits: 2
+								})} ({num(stage.workloads.count)})</small
 							>
 						{/if}
 					</Stage>
