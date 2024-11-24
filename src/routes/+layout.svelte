@@ -17,7 +17,7 @@
 <slot></slot>
 
 <footer>
-	<details class="meta">
+	<details class="debug">
 		<summary>Page Metadata</summary>
 		<table>
 			<tbody>
@@ -59,7 +59,7 @@
 		padding: 0;
 	}
 
-	.meta {
+	.debug {
 		margin: 1em 0;
 		padding: 1em;
 
@@ -67,11 +67,11 @@
 		color: #666;
 		background: #eee;
 	}
-	.meta table {
+	.debug table {
 		width: auto;
 		margin: 1em 0;
 	}
-	.meta table th[role='rowheader'] {
+	.debug table th[role='rowheader'] {
 		vertical-align: top;
 	}
 </style>

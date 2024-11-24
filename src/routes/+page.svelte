@@ -5,11 +5,33 @@
 
 	/** @type {{ data: import('./$types').PageData }} */
 	let { data } = $props();
+
+	/** @type {HTMLDialogElement} */
+	let quick_add_dialog;
+	// TODO: Use XState!
+	/** @type {'open' | 'closed'}*/
+	let quick_add_state = $state('closed');
+
+	$effect(() => {
+		switch (quick_add_state) {
+			case 'open':
+				return quick_add_dialog.showModal();
+			case 'closed':
+				return quick_add_dialog.close();
+			default:
+				throw new Error(quick_add_state);
+		}
+	});
 </script>
 
 <header>
 	<div class="uno">
 		<h1>Pipeline</h1>
+		<button
+			onclick={(evt) => {
+				quick_add_state = 'open';
+			}}>Quick Add</button
+		>
 		<ol class="stages">
 			{#each data.stages as stage}
 				<li>
@@ -101,6 +123,34 @@
 	</table>
 </section>
 
+<dialog id="quick_add" bind:this={quick_add_dialog}>
+	<h2>Quick Add</h2>
+	<form>
+		<div class="control">
+			<label for="quick_edit_workload">Workload</label>
+			<select id="quick_edit_workload">
+				<option>Asdf</option>
+			</select>
+		</div>
+		<div class="control">
+			<label for="quick_edit_outcome">Outcome</label>
+			<textarea id="quick_edit_outcome"></textarea>
+		</div>
+		<div class="control">
+			<label for="quick_edit_stage">Stage</label>
+			<input id="quick_edit_stage" />
+		</div>
+		<div class="control">
+			<label for="quick_edit_size">Size</label>
+			<input id="quick_edit_size" type="text" />
+		</div>
+		<div class="control actions">
+			<button class="default">Add</button>
+			<button>Cancel</button>
+		</div>
+	</form>
+</dialog>
+
 <style>
 	header {
 		display: flex;
@@ -138,5 +188,18 @@
 	/* ol.stages > li {} */
 	section {
 		margin: 0.5em 0;
+	}
+
+	dialog {
+		padding: 1em;
+		border: solid 0.5px #ccc;
+		border-radius: 1em;
+		box-shadow:
+			0 1px 3px 0 rgb(0 0 0 / 0.1),
+			0 1px 2px -1px rgb(0 0 0 / 0.1);
+	}
+	dialog::backdrop {
+		background-color: rgba(255, 255, 255, 0.9);
+		backdrop-filter: blur(2px);
 	}
 </style>

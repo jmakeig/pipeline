@@ -9,7 +9,7 @@
 </script>
 
 <form method="POST">
-	<div>
+	<div class="control">
 		<label for="name">Name</label>
 		<input
 			name="name"
@@ -21,7 +21,7 @@
 		{slug(name)}
 		<input name="label" value={slug(name)} id="label" type="hidden" />
 	</div>
-	<div>
+	<div class="control">
 		<label for="region">Region</label>
 		<select name="region" id="region">
 			<option></option>
@@ -31,7 +31,7 @@
 			<option value="LATAM">LATAM</option>
 		</select>
 	</div>
-	<div>
+	<div class="control">
 		<label for="segment">Segment</label>
 		<select name="segment" id="segment">
 			<option></option>
@@ -41,5 +41,5 @@
 			<option value="smb">SMB</option>
 		</select>
 	</div>
-	<div><button>Create</button></div>
+	<div class="control"><button>Create</button></div>
 </form>
