@@ -136,14 +136,20 @@
 			<label for="quick_edit_outcome">Outcome</label>
 			<textarea id="quick_edit_outcome"></textarea>
 		</div>
-		<div class="control">
-			<label for="quick_edit_stage">Stage</label>
-			<input id="quick_edit_stage" />
-		</div>
-		<div class="control">
-			<label for="quick_edit_size">Size</label>
-			<input id="quick_edit_size" type="text" />
-		</div>
+		<details>
+			<summary>Advanced</summary>
+			<fieldset>
+				<legend>Advanced</legend>
+				<div class="control">
+					<label for="quick_edit_stage">Stage</label>
+					<input id="quick_edit_stage" />
+				</div>
+				<div class="control">
+					<label for="quick_edit_size">Size</label>
+					<input id="quick_edit_size" type="text" />
+				</div>
+			</fieldset>
+		</details>
 		<div class="control actions">
 			<button class="default">Add</button>
 			<button onclick={() => (quick_add_state = 'closed')}>Cancel</button>
@@ -192,7 +198,7 @@
 
 	dialog {
 		min-width: 20em;
-		padding: 2em;
+		padding: 2em 3em;
 		border: solid 0.5px #ccc;
 		border-radius: 1em;
 		box-shadow:
