@@ -128,8 +128,21 @@
 	<form>
 		<div class="control">
 			<label for="quick_edit_workload">Workload</label>
-			<select id="quick_edit_workload">
-				<option>Asdf</option>
+			<select id="customer_workload" name="customer_workload">
+				<optgroup label="Workloads">
+					{#each data.customer_workloads.filter((/** @type {any} */ cw) => cw.workload) as customer_workload}
+						<option value="workload={customer_workload.workload}"
+							>{customer_workload.workload_name} ({customer_workload.customer_name})</option
+						>
+					{/each}
+				</optgroup>
+				<optgroup label="Customers">
+					{#each data.customer_workloads.filter((/** @type {any} */ cw) => !cw.workload) as customer_workload}
+						<option value="customer={customer_workload.customer}"
+							>{customer_workload.workload_name} {customer_workload.customer_name}</option
+						>
+					{/each}
+				</optgroup>
 			</select>
 		</div>
 		<div class="control">
@@ -151,7 +164,7 @@
 					<input type="checkbox" class="enabler" />
 				</div>
 				<div class="control">
-					<label for="quick_edit_target_date">Size</label>
+					<label for="quick_edit_target_date">Target Date</label>
 					<input id="quick_edit_target_date" type="text" />
 					<input type="checkbox" class="enabler" />
 				</div>

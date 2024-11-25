@@ -9,5 +9,7 @@ export async function load({ params }) {
 	/** @type {number?} */
 	const size = await api.get_pipeline_size();
 
-	return { follow_ups, stages, size };
+	const customer_workloads = await api.get_customer_workloads();
+
+	return { follow_ups, stages, size, customer_workloads };
 }
