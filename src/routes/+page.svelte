@@ -209,4 +209,9 @@
 		background-color: rgba(255, 255, 255, 0.9);
 		backdrop-filter: blur(2px);
 	}
+
+	#quick_edit_outcome {
+		min-width: 20em;
+		height: 10em;
+	}
 </style>
