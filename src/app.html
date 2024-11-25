@@ -17,7 +17,12 @@
 				font-size: 11pt;
 				line-height: 1.2;
 			}
-			h1, h2, h3, h4, h5, h6 {
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
 				margin: 0 0 0.5rem 0;
 			}
 			table {
@@ -95,11 +100,24 @@
 				border-radius: 0.5em;
 				background: none;
 			}
+			button:hover {
+				background-color: #f3f4f6;
+				cursor: pointer;
+			}
+			button:active {
+				background-color: #d1d5db;
+			}
 			button.default {
 				background-color: #2563eb;
 				border-color: #2563eb;
 				color: white;
 				font-weight: 500;
+			}
+			button.default:hover {
+				background-color: #1d4ed8;
+			}
+			button.default:active {
+				background-color: #1e40af;
 			}
 		</style>
 		%sveltekit.head%
