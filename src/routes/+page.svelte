@@ -151,8 +151,8 @@
 			</fieldset>
 		</details>
 		<div class="control actions">
-			<button class="default">Add</button>
-			<button onclick={() => (quick_add_state = 'closed')}>Cancel</button>
+			<button class="default" tabindex="0">Add</button>
+			<button onclick={() => (quick_add_state = 'closed')} tabindex="0">Cancel</button>
 		</div>
 	</form>
 </dialog>
