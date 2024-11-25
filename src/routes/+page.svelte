@@ -146,7 +146,7 @@
 		</div>
 		<div class="control actions">
 			<button class="default">Add</button>
-			<button>Cancel</button>
+			<button onclick={() => (quick_add_state = 'closed')}>Cancel</button>
 		</div>
 	</form>
 </dialog>
@@ -191,7 +191,8 @@
 	}
 
 	dialog {
-		padding: 1em;
+		min-width: 20em;
+		padding: 2em;
 		border: solid 0.5px #ccc;
 		border-radius: 1em;
 		box-shadow:
