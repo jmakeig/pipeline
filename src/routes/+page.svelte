@@ -143,10 +143,17 @@
 				<div class="control">
 					<label for="quick_edit_stage">Stage</label>
 					<input id="quick_edit_stage" />
+					<input type="checkbox" class="enabler" />
 				</div>
 				<div class="control">
 					<label for="quick_edit_size">Size</label>
 					<input id="quick_edit_size" type="text" />
+					<input type="checkbox" class="enabler" />
+				</div>
+				<div class="control">
+					<label for="quick_edit_target_date">Size</label>
+					<input id="quick_edit_target_date" type="text" />
+					<input type="checkbox" class="enabler" />
 				</div>
 			</fieldset>
 		</details>
@@ -213,5 +220,8 @@
 	#quick_edit_outcome {
 		min-width: 20em;
 		height: 10em;
+	}
+	input[type='checkbox'].enabler {
+		flex-basis: content;
 	}
 </style>
