@@ -5,7 +5,8 @@
 <svelte:head>
 	<style>
 		body {
-			background-color: red;
+			color: var(--color-error);
+			background-color: var(--color-error-secondary);
 		}
 	</style>
 </svelte:head>

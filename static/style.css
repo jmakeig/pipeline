@@ -2,15 +2,17 @@
 	--color: #111827;
 	--color-link: #1d4ed8;
 	--color-link-visited: #5b21b6;
-	--background-color: #f9fafb;
-	--border-color: #d1d5db;
-	--border-highlight-color: #6b7280;
-	--action-color: none;
-	--action-highlight-color: #f3f4f6;
-	--action-active-color: #d1d5db;
-	--action-default-color: #2563eb;
-	--action-default-highlight-color: #1d4ed8;
-	--action-defualt-active-color: #1e40af;
+	--color-error: #EF4444;
+	--color-error-secondary: #FECACA;
+	--color-background: #f9fafb;
+	--color-border: #d1d5db;
+	--color-border-highlight: #6b7280;
+	--color-action: none;
+	--color-action-highlight: #f3f4f6;
+	--color-action-active: #d1d5db;
+	--color-action-default: #2563eb;
+	--color-action-default-highlight: #1d4ed8;
+	--color-action-defualt-active: #1e40af;
 }
 
 html {
@@ -51,7 +53,7 @@ table {
 th,
 td {
 	padding: 0.5em;
-	border: solid 0.5px var(--border-color);
+	border: solid 0.5px var(--color-border);
 	border-style: solid none;
 	text-align: left;
 }
@@ -59,7 +61,7 @@ thead th {
 	border: none;
 }
 thead tr:last-child th {
-	border-bottom: solid 1px var(--border-highlight-color);
+	border-bottom: solid 1px var(--color-border-highlight);
 }
 td.numeric {
 	text-align: right;
@@ -109,33 +111,33 @@ select,
 button,
 fieldset {
 	padding: 0.25em;
-	border: solid 0.5px var(--border-color);
+	border: solid 0.5px var(--color-border);
 	border-radius: 0.375rem;
 }
 button {
 	appearance: auto;
 	padding: 0.5em 1em;
 	border-radius: 0.5em;
-	background: var(--action-color);
+	background: var(--color-action);
 }
 button:hover {
-	background-color: var(--action-highlight-color);
+	background-color: var(--color-action-highlight);
 	cursor: pointer;
 }
 button:active {
-	background-color: var(--action-active-color);
+	background-color: var(--color-action-active);
 }
 button.default {
-	background-color: var(--action-default-color);
-	border-color: var(--action-default-color);
+	background-color: var(--color-action-default);
+	border-color: var(--color-action-default);
 	color: white;
 	font-weight: 500;
 }
 button.default:hover {
-	background-color: var(--action-default-highlight-color);
+	background-color: var(--color-action-default-highlight);
 }
 button.default:active {
-	background-color: var(--action-defualt-active-color);
+	background-color: var(--color-action-defualt-active);
 }
 fieldset {
 	margin: 1.5em -1em;

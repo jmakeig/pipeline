@@ -1,5 +1,5 @@
 <script>
-	import { ago, currency, date, num } from '$lib/format';
+	import { ago, currency, num } from '$lib/format';
 	import Bar from '$lib/components/Bar.svelte';
 	import Stage from '$lib/components/Stage.svelte';
 
@@ -187,7 +187,7 @@
 		flex-grow: 1;
 	}
 	.pipeline_size {
-		background-color: #f6f6f6;
+		background-color: var(--color-action-highlight);
 		padding: 1em;
 		border-radius: 1em;
 	}
@@ -219,7 +219,7 @@
 	dialog {
 		min-width: 20em;
 		padding: 2em 3em;
-		border: solid 0.5px #ccc;
+		border: solid 0.5px var(--color-border);
 		border-radius: 1em;
 		box-shadow:
 			0 1px 3px 0 rgb(0 0 0 / 0.1),
