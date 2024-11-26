@@ -147,7 +147,7 @@
 		</div>
 		<div class="control">
 			<label for="quick_edit_outcome">Outcome</label>
-			<textarea id="quick_edit_outcome"></textarea>
+			<textarea id="quick_edit_outcome" placeholder=" "></textarea>
 		</div>
 		<details>
 			<summary>Advanced</summary>
@@ -155,17 +155,17 @@
 				<legend>Advanced</legend>
 				<div class="control">
 					<label for="quick_edit_stage">Stage</label>
-					<input id="quick_edit_stage" />
+					<input id="quick_edit_stage" placeholder=" " />
 					<input type="checkbox" class="enabler" />
 				</div>
 				<div class="control">
 					<label for="quick_edit_size">Size</label>
-					<input id="quick_edit_size" type="text" />
+					<input id="quick_edit_size" type="text" placeholder=" " />
 					<input type="checkbox" class="enabler" />
 				</div>
 				<div class="control">
 					<label for="quick_edit_target_date">Target Date</label>
-					<input id="quick_edit_target_date" type="text" />
+					<input id="quick_edit_target_date" type="text" placeholder=" " />
 					<input type="checkbox" class="enabler" />
 				</div>
 			</fieldset>
