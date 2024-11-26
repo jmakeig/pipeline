@@ -72,6 +72,11 @@
 		</thead>
 		<tbody>
 			{#each data.follow_ups as follow_up}
+				{@const max = data.follow_ups.reduce(
+					/** @type {(m:number, w:{workload:import('$lib/types').Workload}) => number} */ (m, w) =>
+						Math.max(m, w.workload.size || -Infinity),
+					0
+				)}
 				<tr>
 					<td role="cell">
 						<a href="/customers/{follow_up.workload.customer.label}">
@@ -93,16 +98,7 @@
 						style="text-align: right;"
 						title={currency(follow_up.workload.size, { round: 0 })}
 					>
-						<Bar
-							value={follow_up.workload.size}
-							max={data.follow_ups.reduce(
-								/** @type {(max:number, w:{workload:import('$lib/types').Workload}) => number} */ (
-									max,
-									w
-								) => Math.max(max, w.workload.size || -Infinity),
-								0
-							)}
-						>
+						<Bar value={follow_up.workload.size} {max}>
 							{currency(follow_up.workload.size, {
 								style: 'thousands',
 								minimumFractionDigits: 0,
