@@ -1,7 +1,23 @@
+:root {
+	--color: #111827;
+	--color-link: #1d4ed8;
+	--color-link-visited: #5b21b6;
+	--background-color: #f9fafb;
+	--border-color: #d1d5db;
+	--border-highlight-color: #6b7280;
+	--action-color: none;
+	--action-highlight-color: #f3f4f6;
+	--action-active-color: #d1d5db;
+	--action-default-color: #2563eb;
+	--action-default-highlight-color: #1d4ed8;
+	--action-defualt-active-color: #1e40af;
+}
+
 html {
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+	color: var(--color);
 }
 body {
 	margin: 0 5em; /* TODO: Responsive */
@@ -18,6 +34,16 @@ h5,
 h6 {
 	margin: 0 0 0.5rem 0;
 }
+a {
+	color: var(--color-link);
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+a:visited {
+	color: var(--color-link-visited);
+}
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -25,7 +51,7 @@ table {
 th,
 td {
 	padding: 0.5em;
-	border: solid 0.5px #ddd;
+	border: solid 0.5px var(--border-color);
 	border-style: solid none;
 	text-align: left;
 }
@@ -33,7 +59,7 @@ thead th {
 	border: none;
 }
 thead tr:last-child th {
-	border-bottom: solid 1px #999;
+	border-bottom: solid 1px var(--border-highlight-color);
 }
 td.numeric {
 	text-align: right;
@@ -41,8 +67,6 @@ td.numeric {
 }
 
 /* Form */
-form {
-}
 input,
 select,
 textarea,
@@ -85,33 +109,33 @@ select,
 button,
 fieldset {
 	padding: 0.25em;
-	border: solid 0.5px #c2c2c2;
+	border: solid 0.5px var(--border-color);
 	border-radius: 0.375rem;
 }
 button {
 	appearance: auto;
 	padding: 0.5em 1em;
 	border-radius: 0.5em;
-	background: none;
+	background: var(--action-color);
 }
 button:hover {
-	background-color: #f3f4f6;
+	background-color: var(--action-highlight-color);
 	cursor: pointer;
 }
 button:active {
-	background-color: #d1d5db;
+	background-color: var(--action-active-color);
 }
 button.default {
-	background-color: #2563eb;
-	border-color: #2563eb;
+	background-color: var(--action-default-color);
+	border-color: var(--action-default-color);
 	color: white;
 	font-weight: 500;
 }
 button.default:hover {
-	background-color: #1d4ed8;
+	background-color: var(--action-default-highlight-color);
 }
 button.default:active {
-	background-color: #1e40af;
+	background-color: var(--action-defualt-active-color);
 }
 fieldset {
 	margin: 1.5em -1em;
