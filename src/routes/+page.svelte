@@ -118,10 +118,14 @@
 		</tbody>
 	</table>
 </section>
-
-<dialog id="quick_add" bind:this={quick_add_dialog}>
+<!--
+<dialog
+	id="quick_add"
+	bind:this={quick_add_dialog}
+	onclose={(evt) => evt.preventDefault()}
+>
 	<h2>Quick Add</h2>
-	<form>
+	<form method="dialog" action="?/quick_add">
 		<div class="control">
 			<label for="quick_edit_workload">Workload</label>
 			<select id="customer_workload" name="customer_workload">
@@ -172,7 +176,7 @@
 		</div>
 	</form>
 </dialog>
-
+-->
 <style>
 	header {
 		display: flex;
@@ -212,6 +216,7 @@
 		margin: 0.5em 0;
 	}
 
+/*
 	dialog {
 		min-width: 20em;
 		padding: 2em 3em;
@@ -233,4 +238,5 @@
 	input[type='checkbox'].enabler {
 		flex-basis: content;
 	}
+*/
 </style>

@@ -42,9 +42,13 @@ export type Event = {
 	outcome: string;
 	happened_at: Date;
 };
-export type EventDeep = Event & {
-	customer: Customer;
-	workload: Workload;
+// Lite version with ID foreign keys and optional defaults
+export type EventNew = {
+	event?: ID;
+	workload?: ID;
+	customer?: ID;
+	outcome: string;
+	happened_at?: Date;
 };
 
 export type Validation = {

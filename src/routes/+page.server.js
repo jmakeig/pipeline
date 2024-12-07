@@ -1,4 +1,5 @@
 import * as api from '$lib/server/api';
+import { fail } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
@@ -13,3 +14,16 @@ export async function load({ params }) {
 
 	return { follow_ups, stages, size, customer_workloads };
 }
+
+/** @satisfies {import('./$types').Actions} */
+export const actions = {
+	quick_add: async ({ request }) => {
+		console.log('quick_add');
+		const form = await request.formData();
+		return fail(400, {
+			/** @type {import("$lib/types").Validation} */
+			validations: { for: 'customer_workload', message: 'Noooooo!' },
+			data: null
+		});
+	}
+};

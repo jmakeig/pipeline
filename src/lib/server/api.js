@@ -274,7 +274,7 @@ export async function get_events(customer, workload) {
  * @param {string | null} customer
  * @param {string} outcome
  * @param {Date} [happened_at]
- * @returns {Promise<any>}
+ * @returns {Promise<import('$lib/types').EventNew>}
  */
 export async function add_event(workload, customer, outcome, happened_at) {
 	const sql = `

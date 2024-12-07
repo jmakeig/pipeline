@@ -8,9 +8,9 @@
 
 <h1>New event</h1>
 <form method="POST">
-	<div>
-		<label for="customer_workload">Customer</label>
-		<select id="customer_workload" name="customer_workload">
+	<div class="control">
+		<label for="workload">Workload</label>
+		<select name="customer_workload" id="customer_workload" value={form?.customer_workload}>
 			<optgroup label="Workloads">
 				{#each data.customer_workloads.filter((/** @type {any} */ cw) => cw.workload) as customer_workload}
 					<option value="workload={customer_workload.workload}"
@@ -27,11 +27,42 @@
 			</optgroup>
 		</select>
 	</div>
-	<div>
+	<div class="control">
 		<label for="outcome">Outcome</label>
-		<textarea id="outcome" name="outcome"></textarea>
+		<textarea name="outcome" id="outcome" placeholder=" " value={form?.outcome}></textarea>
 	</div>
-	<div>
+	<details>
+		<summary>Advanced</summary>
+		<fieldset>
+			<legend>Advanced</legend>
+			<div class="control">
+				<label for="stage">Stage</label>
+				<input name="stage" id="stage" placeholder=" " value={form?.stage} />
+				<input type="checkbox" class="enabler" name={form?.enabled_stage} value="enabled_stage" checked={false}/>
+			</div>
+			<div class="control">
+				<label for="size">Size</label>
+				<input name="size" id="size" type="text" placeholder=" " />
+				<input type="checkbox" class="enabler" />
+			</div>
+			<div class="control">
+				<label for="target_date">Target Date</label>
+				<input name="target_date" id="target_date" type="text" placeholder=" " />
+				<input type="checkbox" class="enabler" />
+			</div>
+		</fieldset>
+	</details>
+	<div class="control actions">
 		<button>Save</button>
 	</div>
 </form>
+
+<style>
+	#outcome {
+		min-width: 20em;
+		height: 10em;
+	}
+	input[type='checkbox'].enabler {
+		flex-basis: content;
+	}
+</style>
