@@ -34,8 +34,8 @@
 					<td><pre>{JSON.stringify($page.data, null, 2)}</pre></td>
 				</tr>
 				<tr>
-					<th role="rowheader"><code>$page.form?.validations</code></th>
-					<td><pre>{JSON.stringify($page.form?.validations, null, 2)}</pre></td>
+					<th role="rowheader"><code>$page.form</code></th>
+					<td><pre>{JSON.stringify($page.form, null, 2)}</pre></td>
 				</tr>
 			</tbody>
 		</table>

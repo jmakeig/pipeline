@@ -12,6 +12,7 @@
 	/** @type {'open' | 'closed'}*/
 	let quick_add_state = $state('closed');
 
+	/*
 	$effect(() => {
 		switch (quick_add_state) {
 			case 'open':
@@ -22,16 +23,22 @@
 				throw new Error(quick_add_state);
 		}
 	});
+	*/
 </script>
 
 <header>
 	<div class="uno">
 		<h1>Pipeline</h1>
+		<!--
 		<button
 			onclick={(evt) => {
 				quick_add_state = 'open';
 			}}>Quick Add</button
 		>
+		-->
+		<form method="GET" action="/events/new">
+			<button>Quick Add</button>
+		</form>
 		<ol class="stages">
 			{#each data.stages as stage}
 				<li>

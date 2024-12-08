@@ -11,7 +11,7 @@ export async function load() {
 /**
  *
  * @param {any} value
- * @returns {string?}
+ * @returns {string | undefined}
  */
 function s(value) {
 	if (!exists(value)) return value;
@@ -21,7 +21,7 @@ function s(value) {
 /**
  *
  * @param {any} value
- * @returns {Date?}
+ * @returns {Date | undefined}
  */
 function d(value) {
 	if (!exists(value)) return value;
@@ -34,26 +34,29 @@ export const actions = {
 		const form = await request.formData();
 
 		const customer_workload = s(form.get('customer_workload'))?.split('=');
-		if (!customer_workload) {
-			return fail(400, {
-				validations: [{ for: 'customer_workload', message: 'Missing customer or workload' }]
-			});
-		}
-
 		const outcome = s(form.get('outcome'));
-		if (!outcome) {
-			return fail(400, {
-				validations: [{ for: 'outcome', message: 'Outcome is the most important pieces of data' }]
-			});
-		}
 		const happened_at = d(form.get('happened_at')) || undefined;
 
-		/** @type {import('$lib/types').EventNew} */
+		/** @type {Partial<import('$lib/types').EventNew>} */
 		const event = {
+			// @ts-ignore
 			[customer_workload[0]]: customer_workload[1],
 			outcome,
 			happened_at
 		};
+		if (!event.workload && !event.customer) {
+			return fail(400, {
+				validations: [{ for: 'customer_workload', message: 'Missing customer or workload' }],
+				event
+			});
+		}
+		if (!event.outcome) {
+			return fail(400, {
+				validations: [{ for: 'outcome', message: 'Outcome is required' }],
+				event
+			});
+		}
+
 		const new_event = await add_event(
 			event.workload || null,
 			event.customer || null,

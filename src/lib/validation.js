@@ -8,6 +8,7 @@
  */
 export function by(validations, name) {
 	if (undefined === validations) return undefined;
+	if (undefined === name) return validations;
 	return validations.filter((v) => name === v.for);
 }
 
