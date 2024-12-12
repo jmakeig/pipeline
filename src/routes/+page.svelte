@@ -6,11 +6,11 @@
 	/** @type {{ data: import('./$types').PageData }} */
 	let { data } = $props();
 
-	/** @type {HTMLDialogElement} */
-	let quick_add_dialog;
+	/* @type {HTMLDialogElement} */
+	// let quick_add_dialog;
 	// TODO: Use XState!
-	/** @type {'open' | 'closed'}*/
-	let quick_add_state = $state('closed');
+	/* @type {'open' | 'closed'}*/
+	// let quick_add_state = $state('closed');
 
 	/*
 	$effect(() => {
@@ -37,6 +37,7 @@
 		>
 		-->
 		<form method="GET" action="/events/new">
+			<input type="hidden" name="from" value="/"/>
 			<button>Quick Add</button>
 		</form>
 		<ol class="stages">

@@ -3,9 +3,11 @@ import { exists } from '$lib/util';
 import { fail, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load() {
+export async function load({ request }) {
+	const from = new URL(request.url).searchParams.get('from') ?? '/events';
+
 	const customer_workloads = await get_customer_workloads();
-	return { customer_workloads };
+	return { customer_workloads, from };
 }
 
 /**
@@ -63,7 +65,9 @@ export const actions = {
 			event.outcome,
 			event.happened_at
 		);
-		console.log('new_event', new_event);
-		// redirect(303, `/events?which=${new_event.event}`);
+
+		const params = new URLSearchParams();
+		if (new_event.event) params.append('event', new_event.event);
+		redirect(303, `${form.get('from')}?${params.toString()}`);
 	}
 };

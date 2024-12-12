@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { exists } from '$lib/util';
 	import { by, first, has } from '$lib/validation';
@@ -20,6 +21,8 @@
 
 <h1>New event</h1>
 <form method="POST" class:invalid={has(form?.validations)} use:enhance>
+	<!-- This is to convey to the target page where to return -->
+	<input type="text" name="from" value={data.from} />
 	<div class="control" class:invalid={has(form?.validations, 'customer_workload')}>
 		<label for="workload">Workload</label>
 		<select name="customer_workload" id="customer_workload" value={c_w(form?.event)}>
@@ -40,7 +43,7 @@
 		</select>
 	</div>
 	<div class="control" class:invalid={has(form?.validations, 'outcome')}>
-		<label for="outcome">Outcome asdf asdf adf adf adf adf adfadf</label>
+		<label for="outcome">Outcome</label>
 		<div class="contents">
 			<textarea name="outcome" id="outcome" placeholder=" " value={form?.event.outcome}></textarea>
 			{#if has(form?.validations, 'outcome')}
