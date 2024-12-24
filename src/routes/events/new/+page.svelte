@@ -3,6 +3,7 @@
 	import { enhance } from '$app/forms';
 	import { exists } from '$lib/util';
 	import { by, first, has } from '$lib/validation';
+	import ToggledInput from '$lib/components/ToggledInput.svelte';
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
@@ -22,7 +23,7 @@
 <h1>New event</h1>
 <form method="POST" class:invalid={has(form?.validations)} use:enhance>
 	<!-- This is to convey to the target page where to return -->
-	<input type="text" name="from" value={data.from} />
+	<input type="hidden" name="from" value={data.from} />
 	<div class="control" class:invalid={has(form?.validations, 'customer_workload')}>
 		<label for="workload">Workload</label>
 		<select name="customer_workload" id="customer_workload" value={c_w(form?.event)}>
@@ -61,6 +62,15 @@
 			<legend>Advanced</legend>
 			<div class="control">
 				<label for="stage">Stage</label>
+				<div class="contents">
+					<ToggledInput name="stage" value={form?.event.stage} placeholder=" " />
+					<p class="validation">{'asdf'}</p>
+					<p class="helper">
+						This is some text about the Outcome. It’s important, but may wrap if very, very long, so be
+						careful in how you style it.
+					</p>
+				</div>
+				<!--
 				<input name="stage" id="stage" placeholder=" " value={form?.event.stage} />
 				<input
 					type="checkbox"
@@ -69,6 +79,7 @@
 					value="enabled_stage"
 					checked={false}
 				/>
+				-->
 			</div>
 			<div class="control">
 				<label for="size">Size</label>

@@ -99,7 +99,6 @@ form div.control {
 	gap: 1em 2em;
 	/* https://www2.webkit.org/show_bug.cgi?id=142968 */
 	align-items: baseline;
-
 	margin: 1.5em 0;
 }
 form .control .validation,
@@ -139,7 +138,8 @@ form .control label + select {
 form .control .contents textarea,
 form .control .contents input[type='text'],
 form .control .contents input:not([type]),
-form .control .contents select {
+form .control .contents select,
+form .control .contents span {
 	/* Fixes align-items: baseline */
 	display: block;
 	width: 100%;
@@ -172,6 +172,7 @@ button.default:active {
 fieldset {
 	margin: 1.5em -1em;
 	padding: 1.5em;
+	background: yellow;
 }
 details > fieldset {
 	margin-top: -1.75em;
