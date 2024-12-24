@@ -45,22 +45,26 @@ INSERT INTO _workloads (workload, customer, name, label) VALUES
 ;
 
 
-INSERT INTO workload_attributes (workload, stage, size) VALUES
-	('b2894fa3-871a-4d9c-92e3-71f65c8a3d0b', 0, NULL),
-	('e8a7c6d5-f4b3-4982-910e-8f7c6d5b4a39', 2, 280000),
-	('a5d4c3b2-10f9-4e8d-8c7b-6a5d4c3b2a10', NULL, 400000),
-	('3c2d1f0e-9b8a-47c6-90fd-8e7d6c5b4a39', 3, NULL),
-	('f9e8d7c6-b5a4-4f0e-9c8d-7b6a5d4c3b2a', 3, 10000),
-	('8a7c6d5b-4a39-4281-f0e9-d8c7b6a5f4d3', 3, NULL),
-	('1f0e9d8c-7b6a-45d4-c3b2-a10f9e8d7c6b', 2, NULL),
-	('c6b5a4f0-e9d8-4c7b-6a5d-4c3b2a10f9e8', 2, NULL),
-	('5b4a3928-1f0e-4d9c-8b7a-6958473f2c1d', 2, 230000),
-	('d8c7b6a5-f4d3-4b2a-10f9-e8d7c6b5a4f0', 1, NULL),
-	('7b6a5d4c-3b2a-410f-9e8d-7c6b5a4f0e9d', 3, 310000),
-	('a4f0e9d8-c7b6-4a5d-4c3b-2a10f9e8d7c6', 1, 460000),
-	('281f0e9d-8c7b-46a5-d4c3-b2a10f9e8d7c', 3, NULL),
-	('0e9d8c7b-6a5d-4c3b-2a10-f9e8d7c6b5a4', 2, 940000),
-	('9d8c7b6a-5d4c-3b2a-10f9-e8d7c6b5a4f0', 0, 120000)
+INSERT INTO workload_attributes (workload, stage, size, updated_at) VALUES
+	-- now() - INTERVAL '1 day' * 10 * random()
+	('b2894fa3-871a-4d9c-92e3-71f65c8a3d0b', 0, NULL, now() - INTERVAL '1 day' * 3.7),
+	('b2894fa3-871a-4d9c-92e3-71f65c8a3d0b', 0, 222222, now() - INTERVAL '1 day' * 2.5),
+	('b2894fa3-871a-4d9c-92e3-71f65c8a3d0b', 1, NULL, DEFAULT),
+
+	('e8a7c6d5-f4b3-4982-910e-8f7c6d5b4a39', 2, 280000, DEFAULT),
+	('a5d4c3b2-10f9-4e8d-8c7b-6a5d4c3b2a10', NULL, 400000, DEFAULT),
+	('3c2d1f0e-9b8a-47c6-90fd-8e7d6c5b4a39', 3, NULL, DEFAULT),
+	('f9e8d7c6-b5a4-4f0e-9c8d-7b6a5d4c3b2a', 3, 10000, DEFAULT),
+	('8a7c6d5b-4a39-4281-f0e9-d8c7b6a5f4d3', 3, NULL, DEFAULT),
+	('1f0e9d8c-7b6a-45d4-c3b2-a10f9e8d7c6b', 2, NULL, DEFAULT),
+	('c6b5a4f0-e9d8-4c7b-6a5d-4c3b2a10f9e8', 2, NULL, DEFAULT),
+	('5b4a3928-1f0e-4d9c-8b7a-6958473f2c1d', 2, 230000, DEFAULT),
+	('d8c7b6a5-f4d3-4b2a-10f9-e8d7c6b5a4f0', 1, NULL, DEFAULT),
+	('7b6a5d4c-3b2a-410f-9e8d-7c6b5a4f0e9d', 3, 310000, DEFAULT),
+	('a4f0e9d8-c7b6-4a5d-4c3b-2a10f9e8d7c6', 1, 460000, DEFAULT),
+	('281f0e9d-8c7b-46a5-d4c3-b2a10f9e8d7c', 3, NULL, DEFAULT),
+	('0e9d8c7b-6a5d-4c3b-2a10-f9e8d7c6b5a4', 2, 940000, DEFAULT),
+	('9d8c7b6a-5d4c-3b2a-10f9-e8d7c6b5a4f0', 0, 120000, DEFAULT)
 ;
 
 -- Events

@@ -49,9 +49,51 @@ CREATE TABLE IF NOT EXISTS workload_attributes (
 	size int,
 	engagement_lead text,
 	updated_at timestamptz DEFAULT transaction_timestamp(),
-	PRIMARY KEY (workload, attribute)
+	PRIMARY KEY (workload, attribute),
+	CHECK (updated_at > to_timestamp(0))
 );
 
+CREATE OR REPLACE VIEW workloads AS
+	WITH cumulative AS (
+		SELECT
+		DISTINCT
+				workload,
+				FIRST_VALUE(stage) OVER (
+					PARTITION BY workload
+					ORDER BY CASE WHEN stage IS NULL THEN to_timestamp(0) ELSE updated_at END DESC
+				) AS stage,
+				FIRST_VALUE(size) OVER (
+					PARTITION BY workload
+					ORDER BY CASE WHEN size IS NULL THEN to_timestamp(0) ELSE updated_at END DESC
+				) AS size,
+				FIRST_VALUE(engagement_lead) OVER (
+					PARTITION BY workload
+					ORDER BY CASE WHEN engagement_lead IS NULL THEN to_timestamp(0) ELSE updated_at END DESC
+				) AS engagement_lead
+		FROM workload_attributes
+	),
+	latest AS (
+		SELECT DISTINCT ON(workload)
+			workload, updated_at
+		FROM workload_attributes
+		ORDER BY workload, updated_at DESC
+	)
+	SELECT
+		w.workload,
+		w.label,
+		w.name,
+		w.customer,
+		h.stage,
+		h.size,
+		h.engagement_lead,
+		l.updated_at AS last_touched
+	FROM _workloads AS w
+	LEFT JOIN latest AS l USING (workload)
+	LEFT JOIN cumulative AS h USING (workload)
+	--ORDER BY w.workload
+;
+
+/*
 CREATE OR REPLACE VIEW workloads AS
   SELECT
       w.workload,
@@ -74,6 +116,7 @@ CREATE OR REPLACE VIEW workloads AS
     ORDER BY workload, updated_at DESC
   ) AS a USING(workload)
 ;
+*/
 
 CREATE TABLE IF NOT EXISTS events (
   event uuid DEFAULT gen_random_uuid(),
