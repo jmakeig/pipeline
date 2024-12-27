@@ -12,13 +12,14 @@
 
 	//$inspect(_enabled).with(console.trace);
 </script>
+
 <span>
 	<input
 		{id}
 		{type}
 		{value}
 		disabled={!enabled}
-		onchange={(evt) => (_value = evt.currentTarget?.value)}
+		onchange={(evt) => (value = evt.currentTarget?.value)}
 		{placeholder}
 	/>
 	<input
@@ -28,7 +29,9 @@
 		{value}
 		onchange={(evt) => (enabled = !enabled)}
 	/>
+	Value: {value}
 </span>
+
 <style>
 	span {
 		display: flex;

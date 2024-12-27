@@ -172,7 +172,6 @@ button.default:active {
 fieldset {
 	margin: 1.5em -1em;
 	padding: 1.5em;
-	background: yellow;
 }
 details > fieldset {
 	margin-top: -1.75em;

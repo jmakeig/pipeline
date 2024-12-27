@@ -83,9 +83,10 @@ CREATE OR REPLACE VIEW workloads AS
 		w.label,
 		w.name,
 		w.customer,
-		h.stage,
-		h.size,
-		h.engagement_lead,
+		-- NULL out deleted value flags
+		CASE WHEN -999 = h.stage THEN NULL ELSE h.stage END AS stage,
+		CASE WHEN -999 = h.size THEN NULL ELSE h.size END AS size,
+		CASE WHEN e'\uFFFD' = h.engagement_lead THEN NULL ELSE h.engagement_lead END AS engagement_lead,
 		l.updated_at AS last_touched
 	FROM _workloads AS w
 	LEFT JOIN latest AS l USING (workload)

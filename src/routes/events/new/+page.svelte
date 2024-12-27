@@ -64,32 +64,28 @@
 				<label for="stage">Stage</label>
 				<div class="contents">
 					<ToggledInput name="stage" value={form?.event.stage} placeholder=" " />
-					<p class="validation">{'asdf'}</p>
+					{#if has(form?.validations, 'stage')}
+						<p class="validation">{first(form?.validations, 'stage')?.message}</p>
+					{/if}
 					<p class="helper">
-						This is some text about the Outcome. It’s important, but may wrap if very, very long, so be
-						careful in how you style it.
+						This is some text about the Outcome. It’s important, but may wrap if very, very long, so
+						be careful in how you style it.
 					</p>
 				</div>
-				<!--
-				<input name="stage" id="stage" placeholder=" " value={form?.event.stage} />
-				<input
-					type="checkbox"
-					class="enabler"
-					name={form?.event.enabled_stage}
-					value="enabled_stage"
-					checked={false}
-				/>
-				-->
 			</div>
 			<div class="control">
 				<label for="size">Size</label>
-				<input name="size" id="size" type="text" placeholder=" " />
-				<input type="checkbox" class="enabler" />
-			</div>
-			<div class="control">
-				<label for="target_date">Target Date</label>
-				<input name="target_date" id="target_date" type="text" placeholder=" " />
-				<input type="checkbox" class="enabler" />
+				<div class="contents">
+					<ToggledInput name="size" value={form?.event.size} placeholder=" " />
+					{#if has(form?.validations, 'size')}
+						<p class="validation">{first(form?.validations, 'size')?.message}</p>
+					{/if}
+					<!--
+					<p class="helper">
+						This is some text about the Outcome. It’s important, but may wrap if very, very long, so
+						be careful in how you style it.
+					</p> -->
+				</div>
 			</div>
 		</fieldset>
 	</details>
@@ -102,8 +98,5 @@
 	#outcome {
 		min-width: 20em;
 		height: 10em;
-	}
-	input[type='checkbox'].enabler {
-		flex-basis: content;
 	}
 </style>

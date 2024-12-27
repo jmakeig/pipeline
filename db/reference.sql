@@ -11,5 +11,6 @@ INSERT INTO sales_stages(stage, name) VALUES
 	(97, 'Qualified Out'),
 	(98, 'Stalled'),
 	(99, 'Lost'),
-	(100, 'Closed')
+	(100, 'Closed'),
+	(-999, 'Deleted')
 ;

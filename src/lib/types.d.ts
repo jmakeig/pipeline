@@ -13,8 +13,10 @@ export type CustomerDeep = Customer & {
 	events: Array<Event>;
 };
 
+// export const DELETE: unique symbol = Symbol.for('DELETE');
+
 export type SalesStage = {
-	stage: number;
+	stage: 0 | 1 | 2 | 3 | 4 | 5 | 97 | 98 | 99 | 100;
 	name: string;
 };
 
@@ -55,3 +57,5 @@ export type Validation = {
 	for?: string;
 	message: string;
 };
+
+export type User = string;

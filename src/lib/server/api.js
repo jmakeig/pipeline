@@ -288,6 +288,76 @@ export async function add_event(workload, customer, outcome, happened_at) {
 }
 
 /**
+ * @template T
+ * @param {T | undefined | symbol} value
+ * @param {keyof flags} type
+ * @returns {T | (() => T)}
+ */
+function deleted(value, type) {
+	const flags = {
+		number: -999,
+		string: '\uFFFD',
+		date: 'to_timestamp(0)'
+	};
+
+	if ('symbol' === typeof value && Symbol.for('DELETED') === value) return () => flags[type];
+	return value;
+}
+
+/**
+ *
+ * @param {import('$lib/types').ID} workload
+ * @param {string} outcome
+ * @param {number} [stage]
+ * @param {number} [size]
+ * @param {import('$lib/types').User} [engagement_lead]
+ * @returns {Promise<import('$lib/types').EventNew>}
+ */
+export async function add_event_workload(workload, outcome, stage, size, engagement_lead) {
+	const attributes = {
+		workload,
+		stage: deleted(stage, 'number'),
+		size: deleted(size, 'number')
+	};
+
+	let i = 0;
+	const columns = Object.entries(attributes)
+		.filter((entry) => undefined !== entry[1])
+		.map((entry) => entry[0]);
+	const values = Object.entries(attributes)
+		.filter((entry) => undefined !== entry[1])
+		.map((entry) => ('function' === typeof entry[1] ? entry[1]() : `$${++i}`));
+	const params = Object.entries(attributes)
+		.filter((entry) => undefined !== entry[1])
+		.filter((entry) => 'function' !== typeof entry[1])
+		.map((entry) => entry[1]);
+
+	// console.log('columns', columns.join(', '));
+	// console.log('values', values.join(', '));
+	// console.log('params', params);
+
+	const append_attributes = `
+		INSERT INTO workload_attributes (${columns.join(', ')})
+		VALUES (${values.join(', ')})
+	`;
+
+	const insert_event = `
+		INSERT INTO events(workload, outcome)
+		VALUES ($1, $2)
+		RETURNING event, workload, outcome
+	`;
+
+	// console.log(append_attributes, params);
+
+	const results = await db.transaction(
+		(client) => (
+			client.query(append_attributes, params), client.query(insert_event, [workload, outcome])
+		)
+	);
+	return results.rows[0];
+}
+
+/**
  *
  * @param {string} [customer]
  * @returns
