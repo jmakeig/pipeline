@@ -37,13 +37,13 @@
 		>
 		-->
 		<form method="GET" action="/events/new">
-			<input type="hidden" name="from" value="/"/>
+			<input type="hidden" name="from" value="/" />
 			<button>Quick Add</button>
 		</form>
 		<ol class="stages">
 			{#each data.stages as stage}
 				<li>
-					<Stage {stage}>
+					<Stage value={stage} readonly>
 						<strong>{stage.name}</strong>
 						{#if stage.workloads.count > 0}
 							{' - '}
@@ -96,7 +96,7 @@
 					>
 					<td role="cell">
 						{#if follow_up.workload.stage}
-							<Stage stage={follow_up.workload.stage}>
+							<Stage value={follow_up.workload.stage} readonly>
 								{follow_up.workload.stage?.name}
 							</Stage>
 						{/if}
@@ -126,6 +126,7 @@
 		</tbody>
 	</table>
 </section>
+
 <!--
 <dialog
 	id="quick_add"
@@ -224,7 +225,7 @@
 		margin: 0.5em 0;
 	}
 
-/*
+	/*
 	dialog {
 		min-width: 20em;
 		padding: 2em 3em;

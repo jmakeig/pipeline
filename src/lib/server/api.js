@@ -456,7 +456,7 @@ export async function get_workload_urgency() {
 
 /**
  *
- * @returns {Promise<any>}
+ * @returns {Promise<Array<import('$lib/types').SalesStage & { workloads: {count: number, size: number?}}>>}
  */
 export async function get_stages_summary() {
 	const sql = `
@@ -469,7 +469,8 @@ export async function get_stages_summary() {
 			) AS workloads
 		FROM sales_stages AS s
 		LEFT JOIN workloads AS w ON s.stage = w.stage
-		WHERE s.stage < 5
+		--WHERE s.stage < 5
+		WHERE s.stage >= 0
 		GROUP BY s.stage
 		ORDER BY s.stage ASC`;
 	const results = await db.readonly(sql);

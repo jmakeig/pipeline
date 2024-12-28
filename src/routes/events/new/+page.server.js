@@ -1,4 +1,4 @@
-import { add_event, add_event_workload, get_customer_workloads } from '$lib/server/api';
+import { add_event_workload, get_customer_workloads, get_stages_summary } from '$lib/server/api';
 import { exists } from '$lib/util';
 import { has } from '$lib/validation';
 import { fail, redirect } from '@sveltejs/kit';
@@ -8,7 +8,8 @@ export async function load({ request }) {
 	const from = new URL(request.url).searchParams.get('from') ?? '/events';
 
 	const customer_workloads = await get_customer_workloads();
-	return { customer_workloads, from };
+	const stages = await get_stages_summary();
+	return { customer_workloads, stages, from };
 }
 
 /**

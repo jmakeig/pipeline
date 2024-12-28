@@ -1,9 +1,9 @@
 <script>
-	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { exists } from '$lib/util';
-	import { by, first, has } from '$lib/validation';
+	import { first, has } from '$lib/validation';
 	import ToggledInput from '$lib/components/ToggledInput.svelte';
+	import Stage from '$lib/components/Stage.svelte';
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
@@ -63,7 +63,9 @@
 			<div class="control">
 				<label for="stage">Stage</label>
 				<div class="contents">
-					<ToggledInput name="stage" value={form?.event.stage} placeholder=" " />
+					<ToggledInput name="stage" value={form?.event.stage} placeholder=" ">
+						<Stage value="" stages={data.stages} />
+					</ToggledInput>
 					{#if has(form?.validations, 'stage')}
 						<p class="validation">{first(form?.validations, 'stage')?.message}</p>
 					{/if}

@@ -1,6 +1,5 @@
 <script>
-	/** @type {{children: any, stage: import('$lib/types').SalesStage }} */
-	let { children, stage } = $props();
+	let { children = null, value, readonly = false, stages=null} = $props();
 	/** @type {Record<number, string>} */
 	const colors = {
 		0: '#00bfa0',
@@ -18,14 +17,23 @@
 	// [#e60049", "#0bb4ff", "#50e991", "#e6d800", "#9b19f5", "#ffa300", "#dc0ab4", "#b3d4ff", "#00bfa0"]
 </script>
 
-<span class="stage stage-{stage.stage}" title="{stage.stage} - {stage.name}">
-	<span class="indicator" style="background-color: {colors[stage.stage]};">{stage.stage}</span>
-	{#if children}
-		{@render children()}
-	{:else}
-		{stage.name}
-	{/if}
-</span>
+{#if readonly}
+	<span class="stage stage-{value.stage}" title="{value.stage} - {value.name}">
+		<span class="indicator" style="background-color: {colors[value.stage]};">{value.stage}</span>
+		{#if children}
+			{@render children()}
+		{:else}
+			{value.name}
+		{/if}
+	</span>
+{:else}
+	<select>
+		<option value=""> </option>
+		{#each stages as stage}
+			<option value={stage.stage}>{stage.stage}: {stage.name}</option>
+		{/each}
+	</select>
+{/if}
 
 <style>
 	.stage {
