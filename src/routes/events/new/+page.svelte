@@ -64,7 +64,8 @@
 				<label for="stage">Stage</label>
 				<div class="contents">
 					<ToggledInput name="stage" value={form?.event.stage} disabled placeholder=" ">
-						{#snippet input(value, disabled, onchange)}
+						<!-- https://github.com/sveltejs/language-tools/issues/2444#issuecomment-2258807482 -->
+						{#snippet input(/** @type {import('$lib/types').SalesStage} */value, /** @type {boolean} */disabled, /** @type {(evt: Event) => void} */onchange)}
 							<Stage {value} {disabled} {onchange} stages={data.stages} />
 						{/snippet}
 					</ToggledInput>

@@ -1,11 +1,21 @@
 <script>
+	/**
+	 * @type {{
+			children?: import('svelte').Snippet;
+			value: import('$lib/types').SalesStage;
+			stages?: Array<import('$lib/types').SalesStage>;
+			readonly?: boolean;
+			disabled?: boolean;
+			onchange?: (evt: Event) => void}
+		}
+	 */
 	let {
-		children = null,
 		value,
+		stages,
+		children,
 		readonly = false,
-		stages = null,
 		disabled = false,
-		onchange
+		onchange = (evt) => {}
 	} = $props();
 	/** @type {Record<number, string>} */
 	const colors = {
@@ -33,8 +43,8 @@
 			{value.name}
 		{/if}
 	</span>
-{:else}
-	<select {onchange} {disabled}>
+{:else if stages}
+	<select value={value?.stage} {onchange} {disabled}>
 		<option value=""> </option>
 		{#each stages as stage}
 			<option value={stage.stage}>{stage.stage}: {stage.name}</option>

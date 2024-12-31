@@ -110,6 +110,7 @@ export const actions = {
 			});
 		}
 
+		// @ts-ignore
 		const new_event = await add_event_workload(event.workload, event.outcome, stage, size);
 
 		/*
