@@ -63,8 +63,10 @@
 			<div class="control">
 				<label for="stage">Stage</label>
 				<div class="contents">
-					<ToggledInput name="stage" value={form?.event.stage} placeholder=" ">
-						<Stage value="" stages={data.stages} />
+					<ToggledInput name="stage" value={form?.event.stage} disabled placeholder=" ">
+						{#snippet input(value, disabled, onchange)}
+							<Stage {value} {disabled} {onchange} stages={data.stages} />
+						{/snippet}
 					</ToggledInput>
 					{#if has(form?.validations, 'stage')}
 						<p class="validation">{first(form?.validations, 'stage')?.message}</p>
@@ -78,7 +80,7 @@
 			<div class="control">
 				<label for="size">Size</label>
 				<div class="contents">
-					<ToggledInput name="size" value={form?.event.size} placeholder=" " />
+					<ToggledInput name="size" value={form?.event.size} disabled placeholder=" " />
 					{#if has(form?.validations, 'size')}
 						<p class="validation">{first(form?.validations, 'size')?.message}</p>
 					{/if}

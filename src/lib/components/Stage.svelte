@@ -1,5 +1,12 @@
 <script>
-	let { children = null, value, readonly = false, stages=null} = $props();
+	let {
+		children = null,
+		value,
+		readonly = false,
+		stages = null,
+		disabled = false,
+		onchange
+	} = $props();
 	/** @type {Record<number, string>} */
 	const colors = {
 		0: '#00bfa0',
@@ -27,7 +34,7 @@
 		{/if}
 	</span>
 {:else}
-	<select>
+	<select {onchange} {disabled}>
 		<option value=""> </option>
 		{#each stages as stage}
 			<option value={stage.stage}>{stage.stage}: {stage.name}</option>

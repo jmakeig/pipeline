@@ -136,10 +136,14 @@ form div.control.actions {
 	flex-direction: row-reverse;
 	gap: 0.5em;
 }
+/*
 form .control label + div.contents,
 form .control label + input,
 form .control label + textarea,
-form .control label + select {
+form .control label + select
+*/
+form .control label + *
+{
 	min-width: 10em;
 	flex-grow: 1;
 }
@@ -147,8 +151,7 @@ form .control label + select {
 form .control .contents textarea,
 form .control .contents input[type='text'],
 form .control .contents input:not([type]),
-form .control .contents select,
-form .control .contents span {
+form .control .contents select{
 	/* Fixes align-items: baseline */
 	display: block;
 	width: 100%;

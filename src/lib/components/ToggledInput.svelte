@@ -1,34 +1,28 @@
 <script>
-	import { has } from '$lib/validation';
 	import { tick } from 'svelte';
-
 	let {
-		name,
-		value: _value,
-		enabled: _enabled = false,
-		id = name,
-		type = 'text',
-		placeholder = '',
-		children = null // Defaults to input[type='text']
+		name, // Name under which to sumbit the value in the form
+		id = undefined, // Optional id, for example, for use with `label[for]`
+		value: _value, // The default value
+		disabled: _disabled = false, // Whether the input will be submitted
+		input = null, // Optional custom input. Must _not_ have a `name` attribute.
+		placeholder
 	} = $props();
-	let enabled = $state(Boolean(_enabled));
 	let value = $state(_value);
-
-	/** @type {HTMLInputElement} */
-	let enabler;
-
-	//$inspect(_enabled).with(console.trace);
+	let disabled = $state(_disabled);
 
 	/**
-	 * @param {any} input
-	 * @returns {value is {value: string}}
+	 *
+	 * @param {any?} element
+	 * @returns {element is {value: string}}
 	 */
-	function has_value(input) {
-		return (
-			input instanceof HTMLInputElement ||
-			input instanceof HTMLSelectElement ||
-			input instanceof HTMLTextAreaElement
-		);
+	function has_value(element) {
+		// const inputs = [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement];
+		// for (const input of inputs) {
+		// 	if (element instanceof input) return true;
+		// }
+		// return false;
+		return 'string' === typeof element?.value;
 	}
 
 	/**
@@ -36,48 +30,54 @@
 	 * @param {Event} evt
 	 * @returns {void}
 	 */
-	function handle_enable(evt) {
-		if (evt.target instanceof HTMLInputElement) enabled = evt.target.checked;
-		//if (enabled && input instanceof HTMLInputElement) tick().then(() => input.focus());
-
-		// Don’t bubble to container handler
-		evt.stopPropagation();
+	function handle_input_change(evt) {
+		//console.log('The change event is only triggered on user action, not by changing the value of an input programatically.');
+		if (has_value(evt.target)) value = evt.target.value;
 	}
-
 	/**
-	 *
-	 * @param {Event} evt
 	 * @returns {void}
 	 */
-	function handle_change(evt) {
-		const input = evt.target;
-		if (has_value(input)) {
-			value = input.value;
-		}
+	function handle_enable() {
+		disabled = !disabled;
+		if (!disabled)
+			tick().then(() => {
+				/* How do I focus here? */
+			});
 	}
 </script>
 
-<div onchange={handle_change}>
-	{#if children}
-		{@render children()}
-	{:else}
-		<input {id} {type} {value} disabled={!enabled} {placeholder} />
-	{/if}
+<div class="toggle">
+	<div class="input">
+		{#if input}
+			{@render input(value, disabled, handle_input_change)}
+		{:else}
+			<input
+				type="text"
+				id={id || name}
+				{value}
+				{disabled}
+				onchange={handle_input_change}
+				placeholder=" "
+			/>
+		{/if}
+	</div>
 	<input
 		type="checkbox"
 		{name}
-		checked={enabled}
 		{value}
+		checked={!disabled}
 		onchange={handle_enable}
-		bind:this={enabler}
+		class="enabler"
 	/>
-	{value}
 </div>
 
 <style>
-	div {
+	.toggle {
 		display: flex;
 		gap: 0.5em;
 		align-items: baseline;
+	}
+	.toggle > .input {
+		flex-grow: 1;
 	}
 </style>
