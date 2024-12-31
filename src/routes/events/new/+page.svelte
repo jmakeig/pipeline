@@ -101,7 +101,6 @@
 
 <style>
 	#outcome {
-		min-width: 20em;
 		height: 10em;
 	}
 </style>
