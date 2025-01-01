@@ -110,9 +110,26 @@ export const actions = {
 			});
 		}
 
-		// @ts-ignore
-		const new_event = await add_event_workload(event.workload, event.outcome, stage, size);
+		/**
+		 * Pedantic type gurad to determine if a value is valid input for a `WorkloadAttributeAction[stage]`.
+		 * @typedef {import('$lib/types').WorkloadAttributeAction} WorkloadAttributeAction
+		 * @param {number | symbol | undefined} value
+		 * @returns {value is WorkloadAttributeAction['stage']}
+		 */
+		function is_stagish(value) {
+			if (undefined === value) return true;
+			if ('symbol' === typeof value) return true;
+			const stages = [0, 1, 2, 3, 4, 5, 97, 98, 99, 100];
+			for (const st of stages) {
+				if (st === value) return true;
+			}
+			return false;
+		}
 
+		if (is_stagish(stage)) {
+			return await add_event_workload(event, { stage, size });
+		}
+		throw new TypeError(`${String(stage)} is not SalesStage['stage']`);
 		/*
 		const params = new URLSearchParams();
 		if (new_event.event) params.append('event', new_event.event);

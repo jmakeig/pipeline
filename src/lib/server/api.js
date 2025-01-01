@@ -1,5 +1,19 @@
 import { ConstraintViolation, create_connection, optional_default, prune_optional } from './db';
 
+/**
+ * @typedef {import('$lib/types').Customer} Customer
+ * @typedef {import('$lib/types').Workload} Workload
+ * @typedef {import('$lib/types').Event} Event
+ * @typedef {import('$lib/types').SalesStage} SalesStage
+ */
+
+/**
+ * @typedef {import('$lib/types').CustomerNew} CustomerNew
+ * @typedef {import('$lib/types').WorkloadNew} WorkloadNew
+ * @typedef {import('$lib/types').WorkloadAttributeAction} WorkloadAttributeAction
+ * @typedef {import('$lib/types').EventNew} EventNew
+ */
+
 export class ValidationError extends Error {
 	/**
 	 *
@@ -19,7 +33,6 @@ export class ValidationError extends Error {
 const db = create_connection();
 
 /**
- * @typedef {import('$lib/types').Customer} Customer
  * @param {Customer['label']} [customer] Customer label
  * @returns {Promise<Array<Customer>>}
  */
@@ -35,9 +48,8 @@ export async function get_customers(customer) {
 }
 
 /**
- * @typedef {import('$lib/types').CustomerDeep} CustomerExt
- * @param {CustomerExt['label']} label
- * @returns {Promise<CustomerExt>}
+ * @param {Customer['label']} label
+ * @returns {Promise<Customer>}
  */
 export async function get_customer(label) {
 	// Assumes w alias for workloads and s alias for sales_stages
@@ -135,9 +147,9 @@ export async function get_customer(label) {
 }
 
 /**
- * @param {string} [customer] Customer label
- * @param {string} [workload] Workload label
- * @returns
+ * @param {Customer['label']} [customer] Customer label
+ * @param {Workload['label']} [workload] Workload label
+ * @returns {Promise<Array<Workload>>}
  */
 export async function get_workloads(customer, workload) {
 	const sql = `SELECT
@@ -173,7 +185,7 @@ export async function get_workloads(customer, workload) {
 /**
  *
  * @param {import('$lib/types').CustomerNew} customer
- * @returns {Promise<import('$lib/types').Customer>}
+ * @returns {Promise<CustomerNew>}
  */
 export async function add_customer({ name, label, region, segment }) {
 	const sql = `
@@ -197,10 +209,8 @@ export async function add_customer({ name, label, region, segment }) {
 }
 
 /**
- * @typedef {import('$lib/types').Workload} Workload
- * @typedef {import('$lib/types').WorkloadNew} WorkloadNew
  * @param {WorkloadNew} workload
- * @returns {Promise<Workload>}
+ * @returns {Promise<WorkloadNew>}
  */
 export async function add_workload({ customer, name, label, stage }) {
 	const sql = `
@@ -225,9 +235,9 @@ export async function add_workload({ customer, name, label, stage }) {
 
 /**
  *
- * @param {string} [customer] Customer label
- * @param {string} [workload] Workload label
- * @returns
+ * @param {Customer['label']} [customer] Customer label
+ * @param {Workload['label']} [workload] Workload label
+ * @returns {Promise<Array<Event>>}
  */
 export async function get_events(customer, workload) {
 	const sql = `(
@@ -269,14 +279,10 @@ export async function get_events(customer, workload) {
 }
 
 /**
- *
- * @param {string | null} workload
- * @param {string | null} customer
- * @param {string} outcome
- * @param {Date} [happened_at]
- * @returns {Promise<import('$lib/types').EventNew>}
+ * @param {EventNew} event
+ * @returns {Promise<EventNew>}
  */
-export async function add_event(workload, customer, outcome, happened_at) {
+export async function add_event({ workload, customer, outcome, happened_at }) {
 	const sql = `
 		INSERT INTO events(workload, customer, outcome, happened_at)
 		VALUES ($1, $2, $3, ${optional_default(happened_at, 4)})
@@ -288,10 +294,10 @@ export async function add_event(workload, customer, outcome, happened_at) {
 }
 
 /**
- * @template T
- * @param {T | undefined | symbol} value
+ * @typedef {string | number | Date} SND
+ * @param {SND | symbol | undefined} value
  * @param {keyof flags} type
- * @returns {T | (() => T)}
+ * @returns {SND | (() => string | number) | undefined}
  */
 function deleted(value, type) {
 	const flags = {
@@ -300,25 +306,27 @@ function deleted(value, type) {
 		date: 'to_timestamp(0)'
 	};
 
-	if ('symbol' === typeof value && Symbol.for('DELETED') === value) return () => flags[type];
+	if (undefined === value) return value;
+	if ('symbol' === typeof value) {
+		if (Symbol.for('DELETED') === value) return () => flags[type];
+		throw new TypeError(`${String(value)} is not Symbol.for('DELETED')`);
+	}
 	return value;
 }
 
 /**
- *
- * @param {import('$lib/types').ID} workload
- * @param {string} outcome
- * @param {number} [stage]
- * @param {number} [size]
- * @param {import('$lib/types').User} [engagement_lead]
- * @returns {Promise<import('$lib/types').EventNew>}
+ * @param {EventNew} event
+ * @param {WorkloadAttributeAction} workoad
+ * @returns {Promise<EventNew>}
  */
-export async function add_event_workload(workload, outcome, stage, size, engagement_lead) {
+//export async function add_event_workload(workload, outcome, stage, size, engagement_lead) {
+export async function add_event_workload({ workload, outcome }, { stage, size }) {
 	const attributes = {
 		workload,
 		stage: deleted(stage, 'number'),
 		size: deleted(size, 'number')
 	};
+	console.log(workload, outcome, stage, size);
 
 	let i = 0;
 	const columns = Object.entries(attributes)
@@ -358,9 +366,10 @@ export async function add_event_workload(workload, outcome, stage, size, engagem
 }
 
 /**
+ * Union of customers and workloads. Used to build the dropdown for Events.
  *
- * @param {string} [customer]
- * @returns
+ * @param {Customer['label']} [customer]
+ * @returns {Promise<Array<{workload: Workload['workload']?, workload_label: Workload['label']?, workload_name: Workload['name']?, customer: Customer['customer'], customer_label: Customer['label'], customer_name: Customer['name']}>>}
  */
 export async function get_customer_workloads(customer) {
 	const sql = `
@@ -395,7 +404,7 @@ export async function get_customer_workloads(customer) {
  * Active workloads order by descending “urgency”, where urgency is
  * a function of size, age, stage, and customer segment.
  *
- * @returns {Promise<any>}
+ * @returns {Promise<Array<{workload: Workload, urgnecy: number}>>}
  */
 export async function get_workload_urgency() {
 	const sql = `
@@ -455,10 +464,10 @@ export async function get_workload_urgency() {
 }
 
 /**
- *
- * @returns {Promise<Array<import('$lib/types').SalesStage & { workloads: {count: number, size: number?}}>>}
+ * @param {SalesStage['stage']} [stage]
+ * @returns {Promise<Array<SalesStage & { workloads: {count: number, size: number?}}>>}
  */
-export async function get_stages_summary() {
+export async function get_stages_summary(stage) {
 	const sql = `
 		SELECT
 			s.stage,
