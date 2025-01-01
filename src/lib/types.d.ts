@@ -16,10 +16,10 @@ export type CustomerData = {
 	region?: Region;
 	segment?: Segment;
 };
-export type CustomerNew = Partial<CustomerData, 'customer'>;
+export type CustomerNew = Partial<CustomerData>;
 export type Customer = CustomerData & {
 	workloads: Array<Omit<Workload, 'customer'>>;
-	events: Array<Omit<EventDeep, 'customer'>>;
+	events: Array<Omit<Event, 'customer'>>;
 };
 
 export type WorkloadAttributes = {
@@ -32,7 +32,7 @@ export type WorkloadAttributes = {
 export type WorkloadAttributeAction = {
 	stage?: WorkloadAttributes['stage'] | symbol;
 	size?: WorkloadAttributes['size'] | symbol;
-	engagement_lead?: WorkloadAttributes['participant'] | symbol;
+	engagement_lead?: WorkloadAttributes['engagement_lead'] | symbol;
 };
 export type WorkloadData = {
 	workload: ID;
@@ -46,7 +46,7 @@ export type Workload = Omit<WorkloadData, 'customer' | 'stage'> & {
 	customer: Omit<Customer, 'workloads'>;
 	stage?: SalesStage;
 	last_touched: Date;
-	events: Array<Omit<EventDeep, 'workload'>>;
+	events: Array<Omit<Event, 'workload'>>;
 };
 
 export type EventData = {
@@ -66,9 +66,9 @@ type EventC = Omit<EventData, 'workload' | 'customer'> & {
 	workload?: never;
 	customer: CustomerData['customer'];
 };
-export type Event = EventW | EventC;
+export type EventBase = EventW | EventC;
 export type EventNew = Partial<EventData>;
-export type EventDeep =
+export type Event =
 	| (Omit<EventW, 'workload'> & { workload: Omit<Workload, 'events'> })
 	| (Omit<EventC, 'customer'> & { customer: Omit<Customer, 'events'> });
 
@@ -95,6 +95,7 @@ const c: Customer = {
 	],
 	events: [{ event: 'event', outcome: 'outcome', happened_at: new Date() }]
 };
+
 const w: Workload = {
 	workload: 'workload',
 	name: 'name',

@@ -1,4 +1,4 @@
-import { add_customer, add_workload, get_customer, ValidationError } from '$lib/server/api';
+import { add_customer, ValidationError } from '$lib/server/api';
 import { error, fail, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */

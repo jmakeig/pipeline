@@ -33,24 +33,85 @@ export class ValidationError extends Error {
 const db = create_connection();
 
 /**
- * @param {Customer['label']} [customer] Customer label
+ * @param {Customer['label']} [label] Customer label
  * @returns {Promise<Array<Customer>>}
  */
-export async function get_customers(customer) {
-	const sql = `SELECT
-			c.customer, c.label, c.name
+export async function get_customers(label) {
+	const sql = `
+		SELECT
+			c.customer, c.label, c.name, c.region, c.segment,
+			COALESCE(
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'workload', w.workload,
+						'label', w.label,
+						'name', w.name,
+						'stage', w.stage,
+						'size', w.size,
+						'engagement_lead', w.engagement_lead,
+						'last_touched', w.last_touched,
+						'events', w.events
+					) ORDER BY w.last_touched DESC
+				) FILTER (WHERE w.workload IS NOT NULL),
+				JSON_ARRAY()
+			) AS workloads,
+			COALESCE(
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'event', e.event,
+						'customer', e.customer,
+						'workload', e.workload,
+						'outcome', e.outcome,
+						'happened_at', e.happened_at
+					)
+					ORDER BY e.happened_at DESC
+				) FILTER (WHERE e.event IS NOT NULL),
+				JSON_ARRAY()
+			) AS events,
+			GREATEST(
+				MAX(w.last_touched),
+				MAX(e.happened_at)
+ 			) AS last_touched
 		FROM customers AS c
+		LEFT JOIN (
+			-- How do I do this without a sub-select?
+			SELECT
+				wo.workload,
+				wo.customer,
+				ANY_VALUE(wo.label) AS label,
+				ANY_VALUE(wo.name) AS name,
+				ANY_VALUE(wo.stage) AS stage,
+				ANY_VALUE(wo.size) AS size,
+				ANY_VALUE(wo.engagement_lead) AS engagement_lead,
+				ANY_VALUE(wo.last_touched) AS last_touched,
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'event', ev.event,
+						'outcome', ev.outcome,
+						'happened_at', ev.happened_at
+					)
+				) AS events
+			FROM workloads AS wo
+			LEFT JOIN events AS ev USING(workload)
+			GROUP BY wo.workload, wo.customer
+		) AS w ON c.customer = w.customer
+		LEFT JOIN events AS e ON c.customer = e.customer
 		WHERE TRUE
 			AND ($1::text IS NULL OR c.label = $1)
-		LIMIT 100 /* TODO: Need pagination */`;
-	const results = await db.readonly(sql, [customer]);
+			--AND (NULL::text IS NULL OR c.label = '')
+		GROUP BY c.customer
+		ORDER BY name
+		LIMIT 100
+`;
+	const results = await db.readonly(sql, [label]);
 	return results.rows;
 }
 
-/**
+/*
  * @param {Customer['label']} label
  * @returns {Promise<Customer>}
  */
+/*
 export async function get_customer(label) {
 	// Assumes w alias for workloads and s alias for sales_stages
 	const workload_obj = `
@@ -145,6 +206,7 @@ export async function get_customer(label) {
 	const result = await db.readonly(sql, [label]);
 	return result.rows[0];
 }
+*/
 
 /**
  * @param {Customer['label']} [customer] Customer label
