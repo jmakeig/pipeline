@@ -48,7 +48,9 @@
 	 * Optional child input, e.g. `select` or custom control.
 	 * @type {Snippet<[name: string, value?: string]> | undefined}
 	 */
-	input
+	input,
+	/** @type {string | undefined} */
+	help
 )}
 	<div class="control" class:invalid={has(validations, name)}>
 		<label for={name}>{label}</label>
@@ -60,6 +62,9 @@
 			{/if}
 			{#if has(validations, name)}
 				<p class="validation">{first(validations, name)?.message}</p>
+			{/if}
+			{#if help}
+				<p class="helper">{help}</p>
 			{/if}
 		</div>
 	</div>
@@ -80,7 +85,7 @@
 <form method="POST" action="?/new" class:invalid={has(form?.validations)} use:enhance>
 	<h2>New Customer</h2>
 	{@render control('name', form?.customer.name, 'Name', form?.validations)}
-	{@render control('label', form?.customer.label, 'Label', form?.validations)}
+	{@render control('label', form?.customer.label, 'Label', form?.validations, undefined, 'The short name for the customer that will appear in links.')}
 	{@render control(
 		'region',
 		form?.customer.region,
