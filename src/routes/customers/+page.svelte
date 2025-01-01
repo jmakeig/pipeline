@@ -8,7 +8,10 @@
 	/**
 	 * @template {unknown[]} T
 	 * @typedef {import('svelte').Snippet<T>} Snippet<T>
+	 */
+	/**
 	 * @typedef {import('$lib/types').Validation} Validation
+	 * @typedef {Snippet<[name: string, value: string | undefined]>} ControlInput
 	 */
 </script>
 
@@ -83,14 +86,14 @@
 		form?.customer.region,
 		'Region',
 		form?.validations,
-		/** @type {Snippet<[name: string, value: string | undefined]> */ region
+		/** @type {ControlInput} */ region
 	)}
 	{@render control(
 		'segment',
 		form?.customer.segment,
 		'Segment',
 		form?.validations,
-		/** @type {Snippet<[name: string, value: string | undefined]> */ segment
+		/** @type {ControlInput} */ segment
 	)}
 	<div class="control actions">
 		<button class="default">Save</button>
