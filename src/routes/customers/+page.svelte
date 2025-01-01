@@ -4,6 +4,12 @@
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
+
+	/**
+	 * @template {unknown[]} T
+	 * @typedef {import('svelte').Snippet<T>} Snippet<T>
+	 * @typedef {import('$lib/types').Validation} Validation
+	 */
 </script>
 
 <h1>Customers</h1>
@@ -33,11 +39,11 @@
 	value,
 	/** @type {string} */
 	label = name,
-	/** @type {import('$lib/types').Validation[]} */
+	/** @type {Validation[]} */
 	validations = [],
 	/**
 	 * Optional child input, e.g. `select` or custom control.
-	 * @type {import('svelte').Snippet<[name: string, value?: string]> | undefined}
+	 * @type {Snippet<[name: string, value?: string]> | undefined}
 	 */
 	input
 )}
@@ -77,14 +83,14 @@
 		form?.customer.region,
 		'Region',
 		form?.validations,
-		/** @type {import('svelte').Snippet<[name: string, value: string | undefined]> */ region
+		/** @type {Snippet<[name: string, value: string | undefined]> */ region
 	)}
 	{@render control(
 		'segment',
 		form?.customer.segment,
 		'Segment',
 		form?.validations,
-		/** @type {import('svelte').Snippet<[name: string, value: string | undefined]> */ segment
+		/** @type {Snippet<[name: string, value: string | undefined]> */ segment
 	)}
 	<div class="control actions">
 		<button class="default">Save</button>
