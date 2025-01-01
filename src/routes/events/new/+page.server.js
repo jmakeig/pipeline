@@ -118,7 +118,7 @@ export const actions = {
 		 */
 		function is_stagish(value) {
 			if (undefined === value) return true;
-			if ('symbol' === typeof value) return true;
+			if (Symbol.for('DELETE') === value) return true;
 			const stages = [0, 1, 2, 3, 4, 5, 97, 98, 99, 100];
 			for (const st of stages) {
 				if (st === value) return true;
