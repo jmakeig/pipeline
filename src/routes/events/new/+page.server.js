@@ -1,5 +1,5 @@
 import { add_event_workload, get_customer_workloads, get_stages_summary } from '$lib/server/api';
-import { exists } from '$lib/util';
+import { s } from '$lib/util';
 import { has } from '$lib/validation';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -10,36 +10,6 @@ export async function load({ request }) {
 	const customer_workloads = await get_customer_workloads();
 	const stages = await get_stages_summary();
 	return { customer_workloads, stages, from };
-}
-
-/**
- *
- * @param {any} value
- * @returns {string | undefined}
- */
-function s(value) {
-	if (!exists(value)) return undefined;
-	return String(value);
-}
-
-/**
- *
- * @param {any} value
- * @returns {Date | undefined}
- */
-function d(value) {
-	if (!exists(value)) return undefined;
-	return new Date(Date.parse(String(value)));
-}
-
-/**
- *
- * @param {any} value
- * @returns {number | undefined}
- */
-function n(value) {
-	if (!exists(value)) return undefined;
-	return parseFloat(value);
 }
 
 /** @satisfies {import('./$types').Actions} */

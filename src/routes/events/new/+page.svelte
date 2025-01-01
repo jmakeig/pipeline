@@ -95,7 +95,7 @@
 		</fieldset>
 	</details>
 	<div class="control actions">
-		<button>Save</button>
+		<button class="default">Save</button>
 	</div>
 </form>
 

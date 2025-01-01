@@ -39,6 +39,7 @@ const db = create_connection();
 export async function get_customers(label) {
 	const sql = `
 		SELECT
+			-- Functional dependencies: https://modern-sql.com/caniuse/any_value
 			c.customer, c.label, c.name, c.region, c.segment,
 			COALESCE(
 				JSON_AGG(
@@ -214,36 +215,67 @@ export async function get_customer(label) {
  * @returns {Promise<Array<Workload>>}
  */
 export async function get_workloads(customer, workload) {
-	const sql = `SELECT
-			w.workload,
-			w.label,
-			w.name,
-			w.customer,
-			c.label AS customer_label,
-			c.name AS customer_name,
-			c2.last_happened_at,
-			c2.events_count
-		FROM workloads AS w
-		INNER JOIN customers AS c USING(customer)
-		LEFT JOIN (
-			SELECT
-				e.workload,
-				MAX(e.happened_at) AS last_happened_at,
-				COUNT(e.happened_at) AS events_count
-			FROM events AS e
-			WHERE e.workload IS NOT NULL
-			GROUP BY e.workload
-		) AS c2 USING(workload)
-		WHERE TRUE
-			AND ($1::text IS NULL OR c.label = $1)
-			AND ($2::text IS NULL OR w.label = $2)
-		LIMIT 100 /* TODO: Need pagination */
-		`;
+	// const sql = `SELECT
+	// 		w.workload,
+	// 		w.label,
+	// 		w.name,
+	// 		w.customer,
+	// 		c.label AS customer_label,
+	// 		c.name AS customer_name,
+	// 		c2.last_happened_at,
+	// 		c2.events_count
+	// 	FROM workloads AS w
+	// 	INNER JOIN customers AS c USING(customer)
+	// 	LEFT JOIN (
+	// 		SELECT
+	// 			e.workload,
+	// 			MAX(e.happened_at) AS last_happened_at,
+	// 			COUNT(e.happened_at) AS events_count
+	// 		FROM events AS e
+	// 		WHERE e.workload IS NOT NULL
+	// 		GROUP BY e.workload
+	// 	) AS c2 USING(workload)
+	// 	WHERE TRUE
+	// 		AND ($1::text IS NULL OR c.label = $1)
+	// 		AND ($2::text IS NULL OR w.label = $2)
+	// 	LIMIT 100 /* TODO: Need pagination */
+	// 	`;
 	// console.log('get_workloads', sql, [...arguments]);
-	const results = await db.readonly(sql, [customer, workload]);
+	const sql = `
+		SELECT
+			wo.workload,
+			ANY_VALUE(wo.label) AS label,
+			ANY_VALUE(wo.name) AS name,
+			--wo.customer,
+			JSON_AGG(DISTINCT cu) AS customer,
+			ANY_VALUE(wo.stage) AS stage, -- TODO
+			ANY_VALUE(wo.size) AS size,
+			ANY_VALUE(wo.engagement_lead) AS engagement_lead,
+			ANY_VALUE(wo.last_touched) AS last_touched,
+			--COUNT(ev),
+			COALESCE(
+				JSON_AGG(
+					JSON_BUILD_OBJECT(
+						'event', ev.event,
+						'outcome', ev.outcome,
+						'happened_at', ev.happened_at
+					)
+				) FILTER (WHERE ev.event IS NOT NULL),
+				JSON_ARRAY()
+			) AS events
+		FROM workloads AS wo
+		LEFT JOIN events AS ev ON wo.workload = ev.workload
+		JOIN customers AS cu ON wo.customer = cu.customer
+		WHERE TRUE
+			AND ($1::text IS NULL OR wo.label = $1)
+			--AND (NULL::text IS NULL OR wo.label = '$1')
+		GROUP BY wo.workload
+		ORDER BY name ASC
+	`;
+	const results = await db.readonly(sql, [workload]);
 	return results.rows;
 }
-//import('$lib/types').Customer
+
 /**
  *
  * @param {import('$lib/types').CustomerNew} customer
