@@ -1,6 +1,7 @@
 /* https://www.totaltypescript.com/how-to-test-your-types */
 
 type ID = string; // UUID
+type ISODate = string;
 
 type Region = 'NORTHAM' | 'EMEA' | 'JAPAC' | 'LATAM';
 type Segment = 'Select' | 'Enterprise' | 'Corporate' | 'SMB';
@@ -27,7 +28,7 @@ export type WorkloadAttributes = {
 	stage: SalesStage['stage'];
 	size: number;
 	engagement_lead: Participant;
-	updated_at: Date;
+	updated_at: ISODate; // ISODate
 };
 export type WorkloadAttributeAction = {
 	stage?: WorkloadAttributes['stage'] | symbol;
@@ -45,7 +46,7 @@ export type WorkloadNew = Partial<WorkloadData>;
 export type Workload = Omit<WorkloadData, 'customer' | 'stage'> & {
 	customer: Omit<Customer, 'workloads'>;
 	stage?: SalesStage;
-	last_touched: Date;
+	last_touched: ISODate;
 	events: Array<Omit<Event, 'workload'>>;
 };
 
@@ -54,7 +55,7 @@ export type EventData = {
 	workload?: WorkloadData['workload'];
 	customer?: CustomerData['customer'];
 	outcome: string;
-	happened_at: Date;
+	happened_at: ISODate;
 	team_participants?: Array<Participant>;
 	field_participants?: Array<Participant>;
 };

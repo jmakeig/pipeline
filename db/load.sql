@@ -41,7 +41,9 @@ INSERT INTO _workloads (workload, customer, name, label) VALUES
 	('a4f0e9d8-c7b6-4a5d-4c3b-2a10f9e8d7c6', '0c9d8e7f-6b5a-4987-312e-0f9c8d7b6a54', 'Hydra', 'hydra'),
 	('281f0e9d-8c7b-46a5-d4c3-b2a10f9e8d7c', '7c6d5b4a-3928-41f0-e0d9-c8b7a6958473', 'Pandora', 'pandora'),
 	('0e9d8c7b-6a5d-4c3b-2a10-f9e8d7c6b5a4', 'a1b2c3d4-e5f6-4789-8a9b-c0d1e2f34567', 'Elysium', 'elysium'),
-	('9d8c7b6a-5d4c-3b2a-10f9-e8d7c6b5a4f0', '7c6d5b4a-3928-41f0-e0d9-c8b7a6958473', 'Chronos', 'chronos')
+	('9d8c7b6a-5d4c-3b2a-10f9-e8d7c6b5a4f0', '7c6d5b4a-3928-41f0-e0d9-c8b7a6958473', 'Chronos', 'chronos'),
+	-- Workload without events to test edge case of CROSS vs. LEFT JOIN
+	('01942945-5357-7fed-b256-5e1b062bb83d', '0c9d8e7f-6b5a-4987-312e-0f9c8d7b6a54', 'Lonely Traveler', 'lonely-traveler')
 ;
 
 
