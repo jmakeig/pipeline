@@ -58,13 +58,23 @@
 			{#if input}
 				{@render input(name, value)}
 			{:else}
-				<input {name} id={name} {value} placeholder=" " />
+				<input
+					{name}
+					id={name}
+					{value}
+					placeholder=" "
+					aria-invalid={has(validations, name)}
+					aria-errormessage={has(validations, name) ? `${name}-error` : undefined}
+					aria-describedby="{name}-help"
+				/>
 			{/if}
 			{#if has(validations, name)}
-				<p class="validation">{first(validations, name)?.message}</p>
+				<p class="validation" id="{name}-error" aria-live="assertive">
+					{first(validations, name)?.message}
+				</p>
 			{/if}
 			{#if help}
-				<p class="helper">{help}</p>
+				<p class="helper" id="{name}-help">{help}</p>
 			{/if}
 		</div>
 	</div>
@@ -85,7 +95,14 @@
 <form method="POST" action="?/new" class:invalid={has(form?.validations)} use:enhance>
 	<h2>New Customer</h2>
 	{@render control('name', form?.customer.name, 'Name', form?.validations)}
-	{@render control('label', form?.customer.label, 'Label', form?.validations, undefined, 'The short name for the customer that will appear in links.')}
+	{@render control(
+		'label',
+		form?.customer.label,
+		'Label',
+		form?.validations,
+		undefined,
+		'The short name for the customer that will appear in links.'
+	)}
 	{@render control(
 		'region',
 		form?.customer.region,

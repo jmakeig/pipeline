@@ -58,6 +58,7 @@
 				{disabled}
 				onchange={handle_input_change}
 				placeholder=" "
+				title={disabled ? 'Use the checkbox to enable' : ''}
 			/>
 		{/if}
 	</div>
