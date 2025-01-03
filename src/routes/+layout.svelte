@@ -60,18 +60,26 @@
 	}
 
 	.debug {
-		margin: 1em 0;
+		margin: 2rem 0;
 		padding: 1em;
 
-		font-size: 0.9em;
+		font-size: 0.75em;
 		color: #666;
 		background: #eee;
+
+		border-radius: 0.5em;
 	}
 	.debug table {
-		width: auto;
+		width: 100%;
+		/* https://stackoverflow.com/a/50782523/563324 */
+		table-layout: fixed;
 		margin: 1em 0;
 	}
 	.debug table th[role='rowheader'] {
+		width: 20em;
 		vertical-align: top;
+	}
+	.debug pre {
+		overflow: auto;
 	}
 </style>
