@@ -344,40 +344,77 @@ export async function add_workload({ customer, name, label, stage }) {
  * @returns {Promise<Array<Event>>}
  */
 export async function get_events(customer, workload) {
-	const sql = `(
-			-- Join on workload, ignore NULL customer
+	const sql = `
+		WITH _workloads AS (
 			SELECT
-				e.event,
-				c.label AS customer_label,
-				c.name AS customer_name,
-				w.label AS workload_label,
-				w.name AS workload_name,
-				e.outcome,
-				e.happened_at
-			FROM events AS e
-			INNER JOIN workloads AS w ON e.workload = w.workload
-			INNER JOIN customers AS c ON w.customer = c.customer
-			WHERE TRUE
-				AND ($1::text IS NULL OR c.label = $1)
-				AND ($2::text IS NULL OR w.label = $2)
-		) UNION ALL (
-			-- Join on customer, given NULL workload
-			SELECT
-				e.event,
-				c.label AS customer_label,
-				c.name AS customer_name,
-				NULL AS workload_label,
-				NULL AS workload_name,
-				e.outcome,
-				e.happened_at
-			FROM events AS e
-			INNER JOIN customers AS c ON e.customer = c.customer
-			WHERE TRUE
-				AND ($1::text IS NULL OR c.label = $1)
+				w.workload
+				,w.label
+				,w.name
+				,c.customer
+				,s.stage
+				,w.size
+				,w.engagement_lead
+				,w.last_touched
+			FROM workloads AS w
+			JOIN LATERAL(
+				SELECT
+					JSON_BUILD_OBJECT(
+						'customer', c.customer
+						,'label', c.label
+						,'name', c.name
+						,'region', c.region
+						,'segment', c.segment
+						,'lead', c.lead
+					) AS customer
+				FROM customers AS c
+				WHERE c.customer = w.customer
+			) AS c ON true
+			LEFT JOIN LATERAL (
+				SELECT
+					JSON_BUILD_OBJECT(
+						'stage', s.stage
+						,'name', s.name
+					) AS stage
+				FROM sales_stages AS s
+				WHERE
+					s.stage = w.stage
+			) AS s ON true
 		)
-		ORDER BY happened_at DESC
+		SELECT
+			e.event
+			,w.workload
+			,c.customer
+			,e.outcome
+			,e.happened_at
+		FROM events AS e -- 50
+		LEFT JOIN LATERAL (
+			SELECT
+				ROW_TO_JSON(w) AS workload
+				,w.label AS label
+			FROM _workloads AS w
+			WHERE w.workload = e.workload
+		) AS w ON true
+		LEFT JOIN LATERAL(
+			SELECT
+				JSON_BUILD_OBJECT(
+					'customer', c.customer
+					,'label', c.label
+					,'name', c.name
+					,'region', c.region
+					,'segment', c.segment
+					,'lead', c.lead
+				) AS customer
+				,c.label AS label
+			FROM customers AS c
+			WHERE c.customer = e.customer
+		) AS c ON true
+		WHERE TRUE
+			AND ($1::text IS NULL OR c.label = $1)
+			AND ($2::text IS NULL OR w.label = $2)
+		ORDER BY
+			e.happened_at DESC
 		LIMIT 100 /* TODO: Need pagination */
-		`;
+	`;
 	const results = await db.readonly(sql, [customer, workload]);
 	return results.rows;
 }
