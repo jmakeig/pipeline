@@ -103,6 +103,14 @@ button:disabled,
 fieldset:disabled {
 	background: var(--color-input-disabled);
 }
+input[type='text']:read-only,
+input:not([type]):read-only,
+textarea:read-only,
+select:read-only,
+button:read-only,
+fieldset:read-only {
+	background: var(--color-input-disabled);
+}
 form div.control {
 	display: flex;
 	gap: 1em 2em;
