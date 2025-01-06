@@ -1,4 +1,5 @@
 import { slug } from '$lib/format';
+import { add_customer, ValidationError } from '$lib/server/api';
 import { exists } from '$lib/util';
 import { has, s } from '$lib/validation';
 import { fail } from '@sveltejs/kit';
@@ -61,7 +62,6 @@ export const actions = {
 		}
 		// Nullable
 		if (null !== region && !is_region(region)) {
-			console.log('region', region);
 			validations.push({ for: 'region', message: `"${String(region)} is not a valid region."` });
 		}
 		// Nullable
@@ -70,7 +70,7 @@ export const actions = {
 		}
 
 		/** @type {import('$lib/types').CustomerNew} */
-		const customer = {
+		const new_customer = {
 			name,
 			label,
 			region: is_region(region) ? region : null, // Oof
@@ -80,12 +80,22 @@ export const actions = {
 		if (has(validations)) {
 			return fail(400, {
 				validations,
-				customer
+				customer: new_customer
 			});
 		}
 
-		console.log(customer);
-
-		return { customer };
+		try {
+			const customer = await add_customer(new_customer);
+			return { customer };
+		} catch (error) {
+			if (error instanceof ValidationError) {
+				validations.push({
+					for: 'name',
+					message: `${new_customer.name} already exists. Names and labels (${slug(new_customer.name ?? '')}) must be unique.`
+				});
+				return fail(400, { validations, customer: new_customer });
+			}
+			throw error;
+		}
 	}
 };

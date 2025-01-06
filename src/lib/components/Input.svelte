@@ -1,7 +1,7 @@
 <script>
 	import { first, has } from '$lib/validation';
 
-	/** @type {{name:string; value?: string; label: string, validations?: import('$lib/types').Validation[], children?: import('svelte').Snippet; help?: string; onchange?: (evt:Event) => void}}*/
+	/** @type {{name:string; value?: string?; label: string, validations?: import('$lib/types').Validation[], children?: import('svelte').Snippet; help?: string; onchange?: (evt:Event) => void}}*/
 	let { name, value, label = name, validations = [], children, help, onchange } = $props();
 </script>
 

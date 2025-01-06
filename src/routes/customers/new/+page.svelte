@@ -20,7 +20,18 @@
 	}
 </script>
 
-<form method="POST" action="?/new" class:invalid={has(form?.validations)} use:enhance>
+<!--
+use:enhance={() => {
+	return async ({ update }) => {
+		update({ reset: false });
+	};
+}}
+-->
+<form method="POST" action="?/new" class:invalid={has(form?.validations)} use:enhance={() => {
+	return async ({ update }) => {
+		update({ reset: false });
+	};
+}}>
 	<h2>New Customer</h2>
 	<Input
 		name="name"
@@ -33,20 +44,22 @@
 			: ' '}also needs to be unique."
 	/>
 	<Input name="segment" label="Segment" validations={form?.validations}>
-		<select name="segment" id="segment" value={form?.customer.segment}>
-			<option value=""></option>
+		<select name="segment" id="segment" value={form?.customer.segment ?? ''}>
+			<option value="" selected></option>
 			<option value="Select">Select</option>
 			<option value="Enterprise">Enterprise</option>
 			<option value="Corporate">Corporate</option>
 			<option value="SMB">SMB</option>
 		</select>
+		{String(form?.customer.segment)}
 	</Input>
 	<Input name="region" label="Region" validations={form?.validations}>
-		<select name="region" id="region" value={form?.customer.region}>
-			<option value=""></option>
+		<select name="region" id="region" value={form?.customer.region ?? ''}>
+			<option value="" selected></option>
 			<option value="NORTHAM">North America (NORTHAM)</option>
 			<option value="EMEA">Europe, Middle East, Africa (EMEA)</option>
 		</select>
+		{String(form?.customer.region)}
 	</Input>
 	<div class="control actions">
 		<button class="default">Save</button>

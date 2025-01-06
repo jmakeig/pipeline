@@ -2,7 +2,7 @@
 
 /* https://stackoverflow.com/a/77236776/563324 */
 type PartialNullable<T> = {
-	[P in keyof T]?: T[P] | null;
+	[P in keyof T]?: T[P] | null; // Is this too loose? I think it should require the properties, but just allow nulls as values.
 };
 
 type ID = string; // UUID
