@@ -1,5 +1,7 @@
 /** @typedef {import("./types").Validation} Validation */
 
+import { exists } from './util';
+
 /**
  *
  * @param {Validation[]} [validations]
@@ -44,4 +46,56 @@ export function first(validations, name) {
  */
 export function has(validations, name) {
 	return Boolean(first(validations, name));
+}
+
+/**
+ *
+ * @param {FormData} form
+ * @returns {string}
+ */
+function serialize(form) {
+	return Array.from(form.entries())
+		.map((entry) => entry[0] + ': ' + entry[1])
+		.join(',\n');
+}
+
+/**
+ * `FormData.get()` returns `null` for keys that don’t exist. That makes it difficult to differntiate empty strings from actually missing values.
+ * `FormData.get() as string` solves the typing problem for `string` values, but not the missing value problem.
+ * This function returns `undefined` for actually missing values and `null` for “empty” values.
+ * The latter behavior is togglable using `empty_valid`. `empty_valid = true` will return empty string when `value === ''`.
+ *
+ * @param {FormDataEntryValue?} value
+ * @param {boolean} [empty_valid = false]
+ * @returns {string | null | undefined}
+ * @throws {TypeError} If `value` is `undefined`
+ */
+export function s(value, empty_valid = false) {
+	if (undefined === value) throw new TypeError('undefined');
+	if (null === value) return undefined;
+	if (!empty_valid && '' === value) return null;
+	return String(value);
+}
+/**
+ * @param {FormDataEntryValue?} value
+ * @param {boolean} [empty_valid = false]
+ * @returns {number | null | undefined}
+ * @throws {TypeError}
+ */
+export function n(value, empty_valid = false) {
+	const n = s(value, empty_valid);
+	if (!exists(n)) return n;
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
+	// parseFloat() picks the longest substring starting from the beginning that generates a valid number literal. If it encounters an invalid character, it returns the number represented up to that point, ignoring the invalid character and all characters following it.
+	return parseFloat(n);
+}
+/**
+ * @param {FormDataEntryValue?} value
+ * @param {boolean} [empty_valid = false]
+ * @returns {Date | null | undefined}
+ */
+export function d(value, empty_valid = false) {
+	const d = s(value, empty_valid);
+	if (!exists(d)) return d;
+	if (d) return new Date(Date.parse(d));
 }

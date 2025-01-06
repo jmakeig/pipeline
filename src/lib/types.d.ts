@@ -1,5 +1,10 @@
 /* https://www.totaltypescript.com/how-to-test-your-types */
 
+/* https://stackoverflow.com/a/77236776/563324 */
+type PartialNullable<T> = {
+	[P in keyof T]?: T[P] | null;
+};
+
 type ID = string; // UUID
 type ISODate = string;
 
@@ -17,7 +22,7 @@ export type CustomerData = {
 	region?: Region;
 	segment?: Segment;
 };
-export type CustomerNew = Partial<CustomerData>;
+export type CustomerNew = PartialNullable<CustomerData>;
 export type Customer = CustomerData & {
 	workloads: Array<Omit<Workload, 'customer'>>;
 	events: Array<Omit<Event, 'customer'>>;
@@ -40,9 +45,9 @@ export type WorkloadData = {
 	name: string;
 	label: string;
 	customer: CustomerData['customer'];
-} & Partial<Omit<WorkloadAttributes, 'attribute' | 'updated_at'>>;
+} & PartialNullable<Omit<WorkloadAttributes, 'attribute' | 'updated_at'>>;
 
-export type WorkloadNew = Partial<WorkloadData>;
+export type WorkloadNew = PartialNullable<WorkloadData>;
 export type Workload = Omit<WorkloadData, 'customer' | 'stage'> & {
 	customer: Omit<Customer, 'workloads'>;
 	stage?: SalesStage;
@@ -68,7 +73,7 @@ type EventC = Omit<EventData, 'workload' | 'customer'> & {
 	customer: CustomerData['customer'];
 };
 export type EventBase = EventW | EventC;
-export type EventNew = Partial<EventData>;
+export type EventNew = PartialNullable<EventData>;
 export type Event =
 	| (Omit<EventW, 'workload'> & { workload: Omit<Workload, 'events'> })
 	| (Omit<EventC, 'customer'> & { customer: Omit<Customer, 'events'> });

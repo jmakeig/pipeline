@@ -1,6 +1,6 @@
 import { slug } from '$lib/format';
-import { exists, s } from '$lib/util';
-import { has } from '$lib/validation';
+import { exists } from '$lib/util';
+import { has, s } from '$lib/validation';
 import { fail } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
@@ -53,15 +53,19 @@ export const actions = {
 		} else if (name?.length < 2) {
 			validations.push({ for: 'name', message: 'Name must be at least two characters.' });
 		}
+		// This is redundant since the label is calculated server-side
 		if (!exists(label)) {
 			validations.push({ for: 'label', message: 'Missing label.' });
 		} else if (label?.length < 2) {
 			validations.push({ for: 'label', message: 'Label must be at least two characters.' });
 		}
-		if (!is_region(region)) {
+		// Nullable
+		if (null !== region && !is_region(region)) {
+			console.log('region', region);
 			validations.push({ for: 'region', message: `"${String(region)} is not a valid region."` });
 		}
-		if (!is_segment(segment)) {
+		// Nullable
+		if (null !== segment && !is_segment(segment)) {
 			validations.push({ for: 'segment', message: `"${String(segment)} is not a valid segment."` });
 		}
 
@@ -69,8 +73,8 @@ export const actions = {
 		const customer = {
 			name,
 			label,
-			region: is_region(region) ? region : undefined,
-			segment: is_segment(segment) ? segment : undefined
+			region: is_region(region) ? region : null, // Oof
+			segment: is_segment(segment) ? segment : null // Oof
 		};
 
 		if (has(validations)) {
