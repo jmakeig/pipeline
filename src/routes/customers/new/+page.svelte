@@ -20,18 +20,17 @@
 	}
 </script>
 
-<!--
-use:enhance={() => {
-	return async ({ update }) => {
-		update({ reset: false });
-	};
-}}
--->
-<form method="POST" action="?/new" class:invalid={has(form?.validations)} use:enhance={() => {
-	return async ({ update }) => {
-		update({ reset: false });
-	};
-}}>
+<form
+	method="POST"
+	action="?/new"
+	class:invalid={has(form?.validations)}
+	use:enhance={() => {
+		return async ({ update }) => {
+			update({ reset: false });
+		};
+	}}
+>
+	{#if form?.customer}<p style="color: var(--color-success)">Success!</p>{/if}
 	<h2>New Customer</h2>
 	<Input
 		name="name"
@@ -51,15 +50,15 @@ use:enhance={() => {
 			<option value="Corporate">Corporate</option>
 			<option value="SMB">SMB</option>
 		</select>
-		{String(form?.customer.segment)}
 	</Input>
 	<Input name="region" label="Region" validations={form?.validations}>
 		<select name="region" id="region" value={form?.customer.region ?? ''}>
 			<option value="" selected></option>
 			<option value="NORTHAM">North America (NORTHAM)</option>
 			<option value="EMEA">Europe, Middle East, Africa (EMEA)</option>
+			<option value="JAPAC">Japan, Asia Pacific (JAPAC)</option>
+			<option value="LATAM">Latin America (LATAM)</option>
 		</select>
-		{String(form?.customer.region)}
 	</Input>
 	<div class="control actions">
 		<button class="default">Save</button>

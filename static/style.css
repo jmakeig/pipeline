@@ -4,6 +4,7 @@
 	--color-link: #1d4ed8;
 	--color-link-visited: #5b21b6;
 	--color-error: #ef4444;
+	--color-success: #16a34a;
 	--color-error-secondary: #fecaca;
 	--color-background: #f9fafb;
 	--color-border: #d1d5db;
@@ -152,8 +153,7 @@ form .control label + input,
 form .control label + textarea,
 form .control label + select
 */
-form .control label + *
-{
+form .control label + * {
 	min-width: 10em;
 	flex-grow: 1;
 }
@@ -161,7 +161,7 @@ form .control label + *
 form .control .contents textarea,
 form .control .contents input[type='text'],
 form .control .contents input:not([type]),
-form .control .contents select{
+form .control .contents select {
 	/* Fixes align-items: baseline */
 	display: block;
 	width: 100%;

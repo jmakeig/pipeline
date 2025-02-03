@@ -39,9 +39,10 @@ export function first(validations, name) {
 	return undefined;
 }
 /**
+ * Has at least one validation.
  *
  * @param {Validation[]} [validations]
- * @param {string} [name]
+ * @param {string} [name] Omitted will evaluate all validations, regardless of name
  * @returns {boolean}
  */
 export function has(validations, name) {
@@ -98,4 +99,24 @@ export function d(value, empty_valid = false) {
 	const d = s(value, empty_valid);
 	if (!exists(d)) return d;
 	if (d) return new Date(Date.parse(d));
+}
+
+/**
+ * @template In, Out
+ * @typedef {import('$lib/types').Result<In, Out>} Result
+ */
+/**
+ * @template In, Out
+ * @typedef {import('$lib/types').InvalidResult<In, Out>} InvalidResult
+ */
+
+/**
+ * Whether a result contains a validation
+ * @template T
+ * @param {Result<unknown, T>} result
+ * @returns {result is InvalidResult<unknown, T>}
+ */
+export function is_invalid(result) {
+	// return 'validations' in (result as InvalidResult<unknown, T>); // Yuck!
+	return 'validations' in /** @type {InvalidResult<unknown, T>} */ (result);
 }

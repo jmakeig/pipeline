@@ -1,4 +1,6 @@
 import { ConstraintViolation, create_connection, optional_default, prune_optional } from './db';
+import { validate_customer } from '$lib/entity';
+import { has } from '$lib/validation';
 
 /**
  * @typedef {import('$lib/types').Customer} Customer
@@ -12,6 +14,11 @@ import { ConstraintViolation, create_connection, optional_default, prune_optiona
  * @typedef {import('$lib/types').WorkloadNew} WorkloadNew
  * @typedef {import('$lib/types').WorkloadAttributeAction} WorkloadAttributeAction
  * @typedef {import('$lib/types').EventNew} EventNew
+ */
+
+/**
+ * @template In, Out
+ * @typedef {import('$lib/types').Result<In, Out>} Result
  */
 
 export class ValidationError extends Error {
@@ -288,28 +295,31 @@ export async function get_workloads(customer, workload) {
 
 /**
  *
- * @param {import('$lib/types').CustomerNew} customer
- * @returns {Promise<CustomerNew>}
+ * @param {CustomerNew} customer_new
+ * @returns {Promise<Result<CustomerNew, Customer>>}
  */
-export async function add_customer({ name, label, region, segment }) {
+export async function add_customer(customer_new) {
+	const { name, label, region, segment } = customer_new;
 	const sql = `
 		INSERT INTO customers(name, label, region, segment)
 		VALUES ($1, $2, $3, $4)
 		RETURNING customer, name, label, region, segment`;
+
+	const validations = validate_customer(customer_new);
+	if (has(validations)) return { input: customer_new, validations };
+
 	let results;
 	try {
-		results = await db.query(sql, [name, label, region || null, segment || null]);
+		results = await db.query(sql, [name, label, region, segment]);
 	} catch (err) {
 		if (err instanceof ConstraintViolation) {
-			throw new ValidationError(
-				[{ for: 'name', message: `Customer “${name}” (${label}) already exists.` }],
-				409,
-				err
-			);
+			validations.push({ for: 'name', message: `Customer “${name}” (${label}) already exists.` });
+		} else {
+			throw err;
 		}
-		throw err;
 	}
-	return results.rows[0];
+	if (has(validations)) return { input: customer_new, validations };
+	return results?.rows[0];
 }
 
 /**

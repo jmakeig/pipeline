@@ -1,28 +1,48 @@
 /* https://www.totaltypescript.com/how-to-test-your-types */
 
 /* https://stackoverflow.com/a/77236776/563324 */
-type PartialNullable<T> = {
-	[P in keyof T]?: T[P] | null; // Is this too loose? I think it should require the properties, but just allow nulls as values.
+type Nullable<T> = {
+	[P in keyof T]: T[P] | null;
 };
 
-type ID = string; // UUID
+// https://stackoverflow.com/a/57386444/563324
+/**
+ * Excludes (optional and `never`) properties from `T` that extend the type `V`.
+ */
+type ExcludeMatch<T, V> = Pick<T, { [K in keyof T]-?: T[K] extends V ? never : K }[keyof T]>;
+
+/** Replaces properties matching a type with a “looser” type, defaulting to `string`. */
+type Loosen<T, Match, Replace = string> = {
+	[P in keyof T]: T[P] extends NonNullable<Match>
+		? Replace
+		: T[P] extends Match | null
+			? Replace | null
+			: T[P];
+};
+
+/** TypeScript doesn’t support nominal types. This is a hack to provide matching on this specifc type,
+ *  not just `string`, in a conditional epxression in a mapped type.
+ */
+type ID = string & { readonly __brand: unique symbol };
 type ISODate = string;
 
-type Region = 'NORTHAM' | 'EMEA' | 'JAPAC' | 'LATAM';
-type Segment = 'Select' | 'Enterprise' | 'Corporate' | 'SMB';
+export type Region = 'NORTHAM' | 'EMEA' | 'JAPAC' | 'LATAM';
+export type Segment = 'Select' | 'Enterprise' | 'Corporate' | 'SMB';
 export type SalesStage = {
 	stage: 0 | 1 | 2 | 3 | 4 | 5 | 97 | 98 | 99 | 100;
 	name: string;
 };
+export type Participant = string;
 
 export type CustomerData = {
 	customer: ID;
 	name: string;
 	label: string;
-	region?: Region;
-	segment?: Segment;
+	region: Region | null;
+	segment: Segment | null;
 };
-export type CustomerNew = PartialNullable<CustomerData>;
+
+export type CustomerNew = Nullable<Loosen<ExcludeMatch<CustomerData, ID>, Segment | Region>>;
 export type Customer = CustomerData & {
 	workloads: Array<Omit<Workload, 'customer'>>;
 	events: Array<Omit<Event, 'customer'>>;
@@ -35,19 +55,23 @@ export type WorkloadAttributes = {
 	engagement_lead: Participant;
 	updated_at: ISODate; // ISODate
 };
+
+/** Inidicator that an attribute has been deleted. `null` means “no change”.  */
+type DeleteSignal = symbol;
+
 export type WorkloadAttributeAction = {
-	stage?: WorkloadAttributes['stage'] | symbol;
-	size?: WorkloadAttributes['size'] | symbol;
-	engagement_lead?: WorkloadAttributes['engagement_lead'] | symbol;
+	stage: WorkloadAttributes['stage'] | DeleteSignal | null;
+	size: WorkloadAttributes['size'] | DeleteSignal | null;
+	engagement_lead: WorkloadAttributes['engagement_lead'] | DeleteSignal | null;
 };
 export type WorkloadData = {
 	workload: ID;
 	name: string;
 	label: string;
 	customer: CustomerData['customer'];
-} & PartialNullable<Omit<WorkloadAttributes, 'attribute' | 'updated_at'>>;
+} & Nullable<Omit<WorkloadAttributes, 'attribute' | 'updated_at'>>;
 
-export type WorkloadNew = PartialNullable<WorkloadData>;
+export type WorkloadNew = Nullable<WorkloadData>;
 export type Workload = Omit<WorkloadData, 'customer' | 'stage'> & {
 	customer: Omit<Customer, 'workloads'>;
 	stage?: SalesStage;
@@ -73,17 +97,34 @@ type EventC = Omit<EventData, 'workload' | 'customer'> & {
 	customer: CustomerData['customer'];
 };
 export type EventBase = EventW | EventC;
-export type EventNew = PartialNullable<EventData>;
+export type EventNew = Nullable<EventData>;
 export type Event =
 	| (Omit<EventW, 'workload'> & { workload: Omit<Workload, 'events'> })
 	| (Omit<EventC, 'customer'> & { customer: Omit<Customer, 'events'> });
 
-export type Validation = {
-	for?: string;
-	message: string;
+type Locale = 'en-US';
+type Message =
+	| string
+	| {
+			[key in Locale]: string;
+	  };
+export type Validation<Entity = any> = {
+	for?: keyof Entity; // Is this too strict? What about properties like `'children[2]'`?
+	message: Message;
 };
 
-export type Participant = string;
+/**
+ * The return type of an API call. For invalid results, it reflects back what was passed in (`In`) as `value` along with a `validations` property,
+ * listing the validation assertions.
+ * If the result is valid it returns the entity (`Out`).
+ * Make sure your entity (`Out`) doesn’t have a `validations` property itself. See `is_valid()`.
+ */
+type Result<In, Out> = Out | InvalidResult<In, Out>;
+
+type InvalidResult<In, Out> = {
+	validations: Array<Validation<Out>>;
+	input: In; // Is there a way to parameterize the name?
+};
 
 /*
 const c: Customer = {
