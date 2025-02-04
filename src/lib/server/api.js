@@ -106,13 +106,23 @@ export async function get_customers(label) {
 		LEFT JOIN events AS e ON c.customer = e.customer
 		WHERE TRUE
 			AND ($1::text IS NULL OR c.label = $1)
-			--AND (NULL::text IS NULL OR c.label = '')
 		GROUP BY c.customer
 		ORDER BY name
 		LIMIT 100
 `;
 	const results = await db.readonly(sql, [label]);
 	return results.rows;
+}
+
+/**
+ *
+ * @param {string} label
+ * @returns {Promise<Customer?>}
+ */
+export async function get_customer(label) {
+	const results = await get_customers(label);
+	if (1 === results.length) return results[0];
+	return null;
 }
 
 /*

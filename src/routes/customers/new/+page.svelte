@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import Input from '$lib/components/Input.svelte';
 	import { slug } from '$lib/format';
-	import { has } from '$lib/validation';
+	import { has, is_invalid } from '$lib/validation';
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
@@ -30,7 +30,7 @@
 		};
 	}}
 >
-	{#if form?.customer}<p style="color: var(--color-success)">Success!</p>{/if}
+	{#if form?.customer && !has(form?.validations)}<p style="font-weight: bold; color: var(--color-success)">Success!</p>{/if}
 	<h2>New Customer</h2>
 	<Input
 		name="name"

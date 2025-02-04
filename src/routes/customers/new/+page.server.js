@@ -1,7 +1,6 @@
 import { slug } from '$lib/format';
-import { add_customer, ValidationError } from '$lib/server/api';
-import { exists } from '$lib/util';
-import { has, is_invalid, s } from '$lib/validation';
+import { add_customer } from '$lib/server/api';
+import { is_invalid } from '$lib/validation';
 import { fail } from '@sveltejs/kit';
 
 /**
