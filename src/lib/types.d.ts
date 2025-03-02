@@ -1,17 +1,29 @@
 /* https://www.totaltypescript.com/how-to-test-your-types */
 
-/* https://stackoverflow.com/a/77236776/563324 */
+/**
+ * Allows any property to be `null.
+ *
+ * @see https://stackoverflow.com/a/77236776/563324
+ */
 type Nullable<T> = {
 	[P in keyof T]: T[P] | null;
 };
 
-// https://stackoverflow.com/a/57386444/563324
 /**
  * Excludes (optional and `never`) properties from `T` that extend the type `V`.
+ *
+ * @see https://stackoverflow.com/a/57386444/563324
  */
 type ExcludeMatch<T, V> = Pick<T, { [K in keyof T]-?: T[K] extends V ? never : K }[keyof T]>;
 
-/** Replaces properties matching a type with a “looser” type, defaulting to `string`. */
+/**
+ * Replaces properties matching a type with a “looser” type, defaulting to `string`.
+ * This is useful to allow potentially invalid inputs from the frontend before validation.
+ *
+ * @example
+ * // Allows strings for properties of type Segment or Region
+ * Loosen<Customer, Segment | Region, string>
+ */
 type Loosen<T, Match, Replace = string> = {
 	[P in keyof T]: T[P] extends NonNullable<Match>
 		? Replace
@@ -20,7 +32,8 @@ type Loosen<T, Match, Replace = string> = {
 			: T[P];
 };
 
-/** TypeScript doesn’t support nominal types. This is a hack to provide matching on this specifc type,
+/**
+ * TypeScript doesn’t support nominal types. This is a hack to provide matching on this specifc type,
  *  not just `string`, in a conditional epxression in a mapped type.
  */
 type ID = string & { readonly __brand: unique symbol };
@@ -34,7 +47,7 @@ export type SalesStage = {
 };
 export type Participant = string;
 
-export type CustomerData = {
+type CustomerData = {
 	customer: ID;
 	name: string;
 	label: string;
@@ -53,7 +66,7 @@ export type WorkloadAttributes = {
 	stage: SalesStage['stage'];
 	size: number;
 	engagement_lead: Participant;
-	updated_at: ISODate; // ISODate
+	updated_at: ISODate;
 };
 
 /** Inidicator that an attribute has been deleted. `null` means “no change”.  */
@@ -114,8 +127,8 @@ export type Validation<Entity = any> = {
 };
 
 /**
- * The return type of an API call. For invalid results, it reflects back what was passed in (`In`) as `value` along with a `validations` property,
- * listing the validation assertions.
+ * The return type of an API call. For invalid results, it reflects back what was passed in (`In`) as `input`
+ * along with a `validations` property, listing the validation assertions.
  * If the result is valid it returns the entity (`Out`).
  * Make sure your entity (`Out`) doesn’t have a `validations` property itself. See `is_valid()`.
  */

@@ -1,5 +1,8 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	let q = $derived(page.params.q);
+
+	let { children } = $props();
 </script>
 
 <header>
@@ -12,9 +15,14 @@
 			<li><a href="/events">Events</a></li>
 		</ul>
 	</nav>
+	<search>
+		<form method="get" action="/search">
+			<input type="search" name="q" value={q} title="Search…" />
+		</form>
+	</search>
 </header>
 
-<slot></slot>
+{@render children()}
 
 <footer>
 	<details class="debug">
@@ -22,20 +30,24 @@
 		<table>
 			<tbody>
 				<tr>
-					<th role="rowheader"><code>$page.url.pathname</code></th>
-					<td><code>{$page.url.pathname}</code></td>
+					<th role="rowheader"><code>page.url.pathname</code></th>
+					<td><code>{page.url.pathname}</code></td>
 				</tr>
 				<tr>
-					<th role="rowheader"><code>$page.status</code></th>
-					<td><code>{$page.status}</code></td>
+					<th role="rowheader"><code>page.url.search</code></th>
+					<td><code>{page.url.search}</code></td>
 				</tr>
 				<tr>
-					<th role="rowheader"><code>$page.data</code></th>
-					<td><pre>{JSON.stringify($page.data, null, 2)}</pre></td>
+					<th role="rowheader"><code>page.status</code></th>
+					<td><code>{page.status}</code></td>
 				</tr>
 				<tr>
-					<th role="rowheader"><code>$page.form</code></th>
-					<td><pre>{JSON.stringify($page.form, null, 2)}</pre></td>
+					<th role="rowheader"><code>page.data</code></th>
+					<td><pre>{JSON.stringify(page.data, null, 2)}</pre></td>
+				</tr>
+				<tr>
+					<th role="rowheader"><code>page.form</code></th>
+					<td><pre>{JSON.stringify(page.form, null, 2)}</pre></td>
 				</tr>
 			</tbody>
 		</table>
@@ -45,6 +57,8 @@
 <style>
 	header,
 	footer {
+		display: flex;
+		gap: 1em;
 		margin: 1em 0;
 	}
 	nav > ul {
@@ -57,6 +71,13 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+	header > search {
+		width: 50%;
+		margin-left: auto;
+	}
+	header > search input[type='search'] {
+		width: 100%;
 	}
 
 	.debug {
