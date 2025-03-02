@@ -2,6 +2,7 @@
 SELECT
 	'event' AS entity
 	,event AS id
+	,'events/' || event AS resource
 	,ts_headline(outcome, search, 'StartSel=<mark>,StopSel=</mark>') AS snippet
 	,ts_rank(vector, search) AS rank
 FROM
@@ -15,6 +16,7 @@ UNION ALL
 SELECT
 	'workload' AS entity
 	,workload AS id
+	,'workloads/' || label AS resource
 	,ts_headline(name, search, 'StartSel=<mark>,StopSel=</mark>') AS snippet
 	,ts_rank(vector, search) AS rank
 FROM
@@ -28,6 +30,7 @@ UNION ALL
 SELECT
 	'customer' AS entity
 	,customer AS id
+	,'customers/' || label AS resource
 	,ts_headline(name, search, 'StartSel=<mark>,StopSel=</mark>') AS snippet
 	,ts_rank(vector, search) AS rank
 FROM

@@ -1,8 +1,9 @@
 <script>
 	import { page } from '$app/state';
-	let q = $derived(page.params.q);
+	/* @type {{ data: import('./$types').PageData }} */
+	// let { data } = $props();
 
-	let { children } = $props();
+	let { data, children } = $props();
 </script>
 
 <header>
@@ -16,8 +17,8 @@
 		</ul>
 	</nav>
 	<search>
-		<form method="get" action="/search">
-			<input type="search" name="q" value={q} title="Search…" />
+		<form method="get" action="/search" data-sveltekit-reload>
+			<input type="search" name="q" value={data.q} title="Search…" />
 		</form>
 	</search>
 </header>
@@ -71,6 +72,9 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+	nav > ul > li {
+		margin: 0;
 	}
 	header > search {
 		width: 50%;

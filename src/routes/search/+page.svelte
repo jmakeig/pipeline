@@ -3,4 +3,14 @@
 	let { data } = $props();
 </script>
 
-<pre>{JSON.stringify(data)}</pre>
+<ol>
+	{#each data.results as result}
+		<li><a href={result.resource}>{result.entity}</a> {@html result.snippet}</li>
+	{/each}
+</ol>
+
+<style>
+	mark {
+		background: yellow;
+	}
+</style>

@@ -40,7 +40,7 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,p,li {
 	margin: 0 0 0.5rem 0;
 }
 a {
@@ -99,6 +99,7 @@ fieldset {
 }
 input[type='text']:disabled,
 input:not([type]):disabled,
+input[type='search']:disabled,
 textarea:disabled,
 select:disabled,
 button:disabled,
@@ -107,6 +108,7 @@ fieldset:disabled {
 }
 input[type='text']:read-only,
 input:not([type]):read-only,
+input[type='search']:read-only,
 textarea:read-only,
 select:read-only,
 button:read-only,
