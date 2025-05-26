@@ -5,6 +5,7 @@
 ## Getting Started
 
 ```shell
+cp .env.example .env
 npm install
 npm run db
 npm run dev
