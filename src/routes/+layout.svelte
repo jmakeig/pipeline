@@ -1,4 +1,5 @@
 <script>
+	import { dev } from '$app/environment';
 	import { page } from '$app/state';
 	/* @type {{ data: import('./$types').PageData }} */
 	// let { data } = $props();
@@ -25,6 +26,7 @@
 
 {@render children()}
 
+{#if dev}
 <footer>
 	<details class="debug">
 		<summary>Page Metadata</summary>
@@ -54,6 +56,7 @@
 		</table>
 	</details>
 </footer>
+{/if}
 
 <style>
 	header,
@@ -88,7 +91,6 @@
 		margin: 2rem 0;
 		padding: 1em;
 
-		font-size: 0.75em;
 		color: #666;
 		background: #eee;
 

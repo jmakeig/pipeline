@@ -1,5 +1,6 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import { dev } from '$app/environment';
 </script>
 
 <svelte:head>
@@ -9,11 +10,11 @@
 		}
 	</style>
 </svelte:head>
-<h1>{$page.status} {$page.error?.message}</h1>
-{#if $page.error}
+<h1>{page.status} {page.error?.message}</h1>
+{#if dev && page.error}
 	<h2>Stack</h2>
 	<ol class="stack">
-		{#each $page.error.stack || [] as stack}
+		{#each page.error.stack || [] as stack}
 			<li>
 				{#if stack.match(/\/workspaces\/pipeline\/src\//)}
 					<em>{stack}</em>
