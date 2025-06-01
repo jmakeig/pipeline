@@ -40,7 +40,9 @@ h2,
 h3,
 h4,
 h5,
-h6,p,li {
+h6,
+p,
+li {
 	margin: 0 0 0.5rem 0;
 }
 a {
@@ -89,6 +91,7 @@ button {
 input[type='text'],
 input:not([type]),
 input[type='search'],
+input[type='password'],
 textarea,
 select,
 button,
@@ -100,6 +103,7 @@ fieldset {
 input[type='text']:disabled,
 input:not([type]):disabled,
 input[type='search']:disabled,
+input[type='password']:disabled,
 textarea:disabled,
 select:disabled,
 button:disabled,
@@ -109,6 +113,7 @@ fieldset:disabled {
 input[type='text']:read-only,
 input:not([type]):read-only,
 input[type='search']:read-only,
+input[type='password']:read-only,
 textarea:read-only,
 select:read-only,
 button:read-only,
@@ -164,6 +169,8 @@ form .control label + * {
 form .control .contents textarea,
 form .control .contents input[type='text'],
 form .control .contents input:not([type]),
+form .control .contents input:[type='search'],
+form .control .contents input:[type='password'],
 form .control .contents select {
 	/* Fixes align-items: baseline */
 	display: block;

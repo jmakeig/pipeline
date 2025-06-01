@@ -6,7 +6,13 @@ declare global {
 			message: string;
 			stack?: string[];
 		}
-		// interface Locals {}
+		interface Locals {
+			user: {
+				user_name: string;
+				first_name?: string;
+				last_name?: string;
+			}
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}

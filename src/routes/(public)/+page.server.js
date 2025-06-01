@@ -2,7 +2,7 @@ import * as api from '$lib/server/api';
 import { fail } from '@sveltejs/kit';
 
 /** @type {import('../$types').PageServerLoad} */
-export async function load({ params }) {
+export async function load({ parent }) {
 	/** @type {Array<{workload: import('$lib/types').WorkloadDeep, urgency: number}>} */
 	const follow_ups = await api.get_workload_urgency();
 	/** @type {Array<import('$lib/types').SalesStage & { workloads: {count: number, size: number?}}>} */
