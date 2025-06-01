@@ -16,7 +16,11 @@
 			<li><a href="/workloads">Workloads</a></li>
 			<li><a href="/events">Events</a></li>
 		</ul>
-		User {data.user?.user_name}
+		{#if data.user}
+			<form action="/logout" method="POST">
+				<button>Logout</button>
+			</form>
+		{/if}
 	</nav>
 	<search>
 		<form method="get" action="/search" data-sveltekit-reload>
