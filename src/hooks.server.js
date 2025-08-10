@@ -1,9 +1,12 @@
+import { auth } from '$lib/server/api';
+import { is_invalid } from '$lib/validation';
+
 /** @type {import('@sveltejs/kit').Handle} */
 export async function handle({ event, resolve }) {
 	// get cookies from browser
-	const session = event.cookies.get('session');
+	const auth_token = event.cookies.get('session');
 
-	if (!session) {
+	if (!auth_token) {
 		console.warn('No session');
 		// if there is no session load page as normal
 		return await resolve(event);
@@ -16,18 +19,11 @@ export async function handle({ event, resolve }) {
 		select: { username: true, role: true },
 	})
 	*/
-	const user = await Promise.resolve({
-		user_name: 'asdf',
-		first_name: 'As',
-		last_name: 'Df'
-	});
+	const session = await auth.get_session(auth_token);
 
 	// if `user` exists set `events.local`
-	if (user) {
-		event.locals.user = {
-			user_name: user.user_name
-			// role: user.role.name,
-		};
+	if (!is_invalid(session)) {
+		event.locals.user = session.user;
 	}
 
 	console.log('Resolving with event.locals.user', event.locals.user);

@@ -713,3 +713,48 @@ export async function search(query) {
 	const results = await db.readonly(sql, [query]);
 	return results.rows;
 }
+
+export const auth = {
+	/**
+	 * @param {string} user_name
+	 * @returns {Promise<Result<string, {user_name: string; first_name: string; last_name: string, auth_token: string; }>>}
+	 */
+	async get_user(user_name) {
+		const sql = ``;
+		// TODO: const results = await db.readonly(sql, [user_name]);
+		//       return results.rows;
+		if ('jmakeig' === user_name)
+			return {
+				user_name,
+				first_name: 'Justin',
+				last_name: 'Makeig',
+				auth_token: 'AAAA-AAAA-AAAA-AAAA-AAAA' // crypto.randomUUID()
+			};
+		// Invalid
+		const validations = [{ message: 'nope!' }];
+		return { input: user_name, validations };
+	},
+
+	/**
+	 * Given an auth token (from a cookie), get an active user session.
+	 * @param {string} token
+	 * @returns {Promise<Result<string, {user:{user_name: string; first_name: string; last_name: string, auth_token: string | null; }}>>}
+	 */
+	async get_session(token) {
+		const sql = ``;
+		// TODO: const results = await db.readonly(sql, [user_name]);
+		// TODO: return results.rows;
+		if ('AAAA-AAAA-AAAA-AAAA-AAAA' === token)
+			return {
+				user: {
+					user_name: 'jmakeig',
+					first_name: 'Justin',
+					last_name: 'Makeig',
+					auth_token: 'AAAA-AAAA-AAAA-AAAA-AAAA' // crypto.randomUUID()
+				}
+			};
+		const validations = [{ message: `Unknown session: ${token}` }];
+		if (has(validations)) return { input: token, validations };
+		throw new Error('Shouldn’t be able to get here.');
+	}
+};

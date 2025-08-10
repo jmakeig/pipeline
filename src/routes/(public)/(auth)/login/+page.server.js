@@ -1,3 +1,5 @@
+import { auth } from '$lib/server/api';
+import { is_invalid } from '$lib/validation';
 import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 
@@ -21,13 +23,15 @@ export const actions = {
 			return fail(400, { invalid: true }); // TODO: Validations
 		}
 
-		// const user = await db.user.findUnique({ where: { username } });
-		const user = await Promise.resolve({ user_name: 'adsf', first_name: 'As', last_name: 'Df' });
+		// EX:  const user = await db.user.findUnique({ where: { username } });
+		// TMP: const user = await Promise.resolve({ user_name: 'adsf', first_name: 'As', last_name: 'Df' });
+		const user = await auth.get_user(username);
 
 		if (!user) {
 			return fail(400, { credentials: true }); // TODO: Validations
 		}
 
+		// TODO
 		//const userPassword = await bcrypt.compare(password, user.password_hash);
 		const password_match = true;
 
@@ -42,30 +46,25 @@ export const actions = {
 			data: { userAuthToken: crypto.randomUUID() }
 		});
 		*/
-		const auth_user = await Promise.resolve({
-			user_name: 'asdf',
-			first_name: 'As',
-			last_name: 'Df',
-			auth_token: crypto.randomUUID()
-		});
+		if (!is_invalid(user)) {
+			cookies.set('session', user.auth_token, {
+				// send cookie for every page
+				path: '/',
+				// server side only cookie so you can't use `document.cookie`
+				httpOnly: true,
+				// only requests from same site can send cookies
+				// https://developer.mozilla.org/en-US/docs/Glossary/CSRF
+				sameSite: 'strict',
+				// only sent over HTTPS in production
+				secure: process.env.NODE_ENV === 'production',
+				// set cookie to expire after a month
+				maxAge: 60 * 60 * 24 * 30
+			});
 
-		console.log(auth_user);
-
-		cookies.set('session', auth_user.auth_token, {
-			// send cookie for every page
-			path: '/',
-			// server side only cookie so you can't use `document.cookie`
-			httpOnly: true,
-			// only requests from same site can send cookies
-			// https://developer.mozilla.org/en-US/docs/Glossary/CSRF
-			sameSite: 'strict',
-			// only sent over HTTPS in production
-			secure: true, //process.env.NODE_ENV === 'production',
-			// set cookie to expire after a month
-			maxAge: 60 * 60 * 24 * 30
-		});
-
-		// redirect the user
-		redirect(302, '/');
+			// redirect the user
+			redirect(302, '/');
+		} else {
+			return fail(400, { validations: user.validations });
+		}
 	}
 };

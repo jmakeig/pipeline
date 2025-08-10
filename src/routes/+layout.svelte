@@ -7,6 +7,8 @@
 	let { data, children } = $props();
 </script>
 
+
+
 <header>
 	<!-- TODO: https://charlesfreeborn.medium.com/how-to-build-a-responsive-nav-using-css-flexbox-3511cd936af9 -->
 	<nav>
@@ -18,7 +20,11 @@
 		</ul>
 		{#if data.user}
 			<form action="/logout" method="POST">
-				<button>Logout</button>
+				<button>Logout {data.user.user_name}</button>
+			</form>
+		{:else}
+			<form action="/login" method="GET">
+				<button>Login</button>
 			</form>
 		{/if}
 	</nav>
