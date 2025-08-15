@@ -801,26 +801,12 @@ export const auth = {
 	/**
 	 *
 	 * @param {string} user_name
-	 * @returns {Promise<string>}
-	 * @throws {Error}
+	 * @returns {Promise<Result<string, string>>} Authentication token to be stored in a session cookie
+	 * @throws {Error} Unexpected error creatig a session
 	 */
-	async login(user_name) {
-		/*
-		const sql = `
-			BEGIN;
-				-- Invalidate all existing sessions
-				UPDATE auth.sessions SET valid_until = NULL
-					WHERE "user" = (SELECT "user" FROM auth.users WHERE user_name = $1);
-				-- Create a new session and return its token for the browser cookie
-				INSERT INTO auth.sessions("user")
-					VALUES(
-						(SELECT "user" FROM auth.users WHERE user_name = $1)
-					)
-					RETURNING session;
-			COMMIT;
-		`;
-		*/
+	async create_session(user_name) {
 		const results = await db.transaction(async function (client) {
+			// Invalidate all existing sessions for the current user
 			await client.query(
 				`UPDATE auth.sessions SET valid_until = NULL
 					WHERE "user" = (
@@ -829,7 +815,7 @@ export const auth = {
 					)`,
 				[user_name]
 			);
-			console.log([user_name]);
+			// Create a new session and return its token for the browser cookie
 			return client.query(
 				`INSERT INTO auth.sessions("user")
 					VALUES(

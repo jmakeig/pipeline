@@ -13,8 +13,6 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	login: async ({ cookies, request }) => {
-		console.log('login');
-
 		const data = await request.formData();
 		const username = data.get('user_name');
 		const password = data.get('password');
@@ -33,34 +31,29 @@ export const actions = {
 				return fail(400, { credentials: true });
 			}
 
-			const auth_token = await auth.login(user.user_name);
-			console.log('auth_token', auth_token);
-			
-			cookies.set('session', auth_token, {
-				// send cookie for every page
-				path: '/',
-				// server side only cookie so you can't use `document.cookie`
-				httpOnly: true,
-				// only requests from same site can send cookies
-				// https://developer.mozilla.org/en-US/docs/Glossary/CSRF
-				sameSite: 'strict',
-				// only sent over HTTPS in production
-				secure: process.env.NODE_ENV === 'production',
-				// set cookie to expire after a month
-				maxAge: 60 * 60 * 24 * 30
-			});
+			const auth_token = await auth.create_session(user.user_name);
+			if (!is_invalid(auth_token)) {
+				cookies.set('session', auth_token, {
+					// send cookie for every page
+					path: '/',
+					// server side only cookie so you can't use `document.cookie`
+					httpOnly: true,
+					// only requests from same site can send cookies
+					// https://developer.mozilla.org/en-US/docs/Glossary/CSRF
+					sameSite: 'strict',
+					// only sent over HTTPS in production
+					secure: process.env.NODE_ENV === 'production',
+					// set cookie to expire after a month
+					maxAge: 60 * 60 * 24 * 30
+				});
 
-			// redirect the user
-			redirect(302, '/');
+				// redirect the user
+				redirect(302, '/');
+			} else {
+				return fail(401, { validations: auth_token.validations });
+			}
 		} else {
 			return fail(400, { validations: user?.validations });
 		}
-
-		/*
-		const authenticatedUser = await db.user.update({
-			where: { username: user.username },
-			data: { userAuthToken: crypto.randomUUID() }
-		});
-		*/
 	}
 };
