@@ -820,8 +820,8 @@ export const auth = {
 			COMMIT;
 		`;
 		*/
-		const results = await db.transaction(function (client) {
-			client.query(
+		const results = await db.transaction(async function (client) {
+			await client.query(
 				`UPDATE auth.sessions SET valid_until = NULL
 					WHERE "user" = (
 						SELECT "user"
