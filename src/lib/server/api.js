@@ -717,10 +717,24 @@ export async function search(query) {
 export const auth = {
 	/**
 	 * @param {string} user_name
-	 * @returns {Promise<Result<string, {user_name: string; first_name: string; last_name: string, auth_token: string; }>>}
+	 * @returns {Promise<Result<string, {user_name: string; roles: string[]?; first_name: string; last_name: string, password_hash: string; }?>>}
 	 */
 	async get_user(user_name) {
-		const sql = ``;
+		const sql = `
+			SELECT
+				user_name,
+				password_hash,
+				roles,
+				first_name,
+				last_name
+			FROM auth.users
+			WHERE user_name = LOWER($1)
+		`;
+		const results = await db.readonly(sql, [user_name]);
+		if (1 == results.rowCount) return results.rows[0];
+		return null;
+
+		/*
 		// TODO: const results = await db.readonly(sql, [user_name]);
 		//       return results.rows;
 		if ('jmakeig' === user_name)
@@ -733,15 +747,42 @@ export const auth = {
 		// Invalid
 		const validations = [{ message: 'nope!' }];
 		return { input: user_name, validations };
+		*/
 	},
 
 	/**
 	 * Given an auth token (from a cookie), get an active user session.
 	 * @param {string} token
-	 * @returns {Promise<Result<string, {user:{user_name: string; first_name: string; last_name: string, auth_token: string | null; }}>>}
+	 * @returns {Promise<Result<string, {user:{user_name: string; first_name: string; last_name: string, auth_token: string | null; }}?>>}
 	 */
 	async get_session(token) {
-		const sql = ``;
+		const sql = `
+			WITH _user_sessions AS (
+				SELECT
+					u.user_name,
+					s.session,
+					u.first_name,
+					u.last_name
+				FROM auth.sessions AS s
+				INNER JOIN auth.users AS u USING ("user")
+				WHERE TRUE
+					AND s.session = $1
+					AND s.valid_until >= now()
+				ORDER BY s.created_at DESC
+				LIMIT 1
+			)
+			SELECT
+				json_build_object(
+					'user_name', user_name,
+					'first_name', first_name,
+					'last_name', last_name
+				) AS "user",
+				session AS auth_token
+			FROM _user_sessions
+		`;
+		const results = await db.readonly(sql, [token]);
+		if (1 === results.rowCount) return results.rows[0];
+		return null;
 		// TODO: const results = await db.readonly(sql, [user_name]);
 		// TODO: return results.rows;
 		if ('AAAA-AAAA-AAAA-AAAA-AAAA' === token)
@@ -756,5 +797,51 @@ export const auth = {
 		const validations = [{ message: `Unknown session: ${token}` }];
 		if (has(validations)) return { input: token, validations };
 		throw new Error('Shouldn’t be able to get here.');
+	},
+	/**
+	 *
+	 * @param {string} user_name
+	 * @returns {Promise<string>}
+	 * @throws {Error}
+	 */
+	async login(user_name) {
+		/*
+		const sql = `
+			BEGIN;
+				-- Invalidate all existing sessions
+				UPDATE auth.sessions SET valid_until = NULL
+					WHERE "user" = (SELECT "user" FROM auth.users WHERE user_name = $1);
+				-- Create a new session and return its token for the browser cookie
+				INSERT INTO auth.sessions("user")
+					VALUES(
+						(SELECT "user" FROM auth.users WHERE user_name = $1)
+					)
+					RETURNING session;
+			COMMIT;
+		`;
+		*/
+		const results = await db.transaction(function (client) {
+			client.query(
+				`UPDATE auth.sessions SET valid_until = NULL
+					WHERE "user" = (
+						SELECT "user"
+						FROM auth.users WHERE user_name = $1
+					)`,
+				[user_name]
+			);
+			console.log([user_name]);
+			return client.query(
+				`INSERT INTO auth.sessions("user")
+					VALUES(
+						(SELECT "user" FROM auth.users WHERE user_name = $1)
+					)
+					RETURNING session`,
+				[user_name]
+			);
+		});
+
+		// const results = await db.query(sql, [user_name]);
+		if (1 === results.rowCount) return results.rows[0].session;
+		throw new Error(`Unable to create session for ${user_name}`);
 	}
 };

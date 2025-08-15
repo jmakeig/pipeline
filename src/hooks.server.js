@@ -20,9 +20,10 @@ export async function handle({ event, resolve }) {
 	})
 	*/
 	const session = await auth.get_session(auth_token);
+	console.log('session', session);
 
 	// if `user` exists set `events.local`
-	if (!is_invalid(session)) {
+	if (session && !is_invalid(session)) {
 		event.locals.user = session.user;
 	}
 

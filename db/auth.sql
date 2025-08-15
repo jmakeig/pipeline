@@ -10,17 +10,19 @@ CREATE TABLE IF NOT EXISTS auth.users (
 	user_name text NOT NULL,
 	password_hash text NOT NULL,
 	roles text[],
+	first_name text,
+	last_name text,
 	PRIMARY KEY("user")
 );
 CREATE UNIQUE INDEX IF NOT EXISTS users_user_name ON auth.users(LOWER(user_name));
 
 CREATE TABLE IF NOT EXISTS auth.sessions (
-	session_id uuid DEFAULT gen_random_uuid(),
+	session uuid DEFAULT gen_random_uuid(),
 	"user" uuid NOT NULL REFERENCES auth.users("user"),
 	created_at timestamptz NOT NULL DEFAULT now(),
-	valid_until timestamptz NOT NULL DEFAULT now() + interval '30 days',
+	valid_until timestamptz DEFAULT now() + interval '30 days',
 	meta jsonb,
-	PRIMARY KEY(session_id)
+	PRIMARY KEY(session)
 );
 --CREATE INDEX auth.user_sessions ON auth.sessions ("user") WHERE;
 --DROP TABLE IF EXISTS sessions;

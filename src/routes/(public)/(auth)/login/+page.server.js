@@ -27,27 +27,16 @@ export const actions = {
 		// TMP: const user = await Promise.resolve({ user_name: 'adsf', first_name: 'As', last_name: 'Df' });
 		const user = await auth.get_user(username);
 
-		if (!user) {
-			return fail(400, { credentials: true }); // TODO: Validations
-		}
+		if (user && !is_invalid(user)) {
+			const password_match = true || (await bcrypt.compare(password, user.password_hash));
+			if (!password_match) {
+				return fail(400, { credentials: true });
+			}
 
-		// TODO
-		//const userPassword = await bcrypt.compare(password, user.password_hash);
-		const password_match = true;
-
-		if (!password_match) {
-			return fail(400, { credentials: true });
-		}
-
-		// generate new auth token just in case
-		/*
-		const authenticatedUser = await db.user.update({
-			where: { username: user.username },
-			data: { userAuthToken: crypto.randomUUID() }
-		});
-		*/
-		if (!is_invalid(user)) {
-			cookies.set('session', user.auth_token, {
+			const auth_token = await auth.login(user.user_name);
+			console.log('auth_token', auth_token);
+			
+			cookies.set('session', auth_token, {
 				// send cookie for every page
 				path: '/',
 				// server side only cookie so you can't use `document.cookie`
@@ -64,7 +53,14 @@ export const actions = {
 			// redirect the user
 			redirect(302, '/');
 		} else {
-			return fail(400, { validations: user.validations });
+			return fail(400, { validations: user?.validations });
 		}
+
+		/*
+		const authenticatedUser = await db.user.update({
+			where: { username: user.username },
+			data: { userAuthToken: crypto.randomUUID() }
+		});
+		*/
 	}
 };
