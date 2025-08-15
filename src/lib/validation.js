@@ -117,6 +117,6 @@ export function d(value, empty_valid = false) {
  * @returns {result is InvalidResult<unknown, T>}
  */
 export function is_invalid(result) {
-	// return 'validations' in (result as InvalidResult<unknown, T>); // Yuck!
-	return 'validations' in /** @type {InvalidResult<unknown, T>} */ (result);
+	// This is such a hack. (Is `new Object()` a performance issue too?)
+	return 'validations' in /** @type {InvalidResult<unknown, T>} */ (new Object(result)); // Can’t use `in` on primitives
 }
