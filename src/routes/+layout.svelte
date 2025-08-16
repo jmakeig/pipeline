@@ -7,6 +7,8 @@
 	let { data, children } = $props();
 </script>
 
+
+
 <header>
 	<!-- TODO: https://charlesfreeborn.medium.com/how-to-build-a-responsive-nav-using-css-flexbox-3511cd936af9 -->
 	<nav>
@@ -16,6 +18,15 @@
 			<li><a href="/workloads">Workloads</a></li>
 			<li><a href="/events">Events</a></li>
 		</ul>
+		{#if data.user}
+			<form action="/logout" method="POST">
+				<button>Logout {data.user.user_name}</button>
+			</form>
+		{:else}
+			<form action="/login" method="GET">
+				<button>Login</button>
+			</form>
+		{/if}
 	</nav>
 	<search>
 		<form method="get" action="/search" data-sveltekit-reload>
@@ -27,35 +38,35 @@
 {@render children()}
 
 {#if dev}
-<footer>
-	<details class="debug">
-		<summary>Page Metadata</summary>
-		<table>
-			<tbody>
-				<tr>
-					<th role="rowheader"><code>page.url.pathname</code></th>
-					<td><code>{page.url.pathname}</code></td>
-				</tr>
-				<tr>
-					<th role="rowheader"><code>page.url.search</code></th>
-					<td><code>{page.url.search}</code></td>
-				</tr>
-				<tr>
-					<th role="rowheader"><code>page.status</code></th>
-					<td><code>{page.status}</code></td>
-				</tr>
-				<tr>
-					<th role="rowheader"><code>page.data</code></th>
-					<td><pre>{JSON.stringify(page.data, null, 2)}</pre></td>
-				</tr>
-				<tr>
-					<th role="rowheader"><code>page.form</code></th>
-					<td><pre>{JSON.stringify(page.form, null, 2)}</pre></td>
-				</tr>
-			</tbody>
-		</table>
-	</details>
-</footer>
+	<footer>
+		<details class="debug">
+			<summary>Page Metadata</summary>
+			<table>
+				<tbody>
+					<tr>
+						<th role="rowheader"><code>page.url.pathname</code></th>
+						<td><code>{page.url.pathname}</code></td>
+					</tr>
+					<tr>
+						<th role="rowheader"><code>page.url.search</code></th>
+						<td><code>{page.url.search}</code></td>
+					</tr>
+					<tr>
+						<th role="rowheader"><code>page.status</code></th>
+						<td><code>{page.status}</code></td>
+					</tr>
+					<tr>
+						<th role="rowheader"><code>page.data</code></th>
+						<td><pre>{JSON.stringify(page.data, null, 2)}</pre></td>
+					</tr>
+					<tr>
+						<th role="rowheader"><code>page.form</code></th>
+						<td><pre>{JSON.stringify(page.form, null, 2)}</pre></td>
+					</tr>
+				</tbody>
+			</table>
+		</details>
+	</footer>
 {/if}
 
 <style>

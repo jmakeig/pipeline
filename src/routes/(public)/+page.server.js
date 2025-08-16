@@ -1,8 +1,8 @@
 import * as api from '$lib/server/api';
 import { fail } from '@sveltejs/kit';
 
-/** @type {import('./$types').PageServerLoad} */
-export async function load({ params }) {
+/** @type {import('../$types').PageServerLoad} */
+export async function load({ parent }) {
 	/** @type {Array<{workload: import('$lib/types').WorkloadDeep, urgency: number}>} */
 	const follow_ups = await api.get_workload_urgency();
 	/** @type {Array<import('$lib/types').SalesStage & { workloads: {count: number, size: number?}}>} */
@@ -15,7 +15,7 @@ export async function load({ params }) {
 	return { follow_ups, stages, size, customer_workloads };
 }
 
-/** @satisfies {import('./$types').Actions} */
+/** @satisfies {import('../$types').Actions} */
 export const actions = {
 	quick_add: async ({ request }) => {
 		console.log('quick_add');
