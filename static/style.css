@@ -169,8 +169,8 @@ form .control label + * {
 form .control .contents textarea,
 form .control .contents input[type='text'],
 form .control .contents input:not([type]),
-form .control .contents input:[type='search'],
-form .control .contents input:[type='password'],
+form .control .contents input[type='search'],
+form .control .contents input[type='password'],
 form .control .contents select {
 	/* Fixes align-items: baseline */
 	display: block;
