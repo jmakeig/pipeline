@@ -6,7 +6,7 @@ INSERT INTO auth.users(
 )
 VALUES(
 	'jmakeig',
-	E'\0442y\04410\044CUemxCeWjVgpcCe3T2/HkOyNtFaYVTh3COhqwMWQcd/jP2wH/agkG',
+	'$2a$10$K.0TshcwCoGX4tWNkGZG3Ofb3XV2cZLgZDvCnT9zSTxdS8pVnkEf6',
 	'Justin',
 	'Makeig'
 )
