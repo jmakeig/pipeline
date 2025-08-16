@@ -1,17 +1,26 @@
 <script>
-	/** @type {{ data: import('./$types').PageData }} */
-	let { data } = $props();
+	import { has } from '$lib/validation';
+	import Input from '$lib/components/Input.svelte';
+
+	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
+	let { data, form } = $props();
+
+	console.log('form.validations', form?.validations);
 </script>
 
 <form action="?/login" method="POST">
-	<div class="control">
-		<label for="user_name">User</label>
-		<input type="text" name="user_name" id="user_name" placeholder=" " />
-	</div>
-	<div class="control">
-		<label for="password">Password</label>
-		<input type="password" name="password" id="password" placeholder=" " />
-	</div>
+	{#if has(form?.validations)}<p style="color: var(--color-error);">Nope!</p>{/if}
+	<Input
+		name="user_name"
+		value={form?.login?.user_name}
+		label="User"
+		validations={form?.validations}
+	/>
+	<Input name="password" label="Password" validations={form?.validations}>
+		<input type="password" name="password" value="" />
+	</Input>
+
+	<input type="hidden" name="to" value={data.to} />
 	<div class="actions">
 		<button>Login</button>
 	</div>

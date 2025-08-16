@@ -4,31 +4,35 @@ import { fail, redirect } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 
 /** @type {import('./$types').PageServerLoad} */
-export const load = async ({ locals }) => {
+export const load = async ({ request, locals }) => {
 	// redirect user if logged in
 	if (locals.user) {
 		redirect(302, '/');
 	}
+
+	return {
+		to: URL.parse(request.url)?.searchParams.get('to')
+	};
 };
 
 export const actions = {
-	login: async ({ cookies, request }) => {
+	async login({ cookies, request, url }) {
 		const data = await request.formData();
-		const username = data.get('user_name');
+		const user_name = data.get('user_name');
 		const password = data.get('password');
+		const to = String(data.get('to'));
 
-		if (typeof username !== 'string' || typeof password !== 'string' || !username || !password) {
-			return fail(400, { invalid: true }); // TODO: Validations
+		if (typeof user_name !== 'string' || typeof password !== 'string' || !user_name || !password) {
+			return fail(400, { login: { user_name }, validations: [{ message: 'I don’t think so!' }] });
 		}
 
-		// EX:  const user = await db.user.findUnique({ where: { username } });
-		// TMP: const user = await Promise.resolve({ user_name: 'adsf', first_name: 'As', last_name: 'Df' });
-		const user = await auth.get_user(username);
+		const user = await auth.get_user(user_name);
 
 		if (user && !is_invalid(user)) {
-			const password_match = true || (await bcrypt.compare(password, user.password_hash));
+			const password_match = await bcrypt.compare(password, user.password_hash);
+			// console.warn('password_match', user.password_hash, password_match);
 			if (!password_match) {
-				return fail(400, { credentials: true });
+				return fail(400, { login: { user_name }, validations: [{ message: 'I don’t think so!' }] });
 			}
 
 			const auth_token = await auth.create_session(user.user_name);
@@ -46,9 +50,8 @@ export const actions = {
 					// set cookie to expire after a month
 					maxAge: 60 * 60 * 24 * 30
 				});
-
-				// redirect the user
-				redirect(302, '/');
+				console.log('url', url);
+				redirect(302, to ?? '/');
 			} else {
 				return fail(401, { validations: auth_token.validations });
 			}

@@ -45,11 +45,13 @@ async function protect_handle({ event, resolve }) {
 		console.warn('PROTECTED', route.id);
 		// TODO: Check roles
 		if (event.locals.user) return resolve(event);
+
 		return new Response(null, {
 			status: 302,
-			headers: { location: '/login' }
+			headers: { location: '/login?' + new URLSearchParams({ to: event.url.pathname }).toString() }
 		});
 	}
+
 	// https://github.com/mustofa-id/sveltekit-auth-hook-example/blob/4609c3870393cec4353ecbf3f6aa77d4832bada2/src/hooks/index.ts
 	return resolve(event);
 }
