@@ -35,9 +35,9 @@ export const actions = {
 				return fail(400, { login: { user_name }, validations: [{ message: 'I don’t think so!' }] });
 			}
 
-			const auth_token = await auth.create_session(user.user_name);
-			if (!is_invalid(auth_token)) {
-				cookies.set('session', auth_token, {
+			const session = await auth.create_session(user.user_name);
+			if (!is_invalid(session)) {
+				cookies.set('session', session.auth_token, {
 					// send cookie for every page
 					path: '/',
 					// server side only cookie so you can't use `document.cookie`
@@ -53,7 +53,7 @@ export const actions = {
 				console.log('url', url);
 				redirect(302, to ?? '/');
 			} else {
-				return fail(401, { validations: auth_token.validations });
+				return fail(401, { validations: session.validations });
 			}
 		} else {
 			return fail(400, { validations: user?.validations });

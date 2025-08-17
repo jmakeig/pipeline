@@ -5,7 +5,7 @@ import { exists } from './util';
  * @typedef {import("./types").Validation<Entity>} Validation
  */
 /**
- * @typedef {import("./types").CustomerNew} Customer
+ * @typedef {import("./types").Customer} Customer
  * @typedef {import("./types").CustomerNew} CustomerNew
  * @typedef {import("./types").Region} Region
  * @typedef {import("./types").Segment} Segment

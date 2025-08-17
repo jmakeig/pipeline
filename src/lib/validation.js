@@ -1,12 +1,15 @@
-/** @typedef {import("./types").Validation} Validation */
+/**
+ * @template Entity
+ * @typedef {import("./types").Validation<Entity>} Validation
+ */
 
 import { exists } from './util';
 
 /**
- *
- * @param {Validation[]} [validations]
+ * @template Entity
+ * @param {Validation<Entity>[]} [validations]
  * @param {string} [name]
- * @returns {Validation[] | undefined}
+ * @returns {Validation<Entity>[] | undefined}
  */
 export function by(validations, name) {
 	if (undefined === validations) return undefined;
@@ -18,8 +21,9 @@ export function by(validations, name) {
  * Validations that don’t have a specific name,
  * i.e. that aren’t tied to a field.
  *
- * @param {Validation[]} [validations]
- * @returns {Validation[] | undefined}
+ * @template Entity
+ * @param {Validation<Entity>[]} [validations]
+ * @returns {Validation<Entity>[] | undefined}
  */
 export function general(validations) {
 	if (undefined === validations) return undefined;
@@ -27,10 +31,10 @@ export function general(validations) {
 }
 
 /**
- *
- * @param {Validation[]} [validations]
+ * @template Entity
+ * @param {Validation<Entity>[]} [validations]
  * @param {string} [name]
- * @returns {Validation | undefined}
+ * @returns {Validation<Entity> | undefined}
  */
 export function first(validations, name) {
 	if (undefined === validations) return undefined;
@@ -40,8 +44,8 @@ export function first(validations, name) {
 }
 /**
  * Has at least one validation.
- *
- * @param {Validation[]} [validations]
+ * @template Entity
+ * @param {Validation<Entity>[]} [validations]
  * @param {string} [name] Omitted will evaluate all validations, regardless of name
  * @returns {boolean}
  */

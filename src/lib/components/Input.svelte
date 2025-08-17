@@ -1,7 +1,15 @@
-<script>
+<!-- https://stackoverflow.com/a/73531672 -->
+<script generics="Entity">
 	import { first, has } from '$lib/validation';
 
-	/** @type {{name:string; value?: string?; label: string, validations?: import('$lib/types').Validation[], children?: import('svelte').Snippet; help?: string; onchange?: (evt:Event) => void}}*/
+	// FIXME: I can’t figure out how to get this to work with a proper generic
+	/**
+	 * @typedef {import("$lib/types").Validation<Entity>} Validation
+	 */
+
+	/**
+	 * @template Entity
+	 * @type {{name:string; value?: string?; label: string, validations?: Validation[], children?: import('svelte').Snippet; help?: string; onchange?: (evt:Event) => void}}*/
 	let { name, value, label = name, validations = [], children, help, onchange } = $props();
 </script>
 

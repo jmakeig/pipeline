@@ -18,13 +18,21 @@ import { has } from '$lib/validation';
 
 /**
  * @template In, Out
- * @typedef {import('$lib/types').Result<In, Out>} Result
+ * @template {string} [Prop = "input"]
+ * @typedef {import('$lib/types').Result<In, Out, Prop>} Result
  */
 
+/**
+ * @template [Entity = unknown]
+ * @typedef {import("$lib/types").Validation<Entity>} Validation
+ */
+
+/**
+ * @template Entity
+ */
 export class ValidationError extends Error {
 	/**
-	 *
-	 * @param {import('$lib/types').Validation[]} [validations=[]]
+	 * @param {Validation<Entity>[]} [validations=[]]
 	 * @param {Error} [original]
 	 * @param {number} [code=400]
 	 */
@@ -346,7 +354,9 @@ export async function add_workload({ customer, name, label, stage }) {
 		results = await db.query(sql, [customer, name, label, stage || null]);
 	} catch (err) {
 		if (err instanceof ConstraintViolation) {
+			// FIXME: Return `InvalidResult`, don’t throw an error
 			throw new ValidationError(
+				// @ts-ignore
 				[{ for: 'name', message: `Workload “${name}” (${label}) already exists.` }],
 				409,
 				err
@@ -480,11 +490,12 @@ function deleted(value, type) {
  * @param {WorkloadAttributeAction} workoad
  * @returns {Promise<EventNew>}
  */
-//export async function add_event_workload(workload, outcome, stage, size, engagement_lead) {
 export async function add_event_workload({ workload, outcome }, { stage, size }) {
 	const attributes = {
 		workload,
+		// @ts-ignore
 		stage: deleted(stage, 'number'),
+		// @ts-ignore
 		size: deleted(size, 'number')
 	};
 	console.log(workload, outcome, stage, size);
@@ -520,7 +531,8 @@ export async function add_event_workload({ workload, outcome }, { stage, size })
 
 	const results = await db.transaction(
 		(client) => (
-			client.query(append_attributes, params), client.query(insert_event, [workload, outcome])
+			client.query(append_attributes, params),
+			client.query(insert_event, [workload, outcome])
 		)
 	);
 	return results.rows[0];
@@ -801,7 +813,7 @@ export const auth = {
 	/**
 	 *
 	 * @param {string} user_name
-	 * @returns {Promise<Result<string, string>>} Authentication token to be stored in a session cookie
+	 * @returns {Promise<Result<string, {auth_token: string}>>} Authentication token to be stored in a session cookie
 	 * @throws {Error} Unexpected error creatig a session
 	 */
 	async create_session(user_name) {
@@ -827,7 +839,7 @@ export const auth = {
 		});
 
 		// const results = await db.query(sql, [user_name]);
-		if (1 === results.rowCount) return results.rows[0].session;
+		if (1 === results.rowCount) return { auth_token: results.rows[0].session };
 		throw new Error(`Unable to create session for ${user_name}`);
 	}
 };
