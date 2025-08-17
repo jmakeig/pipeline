@@ -12,6 +12,12 @@ npm run dev
 ```
 ## Routes
 
+### Entities
+
+*TODO:* Really need to have a `/[org]` top-level qualifier. (Or maybe that’s in the domain name?)
+
+* `/`: Unprotected landing page. If logged in, redirect to `/dashboard`.
+* `/dashboard`: Landing page
 * `/customers`
 	* `./[customer]`: Single customer details, including workloads. Link to `GET` `/events/new?customer=[customer]&workload=[workload]` to create a new event
 	* `./new`
@@ -20,11 +26,11 @@ npm run dev
 		* `./workloads/new`
 			* `GET`: Input form
 			* `POST`: Create, redirect to `/customers/[customer]`
-			* ~`./[workload]`: Workload details~ *Is this necssary?*
 * `/workloads`
 	* `./reports`
 		* `./bystage`: Report grouped by stage
 		* `./needslove`: Aging report
+		* …
 	* `?customer`: Filter by multiple customers (OR)
 	* `?stage`: Filter by multiple stages (OR)
 	* `?size`
@@ -36,8 +42,13 @@ npm run dev
 	* `./new`
 		* \[`?customer`\]
 		* \[`?workload`\]
-		* \[`next`\]: Path to return to, e.g. `/customers/[customer]`
+		* \[`?next`\]: Path to return to, e.g. `/customers/[customer]`
+		* `GET`: Input form
+		* `POST`: Create, redirect to `?next`
 
+### Admin
+* `/login`
+* `/logout`
 
 
 ## Model
