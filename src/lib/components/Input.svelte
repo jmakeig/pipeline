@@ -9,7 +9,16 @@
 
 	/**
 	 * @template Entity
-	 * @type {{name:string; value?: string?; label: string, validations?: Validation[], children?: import('svelte').Snippet; help?: string; onchange?: (evt:Event) => void}}*/
+	 * @type {{
+	 		name:string;
+			value?: string?;
+			label: string,
+			validations?: Validation[],
+			children?: import('svelte').Snippet;
+			help?: string;
+			onchange?: (evt:Event) => void
+		  }}
+		*/
 	let { name, value, label = name, validations = [], children, help, onchange } = $props();
 </script>
 
@@ -17,7 +26,7 @@
 	<label for={name}>{label}</label>
 	<div class="contents">
 		{#if children}
-			<!-- THIS CAN’T PASS THE VALUE THROUGH -->
+			<!-- THIS CAN’T PASS A VALUE THROUGH -->
 			{@render children()}
 		{:else}
 			<input

@@ -11,7 +11,6 @@ async function auth_handle({ event, resolve }) {
 	const auth_token = event.cookies.get('session');
 
 	if (!auth_token) {
-		console.warn('No session');
 		// if there is no session load page as normal
 		return await resolve(event);
 	}
@@ -24,25 +23,19 @@ async function auth_handle({ event, resolve }) {
 	})
 	*/
 	const session = await auth.get_session(auth_token);
-	console.log('session', session);
 
 	// if `user` exists set `events.local`
 	if (session && !is_invalid(session)) {
 		event.locals.user = session.user;
 	}
-
-	console.log('Resolving with event.locals.user', event.locals.user);
 	// load page as normal
 	return await resolve(event);
 }
 /** @type {import('@sveltejs/kit').Handle} */
 async function protect_handle({ event, resolve }) {
-	console.log('protect_handle', event.locals.user);
-	console.log('event.route.id', event.route.id?.split('/'));
 	const route = event.route;
 	if (null === route || null === route.id) return resolve(event); // When is this true?
 	if (route.id.split('/').includes('(protected)')) {
-		console.warn('PROTECTED', route.id);
 		// TODO: Check roles
 		if (event.locals.user) return resolve(event);
 

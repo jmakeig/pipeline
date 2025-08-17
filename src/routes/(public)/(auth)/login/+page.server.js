@@ -50,7 +50,7 @@ export const actions = {
 					// set cookie to expire after a month
 					maxAge: 60 * 60 * 24 * 30
 				});
-				console.log('url', url);
+				console.log(`Set session cookie`, session.auth_token);
 				redirect(302, to ?? '/');
 			} else {
 				return fail(401, { validations: session.validations });
