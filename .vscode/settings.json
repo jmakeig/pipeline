@@ -1,0 +1,32 @@
+{
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "localhost",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "pipeline",
+			"database": "pipeline",
+			"username": "pipelineadmin",
+			"askForPassword": true,
+			"pgOptions": {
+				"ssl": false
+			}
+		},
+		{
+			"pgOptions": {
+				"ssl": {
+					"rejectUnauthorized": true
+				}
+			},
+			"previewLimit": 50,
+			"server": "ep-lingering-sea-a6g0s6ho-pooler.us-west-2.aws.neon.tech",
+			"port": 5432,
+			"askForPassword": true,
+			"driver": "PostgreSQL",
+			"name": "pipeline (PROD)",
+			"database": "neondb",
+			"username": "neondb_owner"
+		}
+	]
+}
