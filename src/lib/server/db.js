@@ -1,6 +1,10 @@
 import { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD, DB_SSL } from '$env/static/private';
 import pg from 'pg';
 
+/**
+ * @typedef {import('pg')} pg
+ */
+
 export class ConstraintViolation extends Error {
 	/**
 	 *

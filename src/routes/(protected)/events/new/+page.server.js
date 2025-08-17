@@ -2,6 +2,15 @@ import { add_event_workload, get_customer_workloads, get_stages_summary } from '
 import { has, s } from '$lib/validation';
 import { fail, redirect } from '@sveltejs/kit';
 
+/**
+ * @template Entity
+ * @typedef {import("$lib/types").Validation<Entity>} Validation
+ */
+
+/**
+ * @typedef {import("$lib/types").Event} Event
+ */
+
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ request }) {
 	const from = new URL(request.url).searchParams.get('from') ?? '/events';
@@ -53,7 +62,7 @@ export const actions = {
 		const stage = form_value(form, 'stage', parseFloat);
 		const size = form_value(form, 'size', parseFloat);
 
-		/** @type {import('$lib/types').Validation[]} */
+		/** @type {Validation<Event>[]} */
 		const validations = [];
 		if (!event.workload && !event.customer) {
 			validations.push({ for: 'customer_workload', message: 'Missing customer or workload' });

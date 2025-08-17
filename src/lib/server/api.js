@@ -312,6 +312,29 @@ export async function get_workloads(customer, workload) {
 }
 
 /**
+ * @param {Customer['label']} [customer] Customer label
+ * @param {Workload['label']} [workload] Workload label
+ * @returns {Promise<Workload>}
+ */
+export async function get_workload(customer, workload) {
+	const workloads = await get_workloads(customer, workload);
+	if (1 === workloads.length) return workloads[0];
+	throw new RangeError(`Workloads: Expected 1 but got ${workloads.length}`);
+}
+
+/*
+ *
+ * @param {Promise<PG.QueryResult<any>>} result
+ * @returns {Promise<any | null>}
+ */
+/*
+async function get_one(result) {
+	if(1=== (await result).rowCount) return (await result).rows[0];
+	throw new RangeError(`Expected 1 row but got ${(await result).rowCount}`);
+}
+*/
+
+/**
  *
  * @param {CustomerNew} customer_new
  * @returns {Promise<Result<CustomerNew, Customer>>}
