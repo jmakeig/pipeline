@@ -13,6 +13,7 @@
 		"db": "psql -h db -d pipeline -U pipelineadmin -f db/auth.sql -f db/auth-load.sql -f db/schema.sql -f db/reference.sql -f db/load.sql"
 	},
 	"devDependencies": {
+		"@leeoniya/ufuzzy": "^1.0.19",
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/kit": "^2.31.1",
 		"@sveltejs/vite-plugin-svelte": "^6.1.2",
