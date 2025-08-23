@@ -32,9 +32,7 @@
 	/** @type {HTMLOListElement} */
 	let picker;
 
-	/**
-	 * @type {Array<ListItem>}
-	 */
+	/** @type {Array<ListItem>} */
 	let list = $state(entities);
 	/** @type {number | null} */
 	let selected = $state(null);
@@ -74,8 +72,10 @@
 	function handle_input({ target }) {
 		list = search(entities, /** @type {HTMLInputElement} */ (target)?.value);
 		//selected = null;
-		if ('' === /** @type {HTMLInputElement} */ (target)?.value) interactive = 'hidden';
-		else interactive = 'visible';
+		if ('' === /** @type {HTMLInputElement} */ (target)?.value) {
+			selected = null;
+			interactive = 'hidden';
+		} else interactive = 'visible';
 	}
 
 	/**
@@ -193,6 +193,7 @@
 		return function (event) {
 			event.preventDefault();
 			fn.call(null, event);
+			interactive = 'hidden';
 		};
 	}
 </script>
@@ -248,10 +249,11 @@
 	.selected {
 		outline: 5px auto Highlight;
 		outline: 5px auto -webkit-focus-ring-color;
+		outline-offset: -5px;
 	}
 	.picker {
 		position: absolute; /* https://developer.chrome.com/blog/anchor-positioning-api */
-		top: 1.55em;
+		top: 2.5em;
 		display: none;
 		background: white;
 
@@ -272,7 +274,7 @@
 		list-style: none;
 	}
 	.picker li {
-		margin: 0.5em;
+		
 	}
 	.picker button {
 		font-family: inherit;
