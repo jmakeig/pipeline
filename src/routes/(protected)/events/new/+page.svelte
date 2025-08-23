@@ -4,6 +4,7 @@
 	import { first, has } from '$lib/validation';
 	import ToggledInput from '$lib/components/ToggledInput.svelte';
 	import Stage from '$lib/components/Stage.svelte';
+	import SearchSuggest from '$lib/components/SearchSuggest.svelte';
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
@@ -18,10 +19,18 @@
 		if (event.customer) return `customer=${event.customer}`;
 		return undefined;
 	}
+
+	const tmp = new Array(25).fill(0).map((x, i) => {
+		return { type: 'customer', name: `${i + 1}Acme`, id: 'abc123' };
+	});
 </script>
 
 <h1>New event</h1>
 <form method="POST" class:invalid={has(form?.validations)} use:enhance>
+	<div class="control">
+		<label for="tmp">Workload</label>
+		<SearchSuggest name="tmp" entities={tmp} />
+	</div>
 	<!-- This is to convey to the target page where to return -->
 	<input type="hidden" name="from" value={data.from} />
 	<div class="control" class:invalid={has(form?.validations, 'customer_workload')}>
@@ -65,7 +74,11 @@
 				<div class="contents">
 					<ToggledInput name="stage" value={form?.event.stage} disabled placeholder=" ">
 						<!-- https://github.com/sveltejs/language-tools/issues/2444#issuecomment-2258807482 -->
-						{#snippet input(/** @type {import('$lib/types').SalesStage} */value, /** @type {boolean} */disabled, /** @type {(evt: Event) => void} */onchange)}
+						{#snippet input(
+							/** @type {import('$lib/types').SalesStage} */ value,
+							/** @type {boolean} */ disabled,
+							/** @type {(evt: Event) => void} */ onchange
+						)}
 							<Stage {value} {disabled} {onchange} stages={data.stages} />
 						{/snippet}
 					</ToggledInput>

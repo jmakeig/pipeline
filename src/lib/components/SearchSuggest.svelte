@@ -1,14 +1,15 @@
 <script>
 	import ufuzzy from '@leeoniya/ufuzzy';
 
+	/** @typedef {{id: string, name: string; type: string;}} ListItem */ // Interface?
+
 	/**
 	 *
-	 * @template {{name: string}} Named
-	 * @param {Array<Named>} list
+	 * @param {Array<ListItem>} list
 	 * @param {string} input
-	 * @param {(item: Named) => string} [flatten]
+	 * @param {(item: ListItem) => string} [flatten]
 	 * @param {number} [limit=10]
-	 * @returns {Array<Named>}
+	 * @returns {Array<ListItem>}
 	 */
 	function search(list, input, flatten = (item) => item.name, limit = 10) {
 		if ('' === input) return [];
@@ -25,14 +26,14 @@
 	}
 
 	/**
-	 * @template {{id: string, name: string}} Entity
-	 * @type {{name: string, entities: Array<Entity>, renderer: import('svelte').Snippet<[Entity]> }}
+	 * @type {{name: string, entities: Array<ListItem>, renderer?: import('svelte').Snippet<[ListItem]> }}
 	 */
 	let { name, entities = [], renderer } = $props();
+	/** @type {HTMLOListElement} */
+	let picker;
 
 	/**
-	 * @template {{id: string, name: string}} Entity
-	 * @type {Array<Entity>}
+	 * @type {Array<ListItem>}
 	 */
 	let list = $state(entities);
 	/** @type {number | null} */
@@ -45,11 +46,10 @@
 	$effect(() => {
 		//console.log(selected);
 		if (null === selected) {
-			const el = document.querySelector('ol');
-			console.log(selected, el, el?.scrollTop);
-			if (el) el.scrollTop = 0;
+			console.log(selected, picker, picker?.scrollTop);
+			if (picker) picker.scrollTop = 0;
 		} else {
-			const el = document.querySelector(`li[data-index="${selected}"`);
+			const el = picker.querySelector(`li[data-index="${selected}"`);
 			if (el) {
 				/** @type {{down: ScrollIntoViewOptions, up: ScrollIntoViewOptions}} */
 				const options = {
@@ -69,11 +69,11 @@
 
 	/**
 	 *
-	 * @param {InputEvent} target
+	 * @param {Event} target
 	 */
 	function handle_input({ target }) {
 		list = search(entities, /** @type {HTMLInputElement} */ (target)?.value);
-		selected = null;
+		//selected = null;
 		if ('' === /** @type {HTMLInputElement} */ (target)?.value) interactive = 'hidden';
 		else interactive = 'visible';
 	}
@@ -116,12 +116,13 @@
 		if (ENTER === event.key) {
 			interactive = 'hidden';
 			const target = event.target;
+			console.log(selected);
 			/** @type {HTMLInputElement} */ (target).value = null === selected ? '' : list[selected].name;
 		}
 
 		if ([ENTER, ESCAPE].includes(event.key)) {
 			interactive = 'hidden';
-			selected = null;
+			//selected = null;
 			/** @type {HTMLInputElement} */ (target).blur();
 		}
 	}
@@ -199,53 +200,79 @@
 {#snippet label(/** @type {{name: string; id: string;}} */ option)}
 	{#if option}{option.name} (<code>{option.id}</code>){/if}
 {/snippet}
-<h1>{selected}</h1>
-<div class="control">
-	x
-	<input type="search" oninput={handle_input} onkeydown={handle_key} onfocus={handle_focus} />
+
+<div class="wrapper">
+	<input
+		type="search"
+		oninput={handle_input}
+		onkeydown={handle_key}
+		onfocus={handle_focus}
+		id={name}
+		placeholder=" "
+	/>
 	<!-- aria-expanded, aria-hidden -->
-	<ol class="picker" class:interactive={'visible' === interactive}>
-		{#each list as option, index}
-			<li class:selected={selected === index} data-index={index}>
-				<button onclick={handle_click(() => (selected = index))}>
-					{#if renderer}
-						{@render renderer(option)}
-					{:else}
-						{@render label(option)}
-					{/if}
-				</button>
-			</li>
-		{:else}
-			<p>nope!</p>
-		{/each}
-	</ol>
-	<input type="hidden" {name} value={format_id(list[selected]?.type, list[selected]?.id)} />
+	<div class="picker" class:interactive={'visible' === interactive} bind:this={picker}>
+		<ol>
+			{#each list as option, index}
+				<li class:selected={selected === index} data-index={index}>
+					<button onclick={handle_click(() => (selected = index))}>
+						{#if renderer}
+							{@render renderer(option)}
+						{:else}
+							{@render label(option)}
+						{/if}
+					</button>
+				</li>
+			{:else}
+				<p>nope!</p>
+			{/each}
+		</ol>
+	</div>
+	<input
+		type="hidden"
+		{name}
+		value={null === selected ? null : format_id(list[selected]?.type, list[selected]?.id)}
+	/>
 	<!-- {@render label(list[selected])} -->
 </div>
 
 <style>
+	.wrapper {
+		position: relative;
+		display: flex;
+	}
+	.wrapper input {
+		min-width: 10em;
+		flex-grow: 1;
+	}
 	.selected {
 		outline: 5px auto Highlight;
 		outline: 5px auto -webkit-focus-ring-color;
 	}
 	.picker {
-		position: absolute;
+		position: absolute; /* https://developer.chrome.com/blog/anchor-positioning-api */
 		top: 1.55em;
 		display: none;
 		background: white;
 
-		padding: 0.5em;
-		padding-bottom: 1em;
+		width: 100%;
+
+		padding: 0em;
 		box-shadow:
 			0 4px 6px -1px rgb(0 0 0 / 0.1),
 			0 2px 4px -2px rgb(0 0 0 / 0.1);
-		max-height: 10em;
-		overflow-y: auto; /* Yuck! */
 
 		border: solid 0.5px #ddd;
 	}
+	.picker ol {
+		max-height: 10em;
+		overflow-y: auto;
+		margin: 0em;
+		padding: 0;
+		list-style: none;
+	}
 	.picker li {
-		margin: 0.5rem 0;
+		margin: 0.5em;
 	}
 	.picker button {
 		font-family: inherit;
