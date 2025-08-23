@@ -58,10 +58,29 @@ export function has(validations, name) {
  * @param {FormData} form
  * @returns {string}
  */
-function serialize(form) {
+export function serialize(form) {
+	/*
 	return Array.from(form.entries())
 		.map((entry) => entry[0] + ': ' + entry[1])
 		.join(',\n');
+	*/
+	return JSON.stringify(
+		Array.from(form.entries()).reduce((obj, [key, value]) => {
+			// Handle cases where multiple fields share the same 'name' attribute
+			if (obj.hasOwnProperty(key)) {
+				if (Array.isArray(obj[key])) {
+					obj[key].push(value);
+				} else {
+					obj[key] = [obj[key], value];
+				}
+			} else {
+				obj[key] = value;
+			}
+			return obj;
+		}, {}),
+		null,
+		2
+	);
 }
 
 /**
