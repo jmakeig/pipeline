@@ -1,7 +1,7 @@
 <script>
 	import { dev } from '$app/environment';
 	import { page } from '$app/state';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { serialize } from '$lib/validation';
 	/* @type {{ data: import('./$types').PageData }} */
 	// let { data } = $props();
@@ -10,14 +10,18 @@
 	/** @type { string | null }*/
 	let form_data = $state(null);
 
+	/**
+	 * FIXME: This has weird timing issues with things like `ToggledInput` that
+	 * manage their own lifecycle.
+	 *
+	 * @param {Event} event
+	 * @returns {void}
+	 */
+	function _handle_change({ currentTarget }) {
+		const fd = new FormData(/** @type {HTMLFormElement} */ (currentTarget));
+		form_data = serialize(fd);
+	}
 	onMount(() => {
-		/**
-		 * @param {Event} event
-		 */
-		function _handle_change({ currentTarget }) {
-			const fd = new FormData(/** @type {HTMLFormElement} */ (currentTarget));
-			form_data = serialize(fd);
-		}
 		/** @type {HTMLFormElement | null} */
 		const form = document.querySelector('form:not(header form):not(footer form)'); // Only handles the first one
 		// for (const form of forms) {

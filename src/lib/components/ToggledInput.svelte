@@ -17,22 +17,26 @@
 	 * @returns {element is {value: string}}
 	 */
 	function has_value(element) {
-		// const inputs = [HTMLInputElement, HTMLSelectElement, HTMLTextAreaElement];
-		// for (const input of inputs) {
-		// 	if (element instanceof input) return true;
-		// }
-		// return false;
 		return 'string' === typeof element?.value;
 	}
 
 	/**
+	 * Listens to the change on the *child* input and sets the value of the
+	 * named input, i.e. the checkbox. The child input should not have a name
+	 * (which is kind of weird).
 	 *
-	 * @param {Event} evt
+	 * There are weird timiing issues here if you want to listen to the bubbled
+	 * change at the parent `form`.
+	 *
+	 *
+	 * @param {Event} target
 	 * @returns {void}
 	 */
-	function handle_input_change(evt) {
-		//console.log('The change event is only triggered on user action, not by changing the value of an input programatically.');
-		if (has_value(evt.target)) value = evt.target.value;
+	function handle_input_change({ target }) {
+		console.warn(
+			'The change event is only triggered on user action, not by changing the value of an input programatically.'
+		);
+		if (has_value(target)) value = target.value;
 	}
 	/**
 	 * @returns {void}
