@@ -34,6 +34,7 @@ body {
 	font-family: system-ui;
 	font-size: 11pt;
 	line-height: 1.2;
+	vertical-align: baseline;
 }
 h1,
 h2,
@@ -213,4 +214,10 @@ details > fieldset > legend {
 }
 details > fieldset > .control:first-of-type {
 	margin-top: 2.5em;
+}
+
+/* FIXME: Move this elsewhere */
+svg.tabler-icon {
+	size: 1.5em;
+	vertical-align: text-bottom;
 }

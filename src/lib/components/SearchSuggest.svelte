@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+	import { on } from 'svelte/events';
 	import ufuzzy from '@leeoniya/ufuzzy';
 
 	/** @typedef {{id: string, name: string; type: string;}} ListItem */ // Interface?
@@ -29,8 +31,8 @@
 	 * @type {{name: string, entities: Array<ListItem>, renderer?: import('svelte').Snippet<[ListItem]> }}
 	 */
 	let { name, entities = [], renderer } = $props();
-	/** @type {HTMLOListElement} */
-	let picker;
+
+	let /** @type {HTMLElement} */ component, /** @type {HTMLOListElement} */ picker;
 
 	/** @type {Array<ListItem>} */
 	let list = $state(entities);
@@ -196,13 +198,24 @@
 			interactive = 'hidden';
 		};
 	}
+
+	onMount(() => on(document, 'click', handle_click_elsewhere));
+	/**
+	 *
+	 * @param {MouseEvent} target
+	 */
+	function handle_click_elsewhere({ target }) {
+		if (component) {
+			if (!component.contains(/** @type {Node} */ (target))) interactive = 'hidden';
+		}
+	}
 </script>
 
 {#snippet label(/** @type {{name: string; id: string;}} */ option)}
 	{#if option}{option.name} (<code>{option.id}</code>){/if}
 {/snippet}
 
-<div class="wrapper">
+<div class="wrapper" bind:this={component}>
 	<input
 		type="search"
 		oninput={handle_input}
@@ -243,7 +256,7 @@
 		display: flex;
 	}
 	.wrapper input {
-		min-width: 10em;
+		min-width: 1em;
 		flex-grow: 1;
 	}
 	.selected {
@@ -274,7 +287,7 @@
 		list-style: none;
 	}
 	.picker li {
-		
+		padding: 0.25em 0;
 	}
 	.picker button {
 		font-family: inherit;

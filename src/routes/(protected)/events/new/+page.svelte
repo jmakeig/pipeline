@@ -6,6 +6,12 @@
 	import Stage from '$lib/components/Stage.svelte';
 	import SearchSuggest from '$lib/components/SearchSuggest.svelte';
 
+	import {
+		IconBuildings as IconCustomer,
+		IconBriefcase as IconWorkload,
+		IconPresentation as IconEvent
+	} from '@tabler/icons-svelte';
+
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
 
@@ -29,7 +35,11 @@
 <form method="POST" class:invalid={has(form?.validations)} use:enhance>
 	<div class="control">
 		<label for="tmp">Workload</label>
-		<SearchSuggest name="tmp" entities={tmp} />
+		{#snippet label_cw(/** @type {{name: string; id: string;}} */ option)}
+			{#if option}<IconCustomer /><IconWorkload /><IconEvent />
+				{option.name} (<code>{option.id}</code>){/if}
+		{/snippet}
+		<SearchSuggest name="tmp" entities={tmp} renderer={label_cw} />
 	</div>
 	<!-- This is to convey to the target page where to return -->
 	<input type="hidden" name="from" value={data.from} />
