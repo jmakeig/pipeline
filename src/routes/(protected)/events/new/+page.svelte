@@ -25,21 +25,33 @@
 		if (event.customer) return `customer=${event.customer}`;
 		return undefined;
 	}
-
-	const tmp = new Array(25).fill(0).map((x, i) => {
-		return { type: 'customer', name: `${i + 1}Acme`, id: 'abc123' };
-	});
 </script>
 
 <h1>New event</h1>
 <form method="POST" class:invalid={has(form?.validations)} use:enhance>
 	<div class="control">
 		<label for="tmp">Workload</label>
-		{#snippet label_cw(/** @type {{name: string; id: string;}} */ option)}
-			{#if option}<IconCustomer /><IconWorkload /><IconEvent />
-				{option.name} (<code>{option.id}</code>){/if}
+		{#snippet label_cw(
+			/** @type {{type: 'workload' | 'customer'; name: string; id: string; search: string; weight: number;}} */ option
+		)}
+			{#if option}
+				<!--<div>-->
+					{#if 'customer' === option.type}<IconCustomer />{/if}
+					{#if 'workload' === option.type}<IconWorkload />{/if}
+					&nbsp;{option.name}
+				<!--</div>
+				<div style="text-align: left; font-size: 0.85em;">
+					<IconEvent size="0.85em"/>
+					&nbsp;{option.weight}
+				</div>-->
+			{/if}
 		{/snippet}
-		<SearchSuggest name="tmp" entities={tmp} renderer={label_cw} />
+		<SearchSuggest
+			name="tmp"
+			entities={data.customer_workloads}
+			renderer={label_cw}
+			flatten={(item) => item.search}
+		/>
 	</div>
 	<!-- This is to convey to the target page where to return -->
 	<input type="hidden" name="from" value={data.from} />

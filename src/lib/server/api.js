@@ -562,6 +562,48 @@ export async function add_event_workload({ workload, outcome }, { stage, size })
 }
 
 /**
+ * @param {string} [user_name]
+ * @returns {Promise<Array<{type:'workload' | 'customer'; id: string; name: string; search: string; weight: number;}>>}
+ */
+export async function search_customer_workloads(user_name) {
+	// U&'\\00F4'
+	const sql = `
+		(
+			SELECT
+				'workload' AS type,
+				w.workload AS id,
+				w.name || ' (' || c.name || ')' AS name,
+				w.name || ' | ' || c.name  AS search,
+				COALESCE(count, 0) AS weight
+			FROM workloads AS w
+			INNER JOIN customers AS c USING(customer)
+			LEFT JOIN LATERAL (
+				SELECT COUNT(e.event) AS count
+				FROM events AS e
+				WHERE e.workload = w.workload
+			) ON true
+		)
+		UNION ALL (
+			SELECT
+				'customer' AS type,
+				c.customer AS id,
+				c.name AS name,
+				c.name AS search,
+				COALESCE(count, 0) AS weight
+			FROM customers AS c
+			LEFT JOIN LATERAL (
+				SELECT COUNT(e.event) AS count
+				FROM events AS e
+				WHERE e.customer = c.customer
+			) ON true
+		)
+		ORDER BY weight DESC
+	`;
+	const results = await db.readonly(sql); //[user_name]
+	return results.rows;
+}
+
+/**
  * Union of customers and workloads. Used to build the dropdown for Events.
  *
  * @param {Customer['label']} [customer]

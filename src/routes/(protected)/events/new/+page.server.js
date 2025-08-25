@@ -1,4 +1,9 @@
-import { add_event_workload, get_customer_workloads, get_stages_summary } from '$lib/server/api';
+import {
+	add_event_workload,
+	get_customer_workloads,
+	get_stages_summary,
+	search_customer_workloads
+} from '$lib/server/api';
 import { has, s } from '$lib/validation';
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -12,10 +17,10 @@ import { fail, redirect } from '@sveltejs/kit';
  */
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ request }) {
+export async function load({ request, locals }) {
 	const from = new URL(request.url).searchParams.get('from') ?? '/events';
 
-	const customer_workloads = await get_customer_workloads();
+	const customer_workloads = await search_customer_workloads(locals.user?.user_name);
 	const stages = await get_stages_summary();
 	return { customer_workloads, stages, from };
 }
