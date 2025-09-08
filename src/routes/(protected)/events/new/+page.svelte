@@ -6,11 +6,9 @@
 	import Stage from '$lib/components/Stage.svelte';
 	import SearchSuggest from '$lib/components/SearchSuggest.svelte';
 
-	import {
-		IconBuildings as IconCustomer,
-		IconBriefcase as IconWorkload,
-		IconPresentation as IconEvent
-	} from '@tabler/icons-svelte';
+	import IconCustomer from '$lib/components/icons/IconCustomer.svelte';
+	import IconWorkload from '$lib/components/icons/IconWorkload.svelte';
+	// import IconEvent from '$lib/components/icons/IconEvent.svelte';
 
 	/** @type {{ data: import('./$types').PageData, form: import('./$types').ActionData }} */
 	let { data, form } = $props();
@@ -36,9 +34,9 @@
 		)}
 			{#if option}
 				<!--<div>-->
-					{#if 'customer' === option.type}<IconCustomer />{/if}
-					{#if 'workload' === option.type}<IconWorkload />{/if}
-					&nbsp;{option.name}
+				{#if 'customer' === option.type}<IconCustomer />{/if}
+				{#if 'workload' === option.type}<IconWorkload />{/if}
+				&nbsp;{option.name}
 				<!--</div>
 				<div style="text-align: left; font-size: 0.85em;">
 					<IconEvent size="0.85em"/>
