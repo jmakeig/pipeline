@@ -110,7 +110,7 @@ export type Workload = Omit<WorkloadData, 'customer' | 'stage'> & {
 	events: Array<Omit<Event, 'workload'>>;
 };
 
-export type EventData = {
+type EventData = {
 	event: ID;
 	workload?: WorkloadData['workload'];
 	customer?: CustomerData['customer'];
@@ -127,7 +127,7 @@ type EventC = Omit<EventData, 'workload' | 'customer'> & {
 	workload?: never;
 	customer: CustomerData['customer'];
 };
-export type EventBase = EventW | EventC;
+type EventBase = EventW | EventC;
 export type EventNew = Nullable<EventData>;
 export type Event =
 	| (Omit<EventW, 'workload'> & { workload: Omit<Workload, 'events'> })
